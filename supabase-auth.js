@@ -13,6 +13,35 @@
   const savePlanButton = document.getElementById('saveAgentPlan');
   const savePlanStatus = document.getElementById('saveAgentPlanStatus');
   let client = null, currentUser = null, latestPlan = null;
+  async function listWebsiteProjects() {
+    if (!client || !currentUser) return [];
+    const { data, error } = await client.from('website_projects').select('id,name,site_type,updated_at').order('updated_at', { ascending: false }).limit(50);
+    if (error) throw error;
+    return data || [];
+  }
+  async function saveWebsiteProject(project) {
+    if (!client || !currentUser) throw new Error('Sign in before saving a website.');
+    if (!project || typeof project.html !== 'string' || !project.html.trim()) throw new Error('Generate a website before saving it.');
+    if (project.html.length > 500000) throw new Error('This website draft is too large to save (500 KB maximum).');
+    const row = {
+      user_id: currentUser.id,
+      name: String(project.name || 'Untitled website').slice(0, 120),
+      site_type: String(project.siteType || 'Business website').slice(0, 60),
+      brief: String(project.brief || '').slice(0, 1800),
+      contact_url: String(project.contactUrl || '').slice(0, 500),
+      settings: project.settings && typeof project.settings === 'object' ? project.settings : {},
+      html: project.html
+    };
+    const { data, error } = await client.from('website_projects').insert(row).select('id,name,site_type,updated_at').single();
+    if (error) throw error;
+    return data;
+  }
+  async function getWebsiteProject(id) {
+    if (!client || !currentUser) throw new Error('Sign in before loading a website.');
+    const { data, error } = await client.from('website_projects').select('id,name,site_type,brief,contact_url,settings,html,updated_at').eq('id', id).single();
+    if (error) throw error;
+    return data;
+  }
   function setMessage(text, isError = false) { message.textContent = text; message.dataset.kind = isError ? 'error' : 'info'; }
   function setStatus(text) { status.textContent = text; }
   function setBusy(busy) { [signIn, signUp, signOut].forEach(button => { if (button) button.disabled = busy; }); }
@@ -88,6 +117,10 @@
       if (savePlanStatus) savePlanStatus.textContent = currentUser ? 'You can save this plan to your account.' : 'Sign in to save plans to your account.';
     },
     isConfigured: () => Boolean(client),
+    isSignedIn: () => Boolean(client && currentUser),
+    listWebsiteProjects,
+    saveWebsiteProject,
+    getWebsiteProject,
     async generateWebsiteWithAI(payload) {
       if (!client) throw new Error('Account service is not configured.');
       if (!currentUser) throw new Error('Sign in to use AI website generation.');
@@ -103,7 +136,11 @@
     client = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey, {
       auth: {persistSession: true, autoRefreshToken: true, detectSessionInUrl: true}
     });
-    client.auth.onAuthStateChange((_event, session) => { currentUser = session?.user || null; refreshControls(); });
+    client.auth.onAuthStateChange((_event, session) => {
+      currentUser = session?.user || null;
+      refreshControls();
+      window.dispatchEvent(new CustomEvent('novabuild-auth-changed'));
+    });
   } else setMessage('Supabase is not configured yet. Follow SUPABASE_SETUP.md to create the project and set the public URL/key.');
   loadSession();
 })();
