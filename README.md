@@ -47,3 +47,13 @@ The AI Agent Command Center is a transparent, local rule-based planner. It maps 
 3. Connect an AI provider through server-side secrets only.
 4. Add a persistent task queue, logs, retry limits, and a stop/cancel control.
 5. Add read-only integrations first; require explicit confirmation for publishing, messages, or ad spend.
+
+
+## Supabase auth and task-plan storage scaffold
+
+- supabase/schema.sql defines profiles, agent_runs, and agent_tasks with row-level security policies that scope rows to the signed-in user.
+- supabase-auth.js provides email/password signup, sign-in, sign-out, and an explicit Save plan action.
+- config.js intentionally contains empty public Supabase settings until the owner configures a project.
+- SUPABASE_SETUP.md documents setup and testing.
+
+This integration is not active until the owner creates a Supabase project, runs the SQL, configures config.js and Auth redirect URLs, deploys to Cloudflare Pages, and tests with at least two test accounts. Never put service_role or AI-provider secrets in browser code. The browser saves plans only; there is no AI model or task execution worker yet.
