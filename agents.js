@@ -111,7 +111,7 @@
       renderPlan(planGoal(goal, document.getElementById('agentPriority').value, document.getElementById('agentAutonomy').value));
     } finally {
       runButton.disabled = false;
-      runButton.textContent = 'Plan with AI team ✦';
+      runButton.textContent = 'Create a work plan';
     }
   });
 })();
