@@ -87,7 +87,15 @@
       if (savePlanButton) savePlanButton.disabled = !currentUser || !latestPlan;
       if (savePlanStatus) savePlanStatus.textContent = currentUser ? 'You can save this plan to your account.' : 'Sign in to save plans to your account.';
     },
-    isConfigured: () => Boolean(client)
+    isConfigured: () => Boolean(client),
+    async generateWebsiteWithAI(payload) {
+      if (!client) throw new Error('Account service is not configured.');
+      if (!currentUser) throw new Error('Sign in to use AI website generation.');
+      const { data, error } = await client.functions.invoke('generate-website', { body: payload });
+      if (error) throw new Error(error.message || 'AI request failed.');
+      if (!data || !data.website) throw new Error(data?.error || 'The AI service returned an invalid response.');
+      return data.website;
+    }
   };
   if (window.supabase?.createClient && config.supabaseUrl && config.supabaseAnonKey &&
       /^https:\/\/[^/]+\.supabase\.co$/.test(config.supabaseUrl) &&
