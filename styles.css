@@ -16,3 +16,27 @@
 
 /* Expandable website content editor */
 .customize-details{margin-top:18px;border:1px solid var(--line);border-radius:11px;padding:13px;background:#0e1526}.customize-details summary{cursor:pointer;color:#d9d6ff;font-weight:700;font-size:12px;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px}.customize-details summary::-webkit-details-marker{display:none}.customize-details summary::after{content:'+';font-size:18px;color:#b6aaff}.customize-details[open] summary::after{content:'−'}.customize-details>p{margin:9px 0 12px}.customize-details label{margin-top:13px}.customize-details textarea{min-height:62px}
+
+
+/* Monthly billing and plan selection — checkout stays disabled until provider verification is live. */
+.billing-status{display:flex;align-items:center;gap:12px;padding:16px 18px;margin:20px 0 22px;border:1px solid #57472e;background:#251f1a;border-radius:13px;color:#ffc478}
+.billing-status-dot{width:9px;height:9px;flex:0 0 9px;border-radius:50%;background:#e9a84e}
+.billing-status>div{flex:1;min-width:0}
+.billing-status strong{display:block;color:#ffe2b4;font-size:13px;margin-bottom:4px}
+.billing-status p{color:#c5a77d;font-size:11px;margin:0;line-height:1.6}
+.billing-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;align-items:stretch}
+.billing-card{display:flex;flex-direction:column;padding:23px 21px;border:1px solid var(--line);background:var(--panel);border-radius:16px;min-width:0}
+.billing-featured{border-color:#7165c9;box-shadow:0 0 0 1px #7165c922}
+.billing-plan-label{font-size:9px;letter-spacing:1.4px;font-weight:800;color:#a99bff;margin-bottom:13px}
+.billing-card h2{font-size:22px;margin-bottom:7px}
+.billing-description{font-size:11px;line-height:1.6;color:var(--muted);min-height:36px;margin-bottom:15px}
+.billing-price{font:800 29px Manrope,sans-serif;letter-spacing:-1px;margin-bottom:16px}
+.billing-price span{font:500 10px 'DM Sans',sans-serif;letter-spacing:0;color:var(--muted)}
+.billing-card ul{list-style:none;padding:0;margin:0 0 22px;display:grid;gap:12px;flex:1}
+.billing-card li{position:relative;padding-left:21px;color:#c6cfe2;font-size:11px;line-height:1.55}
+.billing-card li:before{content:'✓';position:absolute;left:0;color:#62d9b0;font-weight:800}
+.billing-button{width:100%;margin-top:auto;cursor:not-allowed!important;opacity:.72;transform:none!important}
+.billing-setup-note{margin-top:20px}
+.billing-setup-note p{font-size:12px;line-height:1.7;margin-bottom:8px}
+@media(max-width:900px){.billing-grid{grid-template-columns:1fr 1fr}.billing-card:last-child{grid-column:1/-1}}
+@media(max-width:600px){.billing-grid{grid-template-columns:1fr}.billing-card:last-child{grid-column:auto}.billing-status{align-items:flex-start;flex-wrap:wrap}.billing-status>.tag{margin-left:21px}}
