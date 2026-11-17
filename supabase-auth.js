@@ -109,7 +109,21 @@
       if (!client) throw new Error('Account service is not configured.');
       if (!currentUser) throw new Error('Sign in to use AI website generation.');
       const { data, error } = await client.functions.invoke('generate-website', { body: payload });
-      if (error) throw new Error(error.message || 'AI request failed.');
+      if (error) {
+        // Supabase wraps non-2xx Edge Function responses; surface the server's
+        // actionable JSON error (for example, a missing Gemini secret) when available.
+        let message = error.message || 'AI request failed.';
+        try {
+          const response = error.context;
+          if (response && typeof response.json === 'function') {
+            const body = await response.json();
+            if (typeof body?.error === 'string' && body.error.trim()) message = body.error;
+          }
+        } catch (_) {
+          // Keep the original Supabase error if the response body isn't JSON/readable.
+        }
+        throw new Error(message);
+      }
       if (!data || !data.website) throw new Error(data?.error || 'The AI service returned an invalid response.');
       return data.website;
     }
