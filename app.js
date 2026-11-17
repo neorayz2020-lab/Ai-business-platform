@@ -91,6 +91,8 @@ function generateWebsite(silent = false) {
   }
   const sectionEdits = [1, 2, 3].map(index => ({ title: $('#service' + index + 'Title').value, text: $('#service' + index + 'Text').value }));
   generatedSiteHtml = buildStarterWebsite(name, type, brief, contact, $('#siteHeadline').value.trim(), $('#siteButton').value.trim(), $('#siteAccent').value, sectionEdits, $('#contactHeadline').value.trim(), $('#contactText').value.trim());
+  const saveProjectButton = $('#saveWebsiteProject');
+  if (saveProjectButton) saveProjectButton.disabled = !window.NovaBuildAuth?.isSignedIn?.();
   $('#sitePreview').srcdoc = generatedSiteHtml;
   $('#previewStatus').textContent = 'Preview generated · ' + type;
   $('#downloadSite').disabled = false;
