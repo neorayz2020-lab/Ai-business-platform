@@ -17,6 +17,7 @@ An early, mobile-responsive prototype for an AI business platform that aims to b
 - Marketing copy draft generator (template-based demo)
 - Ads campaign planning worksheet (does not launch ads or spend money)
 - Demo product catalog and lead pipeline
+- Save generated website drafts to the signed-in user's Supabase account with row-level access controls
 - Google/SEO readiness checklist with progress tracking
 - Apple App Store and Google Play publishing guidance
 - Rule-based AI Agent Command Center scaffold
@@ -28,7 +29,7 @@ This is a static HTML/CSS/JavaScript site. For Cloudflare Pages, connect the Git
 
 ## Important limitations
 
-This is not yet a production AI platform. The planner is rule-based and does not call an LLM. Saving a plan stores proposed plan/task rows; it does not enqueue or execute tasks. Real AI, payment processing, and integrations with Google Ads, Meta Ads, TikTok Ads, Google Search Console, Apple, or Google Play are not connected. Demo product and lead entries remain in page memory and disappear when the page reloads. No ad spend or external publishing action can happen from this version.
+This is not yet a production AI platform. The planner is rule-based and does not call an LLM. Saving a plan stores proposed plan/task rows; it does not enqueue or execute tasks. Real AI, payment processing, and integrations with Google Ads, Meta Ads, TikTok Ads, Google Search Console, Apple, or Google Play are not connected. Demo product and lead entries remain in page memory and disappear when the page reloads. Website drafts can be saved to the signed-in user's `website_projects` table; a saved-draft browser/library view is not yet implemented. No ad spend or external publishing action can happen from this version.
 
 Never place private API keys, database passwords, Supabase secret keys, or service_role keys in browser-side JavaScript. Real AI and account integrations must use secure server-side functions, user consent, limited permissions, spend caps, audit logs, and approval gates for consequential actions.
 
