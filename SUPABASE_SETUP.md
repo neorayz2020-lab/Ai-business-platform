@@ -1,46 +1,47 @@
 # Supabase setup for NovaBuild AI
 
-The repository includes a starter browser-auth flow and database schema. It is not active until you create a Supabase project, apply the SQL, and configure the public project URL/key.
+## Current status
 
-## 1. Create the free backend project
-1. Open https://supabase.com/dashboard and sign in.
-2. Create a new project. Save the database password somewhere safe; never put it in this repository.
-3. In Project Settings / API, copy the Project URL and the publishable key (or legacy anon key). Do not copy a secret key or service_role key.
+The Supabase project is already configured in `config.js`, and the database migration has been applied. These tables were verified in the project: `public.profiles`, `public.agent_runs`, and `public.agent_tasks`. Row Level Security (RLS) is enabled on all three.
 
-Supabase lists a free tier with quotas and inactivity pausing. Verify current limits at https://supabase.com/pricing before relying on it.
+The remaining steps are to deploy the website, set the deployed URL in Supabase Auth settings, and test the full flow. Do not run the initial schema again unless you intentionally need to reconcile the database.
 
-## 2. Create tables and access policies
-1. Open SQL Editor in your Supabase project.
-2. Open supabase/schema.sql in this repository and copy its full contents into a new SQL query.
-3. Run the query.
-4. Verify profiles, agent_runs, and agent_tasks exist and Row Level Security (RLS) is enabled on all three.
+## 1. Deploy to Cloudflare Pages
 
-The SQL scopes rows to the authenticated user's ID. agent_tasks also checks that the linked run belongs to the same user. Never disable RLS to make it work.
+1. Open https://dash.cloudflare.com/ and sign in.
+2. Go to **Workers & Pages** → **Create application** → **Pages** → **Connect to Git**.
+3. Connect GitHub and select `neorayz2020-lab/Ai-business-platform`.
+4. Use production branch `main`, build command `exit 0`, and build output directory `/` (the repository root where `index.html` lives).
+5. Deploy and copy the resulting Pages URL.
 
-## 3. Configure the website
-1. Open config.js in GitHub.
-2. Set supabaseUrl to the project's HTTPS URL and supabaseAnonKey to its publishable/anon key.
-3. Save. The public anon/publishable key is intended for browser use only when RLS is correctly configured. Never put database passwords, Supabase secret/service-role keys, or AI provider keys in config.js.
-4. In Supabase Authentication URL Configuration, add your deployed Cloudflare Pages URL to Site URL and Redirect URLs. For local testing, add the exact local origin you use.
+## 2. Configure Supabase Auth URLs
 
-## 4. Deploy to Cloudflare Pages
-1. Sign in at https://dash.cloudflare.com/.
-2. Go to Workers & Pages → Create application → Pages → Connect to Git.
-3. Connect GitHub and select neorayz2020-lab/Ai-business-platform.
-4. Use production branch main, build command exit 0, and build output directory / (the repository root, where index.html lives).
-5. Deploy. Subsequent commits to the connected branch can trigger deployments.
+1. Open the Supabase project at https://supabase.com/dashboard/project/cpluijlgsuaamaycwojm.
+2. Open **Authentication** → **URL Configuration**.
+3. Set **Site URL** to the exact deployed Cloudflare Pages URL.
+4. Add the same URL to **Redirect URLs** and save.
 
-Cloudflare only applies _headers when deployed on a compatible Cloudflare Pages setup. Verify response headers on the deployed URL; the file alone does not prove they are active.
+If email confirmation is enabled, signup may require a confirmation email. Do not disable security settings just to avoid an email problem; use a mailbox you can access.
 
-## 5. Test before real data
-- Create a test user, sign out, and sign in again.
-- Generate a sample plan and click Save plan to account.
-- Test with a second test account and confirm it cannot see the first account's rows.
-- Review RLS and logs if anything fails.
-- Do not enter real customer information until privacy, retention, recovery, and security controls have been reviewed.
+## 3. Test the website
+
+1. Open the deployed URL.
+2. In **AI Agent Command Center**, create a test account or sign in.
+3. Generate a sample plan and click **Save plan to account**.
+4. Sign out and sign back in; confirm the account state persists.
+5. If possible, test with a second test account and confirm it cannot see the first account's rows.
+6. If a step fails, capture the exact error and check Supabase Auth/database logs.
+
+Do not enter real customer information until privacy, retention, recovery, and security controls have been reviewed.
+
+## Security notes
+
+- `config.js` is browser-visible and may contain only the public project URL and publishable key.
+- Never put database passwords, Supabase secret keys, service_role keys, or AI-provider keys in browser code.
+- RLS must remain enabled. The database policies scope data to the signed-in user's ID, and task policies verify ownership of the linked run.
 
 ## Current limits
-- Email/password signup and login call Supabase Auth only after configuration.
-- The planner is still rule-based, not a connected LLM.
+
+- The planner is rule-based, not a connected LLM.
 - Saving stores a proposed plan and task rows; it does not enqueue or execute them.
 - No server-side AI key, background worker, external integration, billing, or autonomous action is active.
