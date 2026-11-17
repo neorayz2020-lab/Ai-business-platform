@@ -255,3 +255,126 @@ function updateSeoProgress() {
 }
 seoChecks.forEach(input => input.addEventListener('change', updateSeoProgress));
 updateSeoProgress();
+/* Saved website projects: each row is protected by Supabase Row Level Security. */
+(() => {
+  const saveButton = $('#saveWebsiteProject');
+  const projectSelect = $('#savedWebsiteProjects');
+  const loadButton = $('#loadWebsiteProject');
+  const status = $('#websiteProjectStatus');
+  if (!saveButton || !projectSelect || !loadButton || !status) return;
+
+  function settingsFromForm() {
+    return {
+      headline: $('#siteHeadline').value,
+      buttonText: $('#siteButton').value,
+      accent: $('#siteAccent').value,
+      sections: [1, 2, 3].map(index => ({
+        title: $('#service' + index + 'Title').value,
+        text: $('#service' + index + 'Text').value
+      })),
+      contactHeading: $('#contactHeadline').value,
+      contactText: $('#contactText').value
+    };
+  }
+
+  async function refreshProjectList() {
+    if (!window.NovaBuildAuth?.isSignedIn?.()) {
+      projectSelect.replaceChildren(new Option('Sign in to load saved websites', ''));
+      projectSelect.disabled = true;
+      loadButton.disabled = true;
+      saveButton.disabled = true;
+      status.textContent = 'Sign in to save websites to your account.';
+      return;
+    }
+    projectSelect.disabled = true;
+    try {
+      const projects = await window.NovaBuildAuth.listWebsiteProjects();
+      projectSelect.replaceChildren(new Option(projects.length ? 'Choose a saved website…' : 'No saved websites yet', ''));
+      projects.forEach(project => projectSelect.add(new Option(project.name + ' · ' + new Date(project.updated_at).toLocaleDateString(), project.id)));
+      projectSelect.disabled = false;
+      loadButton.disabled = !projectSelect.value;
+      saveButton.disabled = !generatedSiteHtml;
+      status.textContent = projects.length ? projects.length + ' saved website(s) in your account.' : 'Generate a website and save it here for later.';
+    } catch (error) {
+      projectSelect.replaceChildren(new Option('Could not load projects', ''));
+      projectSelect.disabled = true;
+      loadButton.disabled = true;
+      status.textContent = error?.message || 'Could not load saved websites.';
+    }
+  }
+
+  saveButton.addEventListener('click', async () => {
+    if (!generatedSiteHtml) { status.textContent = 'Generate a website first.'; return; }
+    if (!window.NovaBuildAuth?.isSignedIn?.()) { status.textContent = 'Sign in before saving a website.'; return; }
+    saveButton.disabled = true;
+    status.textContent = 'Saving website…';
+    try {
+      const saved = await window.NovaBuildAuth.saveWebsiteProject({
+        name: $('#siteName').value.trim() || 'Untitled website',
+        siteType: $('#siteType').value,
+        brief: $('#siteBrief').value.trim(),
+        contactUrl: $('#siteContact').value.trim(),
+        settings: settingsFromForm(),
+        html: generatedSiteHtml
+      });
+      await refreshProjectList();
+      projectSelect.value = saved.id;
+      loadButton.disabled = false;
+      status.textContent = 'Saved "' + saved.name + '" to your account.';
+    } catch (error) {
+      status.textContent = error?.message || 'Could not save website.';
+    } finally {
+      saveButton.disabled = !generatedSiteHtml || !window.NovaBuildAuth?.isSignedIn?.();
+    }
+  });
+
+  projectSelect.addEventListener('change', () => {
+    loadButton.disabled = !projectSelect.value || !window.NovaBuildAuth?.isSignedIn?.();
+  });
+
+  loadButton.addEventListener('click', async () => {
+    if (!projectSelect.value) return;
+    loadButton.disabled = true;
+    status.textContent = 'Loading website…';
+    try {
+      const project = await window.NovaBuildAuth.getWebsiteProject(projectSelect.value);
+      $('#siteName').value = project.name || '';
+      $('#siteType').value = project.site_type || 'Business website';
+      $('#siteBrief').value = project.brief || '';
+      $('#siteContact').value = project.contact_url || '';
+      const settings = project.settings || {};
+      $('#siteHeadline').value = settings.headline || '';
+      $('#siteButton').value = settings.buttonText || '';
+      $('#siteAccent').value = settings.accent || '#6d5dfc';
+      (settings.sections || []).forEach((section, index) => {
+        if (index < 3) {
+          $('#service' + (index + 1) + 'Title').value = section.title || '';
+          $('#service' + (index + 1) + 'Text').value = section.text || '';
+        }
+      });
+      $('#contactHeadline').value = settings.contactHeading || '';
+      $('#contactText').value = settings.contactText || '';
+      generatedSiteHtml = project.html;
+      $('#sitePreview').srcdoc = project.html;
+      $('#previewStatus').textContent = 'Loaded saved website · ' + project.site_type;
+      $('#downloadSite').disabled = false;
+      $('#siteOutput').replaceChildren();
+      const title = document.createElement('h3');
+      title.textContent = project.name + ' — saved website loaded';
+      const paragraph = document.createElement('p');
+      paragraph.textContent = 'Your saved HTML preview is loaded. Edit the fields and generate a new draft, then save it as a new project.';
+      $('#siteOutput').append(title, paragraph);
+      $('#siteOutput').classList.remove('hidden');
+      saveButton.disabled = false;
+      status.textContent = 'Loaded "' + project.name + '".';
+      showView('builder');
+    } catch (error) {
+      status.textContent = error?.message || 'Could not load website.';
+    } finally {
+      loadButton.disabled = !projectSelect.value;
+    }
+  });
+
+  window.addEventListener('novabuild-auth-changed', refreshProjectList);
+  refreshProjectList();
+})();
