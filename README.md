@@ -18,7 +18,7 @@ This version is static HTML, CSS, and JavaScript. Open `index.html` in a browser
 
 ## Important limitations
 
-This is a prototype, not a production AI platform. It currently has no backend, user accounts, database, real AI API, payment processing, or integrations with Google Ads, Meta Ads, TikTok Ads, Google Search Console, Apple, or Google Play. Demo product and lead entries are held in page memory and disappear when the page reloads. No ad spend or external publishing action can happen from this version.
+This is still a prototype, not a production AI platform. A Supabase authentication/database scaffold has been added, but it is inactive until a project is created, the SQL is applied, config.js is populated with the public project URL/key, and the setup is tested. Real AI, payment processing, and integrations with Google Ads, Meta Ads, TikTok Ads, Google Search Console, Apple, or Google Play are not connected. Demo product and lead entries remain in page memory and disappear when the page reloads. No ad spend or external publishing action can happen from this version.
 
 Never place private API keys in browser-side JavaScript. Real AI and account integrations should be implemented through secure server-side functions, with user consent, limited permissions, spend caps, audit logs, and approval gates for consequential actions.
 
