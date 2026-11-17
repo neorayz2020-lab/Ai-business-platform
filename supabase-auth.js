@@ -88,6 +88,23 @@
       if (savePlanStatus) savePlanStatus.textContent = currentUser ? 'You can save this plan to your account.' : 'Sign in to save plans to your account.';
     },
     isConfigured: () => Boolean(client),
+    async saveWebsiteProject(payload) {
+      if (!client) throw new Error('Account service is not configured.');
+      if (!currentUser) throw new Error('Sign in to save this website to your account.');
+      const record = {
+        user_id: currentUser.id,
+        name: String(payload.name || 'Untitled website').trim().slice(0, 120) || 'Untitled website',
+        site_type: String(payload.siteType || 'Business website').slice(0, 60),
+        brief: String(payload.brief || '').slice(0, 1800),
+        contact_url: String(payload.contactUrl || '').slice(0, 500),
+        settings: payload.settings || {},
+        html: String(payload.html || '').slice(0, 500000)
+      };
+      if (!record.brief || !record.html) throw new Error('Generate a website draft before saving.');
+      const { data, error } = await client.from('website_projects').insert(record).select('id').single();
+      if (error) throw new Error(error.message || 'Could not save the website.');
+      return data;
+    },
     async generateWebsiteWithAI(payload) {
       if (!client) throw new Error('Account service is not configured.');
       if (!currentUser) throw new Error('Sign in to use AI website generation.');
