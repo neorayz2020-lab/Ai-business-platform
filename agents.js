@@ -90,6 +90,7 @@
       list.append(card);
     });
     results.append(list);
+    if (window.NovaBuildAuth?.setLatestPlan) window.NovaBuildAuth.setLatestPlan(plan);
     results.append(node('div', 'agent-safety', 'Safety policy: ' + plan.policy + ' This prototype has no access to your accounts, files, or external services. Nothing has been published, sent, or charged.'));
     results.classList.remove('hidden');
     results.scrollIntoView({behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'});
