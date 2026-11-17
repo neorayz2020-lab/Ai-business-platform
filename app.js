@@ -107,7 +107,7 @@ function generateWebsite(silent = false) {
   ].forEach(line => { const item = document.createElement('li'); item.textContent = line; list.append(item); });
   const note = document.createElement('p');
   note.className = 'fine-print';
-  note.textContent = 'Honest status: this is a template-based first draft. It does not yet use an external AI model or publish itself online.';
+  note.textContent = 'This is a starter website built from a template. AI-generated copy may be used when configured. The site is not published online automatically.';
   output.append(title, list, note);
   output.classList.remove('hidden');
   if (!silent) output.scrollIntoView({behavior:'smooth',block:'nearest'});
