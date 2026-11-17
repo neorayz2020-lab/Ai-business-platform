@@ -56,6 +56,16 @@
               <label for="siteHeadline">Main headline</label><input id="siteHeadline" maxlength="100" placeholder="e.g. Thoughtful design for everyday living">
               <label for="siteButton">Main button text</label><input id="siteButton" maxlength="35" placeholder="e.g. Book a consultation">
               <label for="siteAccent">Website accent color</label><select id="siteAccent"><option value="#6d5dfc">Violet</option><option value="#087f8c">Ocean teal</option><option value="#c05a35">Terracotta</option><option value="#276749">Forest green</option><option value="#2563eb">Classic blue</option><option value="#b83280">Rose</option></select>
+              <details class="customize-details"><summary>Customize page sections</summary><p class="muted tiny">Edit the three cards and the contact section. Leave a field blank to use the default text.</p>
+                <label for="service1Title">Section 1 — title</label><input id="service1Title" maxlength="70" placeholder="Personal service">
+                <label for="service1Text">Section 1 — description</label><textarea id="service1Text" rows="2" maxlength="220" placeholder="Solutions shaped around your goals..."></textarea>
+                <label for="service2Title">Section 2 — title</label><input id="service2Title" maxlength="70" placeholder="Quality first">
+                <label for="service2Text">Section 2 — description</label><textarea id="service2Text" rows="2" maxlength="220" placeholder="A thoughtful approach..."></textarea>
+                <label for="service3Title">Section 3 — title</label><input id="service3Title" maxlength="70" placeholder="Simple next steps">
+                <label for="service3Text">Section 3 — description</label><textarea id="service3Text" rows="2" maxlength="220" placeholder="Get in touch to discuss..."></textarea>
+                <label for="contactHeadline">Contact section heading</label><input id="contactHeadline" maxlength="100" placeholder="Let’s make it happen.">
+                <label for="contactText">Contact section text</label><textarea id="contactText" rows="2" maxlength="220" placeholder="Have a question or an idea? We’d love to hear from you."></textarea>
+              </details>
               <div class="builder-actions"><button class="primary" id="makeBrief" type="button">Generate website ✦</button><button class="secondary" id="clearSite" type="button">Clear</button></div>
               <p class="fine-print">This first version uses a built-in template, not a connected AI model. It creates a working downloadable HTML file; online publishing is a separate step.</p>
               <div class="output hidden" id="siteOutput" aria-live="polite"></div>
