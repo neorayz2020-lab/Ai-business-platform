@@ -34,3 +34,16 @@ Never place private API keys in browser-side JavaScript. Real AI and account int
 ## License
 
 No license has been selected yet. Add a license before accepting contributions or distributing this project.
+
+
+## AI Agent Command Center (first scaffold)
+
+The AI Agent Command Center is a transparent, local rule-based planner. It maps a user's goal to proposed specialist tasks (coordination, website, marketing, SEO, ads/analytics, store/CRM, or app publishing) and flags actions that must stay approval-gated. It is **not yet an autonomous AI agent system**: there is no model connection, server, scheduler, persistent task queue, connected account, or background execution. It does not publish websites, run campaigns, or spend money.
+
+### Next implementation phase
+
+1. Choose hosting and a managed backend.
+2. Add authentication, per-user data isolation, and a server-side task API.
+3. Connect an AI provider through server-side secrets only.
+4. Add a persistent task queue, logs, retry limits, and a stop/cancel control.
+5. Add read-only integrations first; require explicit confirmation for publishing, messages, or ad spend.
