@@ -150,6 +150,46 @@ $('#makeAIWebsite').addEventListener('click', async () => {
 });
 
 $('#makeBrief').addEventListener('click', generateWebsite);
+$('#saveWebsiteProject').addEventListener('click', async () => {
+  const button = $('#saveWebsiteProject');
+  const status = $('#saveWebsiteStatus');
+  if (!generatedSiteHtml) {
+    status.textContent = 'Generate a website draft before saving.';
+    return;
+  }
+  if (!window.NovaBuildAuth?.isConfigured?.()) {
+    status.textContent = 'Account service is not configured yet.';
+    return;
+  }
+  button.disabled = true;
+  status.textContent = 'Saving website to your account…';
+  try {
+    const result = await window.NovaBuildAuth.saveWebsiteProject({
+      name: $('#siteName').value.trim() || 'Untitled website',
+      siteType: $('#siteType').value,
+      brief: $('#siteBrief').value.trim(),
+      contactUrl: $('#siteContact').value.trim(),
+      settings: {
+        headline: $('#siteHeadline').value.trim(),
+        buttonText: $('#siteButton').value.trim(),
+        accent: $('#siteAccent').value,
+        sections: [1, 2, 3].map(index => ({
+          title: $('#service' + index + 'Title').value.trim(),
+          text: $('#service' + index + 'Text').value.trim()
+        })),
+        contactHeading: $('#contactHeadline').value.trim(),
+        contactText: $('#contactText').value.trim()
+      },
+      html: generatedSiteHtml
+    });
+    status.textContent = 'Website saved to your account (ID: ' + result.id + ').';
+  } catch (error) {
+    status.textContent = error?.message || 'Could not save the website.';
+  } finally {
+    button.disabled = false;
+  }
+});
+
 $('#downloadSite').addEventListener('click', () => {
   if (!generatedSiteHtml) return;
   const blob = new Blob([generatedSiteHtml], {type:'text/html;charset=utf-8'});
