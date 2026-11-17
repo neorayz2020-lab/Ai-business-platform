@@ -1,2 +1,2 @@
 /* Public browser configuration only. Never put a secret/service_role key or AI provider key here. */
-window.NOVABUILD_CONFIG = { supabaseUrl: 'https://cpluijlgsuaamaycwojm.supabase.co', supabaseAnonKey: '' };
+window.NOVABUILD_CONFIG = { supabaseUrl: 'https://cpluijlgsuaamaycwojm.supabase.co', supabaseAnonKey: 'sb_publishable_dBk-aeHuSykZdSqB8XKwSQ_gU2uJQCO' };
