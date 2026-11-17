@@ -11,7 +11,19 @@ function showView(name) {
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
 $$('[data-view]').forEach(button => button.addEventListener('click', () => showView(button.dataset.view)));
-$('#menuToggle').addEventListener('click', () => $('#sidebar').classList.toggle('open'));
+$('#menuToggle').addEventListener('click', () => {
+  const isOpen = $('#sidebar').classList.toggle('open');
+  $('#menuToggle').setAttribute('aria-expanded', String(isOpen));
+  $('#menuToggle').setAttribute('aria-label', isOpen ? 'Close navigation' : 'Open navigation');
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && $('#sidebar').classList.contains('open')) {
+    $('#sidebar').classList.remove('open');
+    $('#menuToggle').setAttribute('aria-expanded', 'false');
+    $('#menuToggle').setAttribute('aria-label', 'Open navigation');
+    $('#menuToggle').focus();
+  }
+});
 
 $('#quickPrompt').addEventListener('submit', event => {
   event.preventDefault();
