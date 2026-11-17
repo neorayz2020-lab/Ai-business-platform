@@ -51,6 +51,22 @@ The AI Agent Command Center is a transparent, local rule-based planner. It maps 
 - `config.js` contains the public Supabase URL and publishable key only. Never place secrets there.
 - `SUPABASE_SETUP.md` documents deployment and testing.
 
+## Real AI website generation
+
+The Website Builder now calls the Supabase Edge Function `generate-website`. The function requires an authenticated Supabase user and calls Gemini server-side; the browser never receives the provider key.
+
+### Configure the AI provider
+
+1. Create an API key in Google AI Studio for Gemini.
+2. Open Supabase Dashboard → Edge Functions → Secrets for this project.
+3. Add a secret named `GEMINI_API_KEY` with the API key value.
+4. Sign in to NovaBuild AI, open Website builder, enter a business brief, and select **Generate with AI**.
+5. If you use email/password sign-in, configure the deployed site's URL and redirect URLs in Supabase Auth settings.
+
+Do not commit the Gemini key to GitHub or add it to `config.js`. The Edge Function currently uses `gemini-2.5-flash`. Provider quotas and availability depend on Google's current terms and account.
+
+The AI button is wired up, but generation will return a setup message until the `GEMINI_API_KEY` secret is configured. The ordinary starter-template button continues to work without an AI key.
+
 ## License
 
 No license has been selected yet. Add a license before accepting contributions or distributing this project.
