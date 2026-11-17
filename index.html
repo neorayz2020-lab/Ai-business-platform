@@ -45,7 +45,7 @@
           <div class="notice"><span>ⓘ</span><div><strong>Early prototype</strong><p>These screens demonstrate the product direction. AI generation, data persistence, publishing, and ad-platform connections are not active yet.</p></div></div>
         </section>
         <section class="view" id="view-builder">
-          <div class="page-heading"><div class="eyebrow">CREATE YOUR FIRST VERSION</div><h1>Website builder</h1><p class="muted">Describe your business, generate a real HTML starter website, preview it, and download the file. AI model integration comes next.</p></div>
+          <div class="page-heading"><div class="eyebrow">CREATE YOUR FIRST VERSION</div><h1>Website builder</h1><p class="muted">Describe your business, generate a website draft, preview it, and download the file. Use the AI button for model-generated copy or the starter template.</p></div>
           <div class="builder-layout">
             <div class="panel builder-form">
               <div class="builder-step"><span>01</span><div><strong>Tell us about your business</strong><p class="muted">A few details help shape the first draft.</p></div></div>
@@ -66,7 +66,7 @@
                 <label for="contactHeadline">Contact section heading</label><input id="contactHeadline" maxlength="100" placeholder="Let’s make it happen.">
                 <label for="contactText">Contact section text</label><textarea id="contactText" rows="2" maxlength="220" placeholder="Have a question or an idea? We’d love to hear from you."></textarea>
               </details>
-              <div class="builder-actions"><button class="primary" id="makeBrief" type="button">Generate website ✦</button><button class="secondary" id="clearSite" type="button">Clear</button></div>
+              <div class="builder-actions"><button class="primary" id="makeAIWebsite" type="button">Generate with AI ✦</button><button class="secondary" id="makeBrief" type="button">Use starter template</button><button class="secondary" id="clearSite" type="button">Clear</button></div><p class="fine-print" id="aiWebsiteStatus" aria-live="polite">AI generation requires a signed-in account and a server-side AI key.</p>
               <p class="fine-print">This first version uses a built-in template, not a connected AI model. It creates a working downloadable HTML file; online publishing is a separate step.</p>
               <div class="output hidden" id="siteOutput" aria-live="polite"></div>
             </div>
