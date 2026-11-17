@@ -116,6 +116,39 @@ function generateWebsite(silent = false) {
 const liveEditIds = ['siteName','siteType','siteBrief','siteContact','siteHeadline','siteButton','siteAccent','service1Title','service1Text','service2Title','service2Text','service3Title','service3Text','contactHeadline','contactText'];
 liveEditIds.forEach(id => { const field = $('#' + id); field.addEventListener('input', () => { if (generatedSiteHtml && $('#siteBrief').value.trim()) generateWebsite(true); }); field.addEventListener('change', () => { if (generatedSiteHtml && $('#siteBrief').value.trim()) generateWebsite(); }); });
 
+
+$('#makeAIWebsite').addEventListener('click', async () => {
+  const status = $('#aiWebsiteStatus');
+  const button = $('#makeAIWebsite');
+  const brief = $('#siteBrief').value.trim();
+  if (!brief) { status.textContent = 'Describe your business first.'; $('#siteBrief').focus(); return; }
+  if (!window.NovaBuildAuth?.isConfigured?.()) { status.textContent = 'Account service is not configured yet.'; return; }
+  button.disabled = true;
+  status.textContent = 'Creating your website copy with AI…';
+  try {
+    const website = await window.NovaBuildAuth.generateWebsiteWithAI({
+      businessName: $('#siteName').value.trim() || 'Your Business',
+      siteType: $('#siteType').value,
+      brief,
+      contactUrl: $('#siteContact').value.trim()
+    });
+    $('#siteHeadline').value = website.headline || '';
+    $('#siteButton').value = website.buttonText || 'Contact us';
+    $('#service1Title').value = website.sections?.[0]?.title || '';
+    $('#service1Text').value = website.sections?.[0]?.text || '';
+    $('#service2Title').value = website.sections?.[1]?.title || '';
+    $('#service2Text').value = website.sections?.[1]?.text || '';
+    $('#service3Title').value = website.sections?.[2]?.title || '';
+    $('#service3Text').value = website.sections?.[2]?.text || '';
+    $('#contactHeadline').value = website.contactHeading || '';
+    $('#contactText').value = website.contactText || '';
+    generateWebsite(true);
+    status.textContent = 'AI-generated copy added to your website. Review and edit it before publishing.';
+  } catch (error) {
+    status.textContent = error?.message || 'AI generation failed. Please try again.';
+  } finally { button.disabled = false; }
+});
+
 $('#makeBrief').addEventListener('click', generateWebsite);
 $('#downloadSite').addEventListener('click', () => {
   if (!generatedSiteHtml) return;
