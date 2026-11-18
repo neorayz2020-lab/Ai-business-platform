@@ -241,5 +241,4 @@
     newChat: () => panel.querySelector('#nb-help-new').click()
   };
   setLanguage(currentLanguage);
-  open({focus: false});
 })();
