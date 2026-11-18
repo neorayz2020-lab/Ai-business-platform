@@ -248,15 +248,24 @@ async function generateWebsiteCopyWithAI(payload) {
 
 async function callBusinessAgent(mode, payload) {
   const config = window.NOVABUILD_CONFIG || {};
-  if (!config.supabaseUrl || !config.supabaseAnonKey) throw new Error('חיבור השרת לא מוגדר.');
-  const response = await fetch(config.supabaseUrl + '/functions/v1/business-agent', {
+  if (!config.supabaseUrl || !config.supabaseAnonKey) throw new Error('חיבור השרת לא מוגדר. בדוק את config.js.');
+  const response = await fetch(config.supabaseUrl.replace(/\\/$/, '') + '/functions/v1/business-agent', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'apikey': config.supabaseAnonKey, 'Authorization': 'Bearer ' + config.supabaseAnonKey },
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': config.supabaseAnonKey,
+      'Authorization': 'Bearer ' + config.supabaseAnonKey
+    },
     body: JSON.stringify({ mode, ...payload })
   });
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.error || 'הבקשה נכשלה. נסה שוב.');
-  if (!data.result) throw new Error('ה-AI החזיר תשובה ריקה. נסה שוב.');
+  if (!response.ok) {
+    const message = data.error || 'הבקשה נכשלה (HTTP ' + response.status + ').';
+    if (data.code === 'AI_NOT_CONFIGURED') throw new Error('מנוע ה-AI לא מוגדר. יש להגדיר gemini_api_key ב-Supabase Edge Function Secrets.');
+    if (data.code === 'AI_RATE_LIMIT') throw new Error(message + ' נסה שוב מאוחר יותר.');
+    throw new Error(message);
+  }
+  if (!data.result || typeof data.result !== 'string') throw new Error('ה-AI החזיר תשובה ריקה או לא תקינה. נסה שוב.');
   return data.result;
 }
 function showAgentResult(id, heading, result) {
@@ -270,12 +279,23 @@ $('#makeMarketing').addEventListener('click', async () => {
   const business = $('#marketingBusiness').value.trim();
   const goal = $('#marketingGoal').value;
   const channel = $('#marketingChannel').value;
-  const button = $('#makeMarketing'); button.disabled = true;
+  const button = $('#makeMarketing');
+  button.disabled = true;
+  button.textContent = 'מכין תוכנית…';
   try {
-    const result = await callBusinessAgent('marketing', { business: business || 'עסק קטן', goal, platforms: [channel], brief: 'צור רעיונות לתוכן וקמפיין התחלתי.' });
+    const result = await callBusinessAgent('marketing', {
+      business: business || 'עסק קטן',
+      goal,
+      platforms: [channel],
+      brief: 'צור הצעת שיווק התחלתית לעסק. אם חסרים פרטים, ציין מה צריך לברר ואל תמציא נתונים.'
+    });
     showAgentResult('marketingOutput', 'תוכנית שיווק שנוצרה בעזרת AI', result);
-  } catch (error) { renderOutput('marketingOutput', 'לא הצלחנו ליצור תוכנית', error.message); }
-  finally { button.disabled = false; }
+  } catch (error) {
+    renderOutput('marketingOutput', 'לא הצלחנו ליצור תוכנית', error.message);
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Draft campaign';
+  }
 });
 $('#runGrowthAI').addEventListener('click', async () => {
   const button = $('#runGrowthAI'), status = $('#growthStatus');
@@ -293,16 +313,57 @@ $('#runLeadAI').addEventListener('click', async () => {
   const button = $('#runLeadAI'), status = $('#leadBotStatus');
   const message = $('#leadMessage').value.trim(), business = $('#leadBusiness').value.trim();
   if (!message || !business) { status.textContent = 'מלא את פרטי העסק ואת הודעת הלקוח.'; return; }
-  button.disabled = true; status.textContent = 'מנתח את הפנייה וכותב תשובה…';
+  button.disabled = true;
+  status.textContent = 'סוכן הלידים מנתח את הפנייה וכותב תשובה…';
   try {
-    const result = await callBusinessAgent('lead', { business, message, context: $('#leadContext').value.trim(), intent: $('#leadIntent').value });
+    const result = await callBusinessAgent('lead', {
+      business,
+      message,
+      context: $('#leadContext').value.trim(),
+      intent: $('#leadIntent').value,
+      channel: $('#leadChannel')?.value || 'WhatsApp'
+    });
     showAgentResult('leadBotOutput', 'ניתוח הליד ותשובה מוצעת', result);
-    const copy = document.createElement('button'); copy.className = 'secondary'; copy.type = 'button'; copy.textContent = 'העתק תשובה';
-    copy.addEventListener('click', async () => { try { await navigator.clipboard.writeText(result); copy.textContent = 'הועתק'; } catch { status.textContent = 'העתקה אוטומטית לא זמינה בדפדפן הזה.'; } });
-    $('#leadBotOutput').append(copy);
-    status.textContent = 'התשובה מוכנה לבדיקה. היא לא נשלחה ללקוח.';
-  } catch (error) { status.textContent = error.message; }
-  finally { button.disabled = false; }
+    const actions = document.createElement('div');
+    actions.className = 'builder-actions';
+    const copy = document.createElement('button');
+    copy.className = 'secondary';
+    copy.type = 'button';
+    copy.textContent = 'העתק תשובה';
+    copy.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(result); copy.textContent = 'הועתק'; }
+      catch { status.textContent = 'העתקה אוטומטית לא זמינה בדפדפן הזה.'; }
+    });
+    actions.append(copy);
+
+    const phoneField = $('#leadPhone');
+    const phone = phoneField ? phoneField.value.trim() : '';
+    if (phone) {
+      const whatsapp = document.createElement('button');
+      whatsapp.className = 'primary';
+      whatsapp.type = 'button';
+      whatsapp.textContent = 'פתח WhatsApp עם תשובה מוכנה';
+      whatsapp.addEventListener('click', () => {
+        let digits = phone.replace(/\\D/g, '');
+        if (digits.startsWith('0')) digits = '972' + digits.slice(1);
+        if (!/^[1-9]\\d{7,14}$/.test(digits)) {
+          status.textContent = 'מספר הטלפון אינו תקין. הזן מספר עם קידומת מדינה או מספר ישראלי שמתחיל ב־0.';
+          return;
+        }
+        const url = 'https://wa.me/' + digits + '?text=' + encodeURIComponent(result);
+        window.open(url, '_blank', 'noopener,noreferrer');
+      });
+      actions.append(whatsapp);
+    }
+    $('#leadBotOutput').append(actions);
+    status.textContent = phone
+      ? 'התשובה מוכנה. אפשר להעתיק או לפתוח שיחת WhatsApp; ההודעה לא נשלחת עד שתלחץ Send ב-WhatsApp.'
+      : 'התשובה מוכנה לבדיקה. היא לא נשלחה ללקוח. אפשר להוסיף מספר כדי לפתוח WhatsApp עם הטיוטה.';
+  } catch (error) {
+    status.textContent = error.message;
+  } finally {
+    button.disabled = false;
+  }
 });
 $('#runSecurityAI').addEventListener('click', async () => {
   const button = $('#runSecurityAI'), status = $('#securityStatus');
