@@ -280,7 +280,11 @@
               <div class="auth-actions"><button class="primary" id="signInButton" type="button">התחברות</button><button class="secondary" id="signUpButton" type="button">יצירת חשבון</button></div>
               <button class="text-action forgot-password" id="forgotPasswordButton" type="button">שכחתי סיסמה</button>
             </div>
-            <button class="secondary hidden" id="signOutButton" type="button">Sign out</button>
+            <div id="passwordRecoveryForm" class="hidden">
+              <label for="newAccountPassword">סיסמה חדשה (לפחות 8 תווים)</label><input id="newAccountPassword" type="password" autocomplete="new-password" minlength="8" placeholder="בחר סיסמה חדשה">
+              <button class="primary" id="saveNewPasswordButton" type="button">שמור סיסמה חדשה</button>
+            </div>
+            <button class="secondary hidden" id="signOutButton" type="button">התנתקות</button>
             <p id="accountMessage" class="auth-message" role="status" aria-live="polite">Checking backend configuration…</p>
           </div>
 
