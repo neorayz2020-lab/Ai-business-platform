@@ -41,7 +41,8 @@ Deno.serve(async (req: Request) => {
   const contactUrl = String(input.contactUrl ?? "").slice(0, 500);
   if (!brief) return json({ error: "Please describe the website first." }, 400);
 
-  const prompt = `You are a professional website copywriter. Return only JSON matching the requested schema. Write concise, persuasive, truthful website copy in English. Do not invent awards, guarantees, prices, testimonials, credentials, or facts not present in the brief. Business name: ${businessName}. Site type: ${siteType}. Business brief: ${brief}. Contact URL provided: ${contactUrl || "none"}. Create one headline, a short CTA button label, exactly three service/value cards, and a contact heading and sentence. Do not generate HTML, CSS, or JavaScript.`;
+  const outputLanguage = /[\\u0590-\\u05FF]/.test(`${businessName} ${brief}`) ? "Hebrew" : "English";
+  const prompt = `You are a professional website copywriter. Return only JSON matching the requested schema. Write concise, persuasive, truthful website copy in ${outputLanguage}. If the input is Hebrew, use natural Hebrew and do not translate the business name unnecessarily. Do not invent awards, guarantees, prices, testimonials, credentials, or facts not present in the brief. Business name: ${businessName}. Site type: ${siteType}. Business brief: ${brief}. Contact URL provided: ${contactUrl || "none"}. Create one headline, a short CTA button label, exactly three service/value cards, and a contact heading and sentence. Do not generate HTML, CSS, or JavaScript.`;
   try {
     const requestAi = (modelName: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`, {
       method: "POST",
