@@ -16,3 +16,10 @@
 
 /* Expandable website content editor */
 .customize-details{margin-top:18px;border:1px solid var(--line);border-radius:11px;padding:13px;background:#0e1526}.customize-details summary{cursor:pointer;color:#d9d6ff;font-weight:700;font-size:12px;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px}.customize-details summary::-webkit-details-marker{display:none}.customize-details summary::after{content:'+';font-size:18px;color:#b6aaff}.customize-details[open] summary::after{content:'−'}.customize-details>p{margin:9px 0 12px}.customize-details label{margin-top:13px}.customize-details textarea{min-height:62px}
+
+/* AI specialist workspaces */
+.platform-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:18px 0}
+.platform-card{display:flex;flex-direction:column;gap:7px;border:1px solid var(--line,#dce2ee);border-radius:14px;padding:15px;background:var(--panel,#fff);cursor:pointer}
+.platform-card input{align-self:flex-start}.platform-card span{font-weight:750}.platform-card small{color:var(--muted,#667085);font-size:12px;line-height:1.5}
+#growthOutput,#leadBotOutput,#securityOutput{white-space:normal;line-height:1.8;overflow-wrap:anywhere}
+#growthOutput>div,#leadBotOutput>div,#securityOutput>div{white-space:pre-wrap;overflow-wrap:anywhere}
