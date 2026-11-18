@@ -5,17 +5,7 @@
   "workers_dev": true,
   "assets": {
     "directory": ".",
-    "binding": "ASSETS",
     "not_found_handling": "404-page",
-    "html_handling": "auto-trailing-slash",
-    "exclude": [
-      ".git",
-      ".github",
-      "node_modules",
-      "supabase",
-      ".env.example",
-      "*.md",
-      "wrangler.jsonc"
-    ]
+    "html_handling": "auto-trailing-slash"
   }
 }
