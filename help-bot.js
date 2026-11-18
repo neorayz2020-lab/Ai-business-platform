@@ -111,6 +111,7 @@
     else if (action === 'OPEN_SECURITY') navigate('security');
     else if (action === 'OPEN_SEO') navigate('seo');
     else if (action === 'OPEN_AGENTS') navigate('agents');
+    else if (action === 'OPEN_ACCOUNT') navigate('account');
 
     if (action === 'BUILD_SITE') {
       const brief = document.getElementById('siteBrief');
@@ -126,7 +127,7 @@
       if (button && data.buttonText) button.value = data.buttonText;
       if (accent && data.accent) accent.value = data.accent;
       if (brief?.value.trim()) {
-        document.getElementById('makeBrief')?.click();
+        document.getElementById('makeAIWebsite')?.click();
         document.getElementById('sitePreview')?.scrollIntoView({behavior: 'smooth', block: 'center'});
       }
     }
@@ -140,7 +141,7 @@
         const el = document.getElementById(id);
         if (el && value) { el.value = value; changed = true; }
       }
-      if (changed) document.getElementById('makeBrief')?.click();
+      if (changed) document.getElementById('makeAIWebsite')?.click();
     }
   }
 
@@ -174,7 +175,8 @@
           language: currentLanguage,
           messages: history.slice(-10),
           currentView: document.querySelector('.view.active')?.id?.replace('view-', '') || 'overview',
-          businessProfile: businessProfile ? JSON.stringify(businessProfile) : ''
+          businessProfile: businessProfile ? JSON.stringify(businessProfile) : '',
+          isAuthenticated: Boolean(window.NovaBuildAuth?.getCurrentUser?.())
         })
       });
       const data = await response.json().catch(() => ({}));
