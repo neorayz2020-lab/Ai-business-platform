@@ -64,31 +64,42 @@ function escapeHtml(value) {
 }
 
 function buildStarterWebsite(name, type, brief, contactUrl, headline, buttonText, accent, sectionEdits, contactHeading, contactCopy) {
+  const isHebrew = /[\u0590-\u05FF]/.test([name, brief, headline, contactHeading].join(' '));
   const safeName = escapeHtml(name);
   const safeBrief = escapeHtml(brief);
-  const safeHeadline = escapeHtml(headline || 'Good things start with a clear idea.');
-  const safeButton = escapeHtml(buttonText || 'Get in touch');
   const safeAccent = /^#[0-9a-f]{6}$/i.test(accent) ? accent : '#6d5dfc';
-  const safeContactHeading = escapeHtml(contactHeading || 'Let’s make it happen.');
-  const safeContactCopy = escapeHtml(contactCopy || 'Have a question or an idea? We’d love to hear from you.');
   const safeContact = /^https?:\/\//i.test(contactUrl) ? contactUrl : '#contact';
-  const description = safeBrief.length > 210 ? safeBrief.slice(0, 207) + '…' : safeBrief;
-  const labels = type === 'Online store'
-    ? ['Featured products', 'Why shop with us', 'Get in touch']
-    : type === 'Portfolio'
-      ? ['Selected work', 'What I do', 'Contact']
-      : ['Our services', 'Why choose us', 'Get in touch'];
-  const cards = type === 'Online store'
-    ? [['Thoughtfully selected', 'Explore products chosen to make everyday life better.'], ['Made for you', 'Find the right fit with friendly, personal support.'], ['Easy to get started', 'Contact us for product details and recommendations.']]
-    : type === 'Portfolio'
-      ? [['Creative direction', 'Clear ideas and thoughtful design tailored to each project.'], ['Craft & detail', 'A careful process from first concept to final delivery.'], ['Collaborative process', 'Your goals guide every decision along the way.']]
-      : [['Personal service', 'Solutions shaped around your goals, needs, and customers.'], ['Quality first', 'A thoughtful approach, clear communication, and attention to detail.'], ['Simple next steps', 'Get in touch to discuss what you need and how to get started.']];
-  const editedCards = cards.map((card, index) => ({ title: (sectionEdits[index] && sectionEdits[index].title.trim()) || card[0], text: (sectionEdits[index] && sectionEdits[index].text.trim()) || card[1] }));
-  const cardMarkup = editedCards.map((card, index) => '<article class="card"><span class="number">0' + (index + 1) + '</span><h3>' + escapeHtml(card.title) + '</h3><p>' + escapeHtml(card.text) + '</p></article>').join('');
   const contactHref = escapeHtml(safeContact);
-  return '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<meta name="description" content="' + escapeHtml(description) + '">\n<title>' + safeName + ' | Official website</title>\n<style>\n:root{color-scheme:light;--ink:#172033;--muted:#667085;--accent:' + safeAccent + ';--paper:#f7f8fc}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--paper);line-height:1.6}a{color:inherit}.nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 max(6vw,22px);background:#fff;border-bottom:1px solid #e8eaf2}.brand{font-weight:850;font-size:20px;letter-spacing:-.6px}.nav a{text-decoration:none;font-size:14px;font-weight:650}.nav .cta,.hero .cta{background:var(--accent);color:#fff;padding:12px 18px;border-radius:999px}.hero{padding:100px max(8vw,24px) 92px;background:radial-gradient(ellipse at 85% 10%,#dcd8ff 0,transparent 35%),linear-gradient(130deg,#fff,#f0f2ff);text-align:center}.eyebrow{text-transform:uppercase;letter-spacing:2px;color:var(--accent);font-size:12px;font-weight:800}.hero h1{font-size:clamp(38px,7vw,76px);letter-spacing:-3px;line-height:1.04;max-width:950px;margin:20px auto}.hero p{max-width:680px;margin:0 auto 30px;color:var(--muted);font-size:18px}.cta{display:inline-block;text-decoration:none;font-weight:750}.section{padding:76px max(8vw,24px)}.section h2{text-align:center;font-size:clamp(27px,4vw,42px);letter-spacing:-1.3px;margin:0 0 12px}.intro{text-align:center;max-width:650px;margin:0 auto 36px;color:var(--muted)}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;max-width:1100px;margin:auto}.card{background:#fff;border:1px solid #e5e8f2;border-radius:20px;padding:27px;box-shadow:0 10px 35px #18244b08}.number{display:inline-grid;place-items:center;width:42px;height:42px;border-radius:13px;background:#eeecff;color:var(--accent);font-weight:850}.card h3{margin:19px 0 7px;font-size:19px}.card p{color:var(--muted);margin:0}.contact{background:#171d32;color:#fff;text-align:center;padding:68px 24px}.contact p{color:#c2c8d8}.contact .cta{background:#fff;color:#242341}.footer{text-align:center;padding:23px;color:#858ca0;font-size:12px}@media(max-width:700px){.nav{height:65px}.nav .nav-link{display:none}.hero{padding-top:72px;padding-bottom:70px}.hero h1{letter-spacing:-1.5px}.hero p{font-size:16px}.cards{grid-template-columns:1fr}.section{padding:58px 22px}}\n</style>\n</head>\n<body>\n<header class="nav"><a class="brand" href="#">' + safeName + '</a><a class="nav-link" href="#services">' + labels[0] + '</a><a class="cta" href="' + contactHref + '">Let’s talk</a></header>\n<main><section class="hero"><div class="eyebrow">' + escapeHtml(type) + '</div><h1>' + safeHeadline + '</h1><p>' + safeBrief + '</p><a class="cta" href="' + contactHref + '">' + safeButton + ' ↗</a></section>\n<section class="section" id="services"><h2>' + labels[0] + '</h2><p class="intro">A simple, thoughtful approach built around what matters most to you.</p><div class="cards">' + cardMarkup + '</div></section>\n<section class="contact" id="contact"><div class="eyebrow">YOUR NEXT STEP</div><h2>' + safeContactHeading + '</h2><p>' + safeContactCopy + '</p><a class="cta" href="' + contactHref + '">Contact ' + safeName + '</a></section></main>\n<footer class="footer">© ' + new Date().getFullYear() + ' ' + safeName + '. All rights reserved.</footer>\n</body>\n</html>';
+  const description = safeBrief.length > 210 ? safeBrief.slice(0, 207) + '…' : safeBrief;
+  const copy = isHebrew ? {
+    lang:'he', dir:'rtl', siteType:({'Online store':'חנות אונליין','Portfolio':'תיק עבודות','Landing page':'דף נחיתה','Web application':'אפליקציית Web'})[type] || 'אתר עסקי',
+    headline:'אתר מקצועי שמקדם את העסק שלך', button:'דברו איתנו',
+    labels:type==='Online store'?['המוצרים שלנו','למה לקנות אצלנו','יצירת קשר']:type==='Portfolio'?['עבודות נבחרות','מה אני מציע','יצירת קשר']:['השירותים שלנו','למה לבחור בנו','יצירת קשר'],
+    cards:type==='Online store'?[['מוצרים שנבחרו בקפידה','מוצרים איכותיים שנבחרו כדי לתת לכם חוויית קנייה טובה.'],['שירות אישי','נשמח לעזור לכם למצוא בדיוק את מה שאתם צריכים.'],['קנייה בראש שקט','צרו קשר לקבלת פרטים והמלצה אישית.']]:type==='Portfolio'?[['חשיבה יצירתית','רעיונות ברורים ועיצוב שמתאים למטרות שלכם.'],['תשומת לב לפרטים','עבודה מדויקת משלב הרעיון ועד לתוצאה הסופית.'],['עובדים ביחד','הצרכים והמטרות שלכם מובילים כל החלטה.']]:[['שירות אישי','פתרונות שמותאמים לצרכים ולמטרות שלכם.'],['איכות לפני הכול','עבודה מקצועית, תקשורת ברורה ותשומת לב לפרטים.'],['מתחילים בקלות','ספרו לנו מה אתם צריכים ונעזור לכם להתקדם.']],
+    intro:'פתרונות מקצועיים, יחס אישי ותהליך ברור מהצעד הראשון.',
+    contactEyebrow:'הצעד הבא מתחיל כאן', contactHeading:'בואו נדבר', contactText:'יש לכם שאלה או רעיון? נשמח לשמוע מכם.',
+    talk:'דברו איתנו', contact:'יצירת קשר', rights:'כל הזכויות שמורות'
+  } : {
+    lang:'en', dir:'ltr', siteType:type,
+    headline:'A better website for your next big step', button:'Let’s talk',
+    labels:type==='Online store'?['Featured products','Why shop with us','Get in touch']:type==='Portfolio'?['Selected work','What I do','Contact']:['Our services','Why choose us','Get in touch'],
+    cards:type==='Online store'?[['Thoughtfully selected','Quality products chosen to make your experience better.'],['Personal service','Friendly help to find what works best for you.'],['Shop with confidence','Contact us for details and tailored recommendations.']]:type==='Portfolio'?[['Creative direction','Clear ideas and thoughtful design shaped around your goals.'],['Craft & detail','A careful process from first concept to final delivery.'],['Made together','Your goals guide every decision along the way.']]:[['Personal service','Solutions shaped around your goals, needs, and customers.'],['Quality first','A thoughtful approach, clear communication, and attention to detail.'],['Simple next steps','Get in touch to discuss what you need and how to get started.']],
+    intro:'Professional service, thoughtful details, and a clear path forward.',
+    contactEyebrow:'YOUR NEXT STEP', contactHeading:'Let’s make it happen', contactText:'Have a question or an idea? We’d love to hear from you.',
+    talk:'Let’s talk', contact:'Contact', rights:'All rights reserved'
+  };
+  const safeHeadline = escapeHtml(headline || copy.headline);
+  const safeButton = escapeHtml(buttonText || copy.button);
+  const safeContactHeading = escapeHtml(contactHeading || copy.contactHeading);
+  const safeContactCopy = escapeHtml(contactCopy || copy.contactText);
+  const editedCards = copy.cards.map((card,index)=>({
+    title:(sectionEdits[index]&&sectionEdits[index].title.trim())||card[0],
+    text:(sectionEdits[index]&&sectionEdits[index].text.trim())||card[1]
+  }));
+  const cardMarkup = editedCards.map((card,index)=>'<article class="card"><span class="number">0'+(index+1)+'</span><h3>'+escapeHtml(card.title)+'</h3><p>'+escapeHtml(card.text)+'</p></article>').join('');
+  const pageTitle = escapeHtml(name) + (isHebrew ? ' | האתר הרשמי' : ' | Official website');
+  return '<!doctype html>\n<html lang="'+copy.lang+'" dir="'+copy.dir+'">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<meta name="description" content="'+escapeHtml(description)+'">\n<meta name="theme-color" content="'+safeAccent+'">\n<title>'+pageTitle+'</title>\n<style>\n:root{color-scheme:light;--ink:#172033;--muted:#667085;--accent:'+safeAccent+';--paper:#f7f8fc;--line:#e6e9f2}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;font-family:Arial,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--paper);line-height:1.75}a{color:inherit}.nav{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px max(6vw,22px);background:#ffffffed;border-bottom:1px solid var(--line);position:relative}.brand{font-weight:850;font-size:20px;letter-spacing:-.6px;text-decoration:none}.nav .nav-link{text-decoration:none;color:var(--muted);font-size:14px;font-weight:650}.nav .cta,.hero .cta{background:var(--accent);color:#fff;padding:12px 20px;border-radius:999px;box-shadow:0 8px 22px color-mix(in srgb,var(--accent),transparent 78%)}.cta{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-weight:750;transition:transform .18s,box-shadow .18s}.cta:hover{transform:translateY(-2px);box-shadow:0 12px 28px #17203322}.hero{padding:clamp(68px,10vw,116px) max(8vw,24px) 96px;background:radial-gradient(ellipse at 85% 8%,color-mix(in srgb,var(--accent),white 82%) 0,transparent 36%),linear-gradient(135deg,#fff,#f2f4fc);text-align:center}.hero .eyebrow{display:inline-flex;padding:6px 12px;border-radius:999px;background:color-mix(in srgb,var(--accent),white 91%);color:var(--accent);font-size:12px;font-weight:800}.hero h1{font-size:clamp(36px,6.5vw,72px);letter-spacing:-1.8px;line-height:1.12;max-width:960px;margin:22px auto 18px}.hero p{max-width:700px;margin:0 auto 30px;color:var(--muted);font-size:clamp(16px,2vw,19px);overflow-wrap:anywhere}.section{padding:76px max(8vw,24px)}.section h2{text-align:center;font-size:clamp(28px,4vw,42px);letter-spacing:-1px;margin:0 0 12px}.intro{text-align:center;max-width:650px;margin:0 auto 38px;color:var(--muted)}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;max-width:1120px;margin:auto}.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px;box-shadow:0 12px 34px #18244b08;transition:transform .18s,border-color .18s}.card:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--accent),white 45%)}.number{display:inline-grid;place-items:center;width:42px;height:42px;border-radius:14px;background:color-mix(in srgb,var(--accent),white 90%);color:var(--accent);font-weight:850}.card h3{margin:18px 0 8px;font-size:19px}.card p{color:var(--muted);margin:0}.contact{background:#171d32;color:#fff;text-align:center;padding:74px 24px}.contact .eyebrow{color:#c9c2ff;font-size:12px;font-weight:800;letter-spacing:1px}.contact h2{font-size:clamp(28px,4vw,42px);margin:12px 0}.contact p{color:#c2c8d8;margin:0 auto 24px;max-width:620px}.contact .cta{background:#fff;color:#242341;padding:13px 22px}.footer{text-align:center;padding:24px;color:#858ca0;font-size:12px}@media(max-width:700px){.nav{min-height:65px;padding:12px 20px}.nav .nav-link{display:none}.hero{padding-top:72px;padding-bottom:72px}.hero h1{letter-spacing:-.8px}.hero p{font-size:16px}.cards{grid-template-columns:1fr}.section{padding:58px 22px}.card{padding:23px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}\n</style>\n</head>\n<body>\n<header class="nav"><a class="brand" href="#top">'+safeName+'</a><a class="nav-link" href="#services">'+copy.labels[0]+'</a><a class="cta" href="'+contactHref+'">'+copy.talk+'</a></header>\n<main id="top"><section class="hero"><div class="eyebrow">'+copy.siteType+'</div><h1>'+safeHeadline+'</h1><p>'+safeBrief+'</p><a class="cta" href="'+contactHref+'">'+safeButton+' ↗</a></section>\n<section class="section" id="services"><h2>'+copy.labels[0]+'</h2><p class="intro">'+copy.intro+'</p><div class="cards">'+cardMarkup+'</div></section>\n<section class="contact" id="contact"><div class="eyebrow">'+copy.contactEyebrow+'</div><h2>'+safeContactHeading+'</h2><p>'+safeContactCopy+'</p><a class="cta" href="'+contactHref+'">'+copy.contact+' '+safeName+'</a></section></main>\n<footer class="footer">© '+new Date().getFullYear()+' '+safeName+' · '+copy.rights+'</footer>\n</body>\n</html>';
 }
-
 function generateWebsite(silent = false) {
   const name = $('#siteName').value.trim() || 'Your Business';
   const type = $('#siteType').value;
@@ -102,22 +113,22 @@ function generateWebsite(silent = false) {
   const sectionEdits = [1, 2, 3].map(index => ({ title: $('#service' + index + 'Title').value, text: $('#service' + index + 'Text').value }));
   generatedSiteHtml = buildStarterWebsite(name, type, brief, contact, $('#siteHeadline').value.trim(), $('#siteButton').value.trim(), $('#siteAccent').value, sectionEdits, $('#contactHeadline').value.trim(), $('#contactText').value.trim());
   $('#sitePreview').srcdoc = generatedSiteHtml;
-  $('#previewStatus').textContent = 'Preview generated · ' + type;
+  $('#previewStatus').textContent = (/[֐-׿]/.test(brief) ? 'התצוגה המקדימה מוכנה · ' : 'Preview generated · ') + type;
   $('#downloadSite').disabled = false;
   const output = $('#siteOutput');
   output.replaceChildren();
   const title = document.createElement('h3');
-  title.textContent = name + ' — website created';
+  title.textContent = name + (/[֐-׿]/.test(brief) ? ' — האתר נוצר' : ' — website created');
   const list = document.createElement('ul');
   [
-    'A responsive starter website has been generated.',
-    'The live preview is shown beside this form.',
-    'Download the HTML file to save it or upload it to a hosting provider.',
-    'Customize the headline, colors, three content cards, and contact section, then generate again to update the preview.'
+    (/[֐-׿]/.test(brief) ? 'נוצר אתר ראשוני שמתאים גם לנייד.' : 'A responsive starter website has been generated.'),
+    (/[֐-׿]/.test(brief) ? 'התצוגה המקדימה מופיעה לצד הטופס.' : 'The live preview is shown beside this form.'),
+    (/[֐-׿]/.test(brief) ? 'אפשר להוריד את קובץ האתר ולפרסם אותו בהמשך.' : 'Download the HTML file to save it or upload it to a hosting provider.'),
+    (/[֐-׿]/.test(brief) ? 'אפשר לערוך את התוכן והצבעים בהגדרות הנוספות.' : 'Customize the content and colors in the optional settings.')
   ].forEach(line => { const item = document.createElement('li'); item.textContent = line; list.append(item); });
   const note = document.createElement('p');
   note.className = 'fine-print';
-  note.textContent = 'This is a starter website built from a template. AI-generated copy may be used when configured. The site is not published online automatically.';
+  note.textContent = /[֐-׿]/.test(brief) ? 'זו טיוטה ראשונית מתבנית. האתר עדיין לא פורסם באינטרנט.' : 'This is a starter template. The website has not been published online.';
   output.append(title, list, note);
   output.classList.remove('hidden');
   if (!silent) output.scrollIntoView({behavior:'smooth',block:'nearest'});
