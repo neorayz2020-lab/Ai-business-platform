@@ -29,9 +29,19 @@ $('#quickPrompt').addEventListener('submit', event => {
   event.preventDefault();
   const prompt = $('#quickPromptText').value.trim();
   showView('builder');
+  if (!prompt) {
+    $('#nb-business-idea')?.focus();
+    $('#siteBrief').focus();
+    return;
+  }
+  const ideaBox = $('#nb-business-idea');
+  if (ideaBox) ideaBox.value = prompt;
   $('#siteBrief').value = prompt;
-  $('#siteBrief').focus();
-  if (prompt) $('#siteName').value = '';
+  $('#siteName').value = 'העסק שלי';
+  $('#makeBrief').click();
+  const status = $('#previewStatus');
+  if (status) status.textContent = 'הטיוטה הראשונה מוכנה לבדיקה';
+  $('#sitePreview')?.scrollIntoView({behavior:'smooth',block:'center'});
 });
 
 function renderOutput(id, heading, body) {
