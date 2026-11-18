@@ -28,6 +28,9 @@
         <button class="nav-item" data-view="ads"><span>↗</span> Ads Autopilot <em class="soon">BETA</em></button>
         <button class="nav-item" data-view="store"><span>▣</span> Online store</button>
         <button class="nav-item" data-view="crm"><span>♙</span> Leads & CRM</button>
+        <button class="nav-item" data-view="growth"><span>◎</span> Marketing AI</button>
+        <button class="nav-item" data-view="leadbot"><span>✉</span> Lead & WhatsApp AI</button>
+        <button class="nav-item" data-view="security"><span>盾</span> Security AI</button>
         <button class="nav-item" data-view="seo"><span>⌕</span> Google & SEO</button>
         <button class="nav-item" data-view="publish"><span>▤</span> App publishing</button>
       </nav>
@@ -89,7 +92,54 @@
         <section class="view" id="view-seo"><div class="page-heading"><div class="eyebrow">GET DISCOVERED</div><h1>Google & SEO</h1><p class="muted">Work through these steps before launching your website.</p></div><div class="panel"><div class="checklist" id="seoChecklist"><label><input type="checkbox"> Choose a clear domain name</label><label><input type="checkbox"> Write a unique title and meta description for each page</label><label><input type="checkbox"> Check mobile layout and page speed</label><label><input type="checkbox"> Add useful, original content and descriptive headings</label><label><input type="checkbox"> Create and submit a sitemap in Google Search Console</label><label><input type="checkbox"> Verify ownership in Google Search Console</label><label><input type="checkbox"> Set up analytics and conversion tracking</label></div><div class="resource-links"><h3>Official Google tools</h3><a class="text-link" href="https://search.google.com/search-console/" target="_blank" rel="noopener noreferrer">Google Search Console ↗</a><a class="text-link" href="https://analytics.google.com/" target="_blank" rel="noopener noreferrer">Google Analytics ↗</a><a class="text-link" href="https://developers.google.com/search/docs" target="_blank" rel="noopener noreferrer">Google Search documentation ↗</a><p class="fine-print">These links open official services. This prototype cannot submit your website or access your Google account automatically.</p></div><div class="progress-track"><div id="seoProgress"></div></div><p class="muted" id="seoCount">0 of 7 complete</p><div class="notice"><span>ⓘ</span><div><strong>SEO is not instant</strong><p>Indexing and rankings are controlled by search engines. Completing these steps does not guarantee ranking or immediate visibility.</p></div></div></div></section>
         <section class="view" id="view-publish"><div class="page-heading"><div class="eyebrow">GO LIVE</div><h1>App publishing</h1><p class="muted">Plan the steps to submit your app to official stores.</p></div><div class="tool-grid two-col"><div class="panel"><span class="tool-icon dark">A</span><h3>Apple App Store</h3><ol><li>Prepare an app build that meets Apple's requirements.</li><li>Enroll in the Apple Developer Program.</li><li>Prepare screenshots, description, privacy details, and age rating.</li><li>Upload the build through Apple's supported publishing tools.</li><li>Submit for review and address any feedback.</li></ol><a class="text-link" href="https://developer.apple.com/app-store/" target="_blank" rel="noreferrer">Official Apple App Store resources ↗</a></div><div class="panel"><span class="tool-icon green">▶</span><h3>Google Play</h3><ol><li>Prepare a signed Android App Bundle.</li><li>Create a Google Play Console developer account.</li><li>Complete the store listing and policy declarations.</li><li>Test with the required testing tracks for your account.</li><li>Submit the release for review.</li></ol><a class="text-link" href="https://play.google.com/console/about/" target="_blank" rel="noreferrer">Official Google Play Console ↗</a></div></div><div class="notice"><span>ⓘ</span><div><strong>Publishing is not automatic yet</strong><p>This workspace currently provides guidance only. App signing, accounts, compliance, builds, and store submissions still need to be configured.</p></div></div></section>
 
-        <section class="view" id="view-agents">
+        
+        <section class="view" id="view-growth">
+          <div class="page-heading"><div class="eyebrow">GROWTH COMMAND CENTER</div><h1>Marketing AI</h1><p class="muted">סוכן שיווק ליצירת קמפיינים, תוכן, ניתוח אסטרטגי ותוכנית פעולה לכל ערוץ.</p></div>
+          <div class="notice warning"><span>ⓘ</span><div><strong>מצב חיבור חשבונות</strong><p>הפקת אסטרטגיה ותוכן בעזרת AI זמינה. פרסום בפועל, קריאת נתוני קמפיינים והעברת תקציבים דורשים OAuth ואישור מפתח מפתחים בכל פלטפורמה. כרגע לא מחובר חשבון פרסום.</p></div></div>
+          <div class="panel"><h3>חשבונות חברתיים ופרסום</h3><p class="muted">בחר פלטפורמות כדי לכלול אותן בתוכנית. מצב "ממתין לחיבור" אינו חיבור פעיל.</p>
+            <div class="platform-grid">
+              <label class="platform-card"><input type="checkbox" class="growth-platform" value="Facebook / Meta Ads" checked><span>Facebook</span><small>Meta Pages & Ads · ממתין לחיבור</small></label>
+              <label class="platform-card"><input type="checkbox" class="growth-platform" value="Instagram" checked><span>Instagram</span><small>Content & Ads · ממתין לחיבור</small></label>
+              <label class="platform-card"><input type="checkbox" class="growth-platform" value="TikTok Ads"><span>TikTok</span><small>Organic & Ads · ממתין לחיבור</small></label>
+              <label class="platform-card"><input type="checkbox" class="growth-platform" value="Snapchat Ads"><span>Snapchat</span><small>Ads · ממתין לחיבור</small></label>
+              <label class="platform-card"><input type="checkbox" class="growth-platform" value="X / Twitter"><span>X / Twitter</span><small>Content & Ads · ממתין לחיבור</small></label>
+              <label class="platform-card"><input type="checkbox" class="growth-platform" value="WhatsApp Business"><span>WhatsApp Business</span><small>Messaging · ממתין לחיבור</small></label>
+              <label class="platform-card"><input type="checkbox" class="growth-platform" value="Google Ads"><span>Google Ads</span><small>Search Ads · ממתין לחיבור</small></label>
+            </div>
+            <p class="fine-print">חיבור אמיתי יופעל לאחר הגדרת אפליקציות מפתחים, מזהי לקוח, כתובות Callback ואישורי הפלטפורמות. אין להזין סיסמאות או מפתחות סודיים בטופס הזה.</p>
+          </div>
+          <div class="panel"><h3>הפעל את סוכן השיווק</h3>
+            <label for="growthBusiness">מה העסק מוכר?</label><input id="growthBusiness" maxlength="140" placeholder="למשל: סטודיו לקוסמטיקה בתל אביב">
+            <label for="growthAudience">קהל יעד</label><input id="growthAudience" maxlength="200" placeholder="למשל: נשים בגיל 25–45 באזור המרכז">
+            <label for="growthGoal">מטרה מרכזית</label><select id="growthGoal"><option>יצירת לידים איכותיים</option><option>מכירות באתר</option><option>חשיפה ומודעות למותג</option><option>הודעות בוואטסאפ</option><option>הגדלת עוקבים ומעורבות</option></select>
+            <label for="growthBudget">תקציב חודשי (₪, לתכנון בלבד)</label><input id="growthBudget" type="number" min="0" max="1000000" value="1500">
+            <label for="growthOffer">הצעה / שירות / יתרון</label><textarea id="growthOffer" rows="3" maxlength="1200" placeholder="תאר את השירות, המחיר אם קיים, ומה מבדל אותך. אל תמציא הבטחות."></textarea>
+            <button class="primary" id="runGrowthAI" type="button">בנה תוכנית שיווק עם AI</button><p id="growthStatus" class="auth-message" role="status" aria-live="polite"></p><div class="output hidden" id="growthOutput" aria-live="polite"></div>
+          </div>
+        </section>
+        <section class="view" id="view-leadbot">
+          <div class="page-heading"><div class="eyebrow">LEAD RESPONSE WORKFLOW</div><h1>בוט לידים ווואטסאפ</h1><p class="muted">סיווג פניות, כתיבת תשובות, שאלות המשך ומעקב אחרי ליד — במקום אחד.</p></div>
+          <div class="notice warning"><span>ⓘ</span><div><strong>WhatsApp עדיין לא מחובר</strong><p>כאן אפשר ליצור תשובות בעזרת AI ולהעתיק אותן. שליחה אוטומטית, קבלת הודעות וקליטת לידים יופעלו רק לאחר חיבור WhatsApp Business Platform דרך חשבון מאושר. אין שליחה אוטומטית כרגע.</p></div></div>
+          <div class="panel">
+            <label for="leadBusiness">שם העסק ומה הוא מציע</label><input id="leadBusiness" maxlength="180" placeholder="שם העסק והשירותים">
+            <label for="leadMessage">ההודעה שקיבלת מהלקוח</label><textarea id="leadMessage" rows="4" maxlength="3000" placeholder="הדבק כאן את הודעת הלקוח, בלי פרטי תשלום או מידע רגיש"></textarea>
+            <label for="leadContext">פרטים חשובים לתשובה (מחיר, זמינות, אזור שירות)</label><textarea id="leadContext" rows="3" maxlength="1000" placeholder="רק מידע אמיתי שכבר ידוע לך"></textarea>
+            <label for="leadIntent">מטרת התשובה</label><select id="leadIntent"><option>להפוך את הפנייה לליד איכותי</option><option>לקבוע שיחה או פגישה</option><option>לענות על שאלה</option><option>לטפל בהתנגדות מחיר</option><option>לעשות מעקב עדין</option></select>
+            <button class="primary" id="runLeadAI" type="button">נתח פנייה וכתוב תשובה</button><p id="leadBotStatus" class="auth-message" role="status" aria-live="polite"></p><div class="output hidden" id="leadBotOutput" aria-live="polite"></div>
+          </div>
+          <div class="panel"><h3>חיבור עתידי</h3><p>כדי שהבוט יטפל בהודעות באמת, צריך לחבר מספר WhatsApp Business API, webhook מאובטח, מסד נתונים ללידים והסכמת לקוחות לקבלת הודעות. הודעות יזומות יישלחו רק בהתאם למדיניות WhatsApp ולהרשאות.</p></div>
+        </section>
+        <section class="view" id="view-security">
+          <div class="page-heading"><div class="eyebrow">SECURITY OPERATIONS</div><h1>Security AI</h1><p class="muted">עוזר אבטחה שמייצר בדיקות, מסביר סיכונים ומכין תוכנית תיקון.</p></div>
+          <div class="notice warning"><span>⚠</span><div><strong>אין עדיין סריקה חיה</strong><p>הכלי כרגע מפיק הערכת סיכונים ורשימת בדיקות על בסיס הפרטים שתספק. הוא לא סורק שרתים, לא חוסם תקיפות ולא מחליף בדיקת אבטחה מקצועית.</p></div></div>
+          <div class="panel">
+            <label for="securityTarget">מה רוצים לבדוק?</label><select id="securityTarget"><option>אתר אינטרנט</option><option>אפליקציית Web</option><option>חשבון עסקי ורשתות חברתיות</option><option>תהליך טיפול בלידים ונתוני לקוחות</option></select>
+            <label for="securityDetails">כתובת האתר או תיאור המערכת</label><textarea id="securityDetails" rows="4" maxlength="1800" placeholder="הדבק כתובת אתר ציבורית או תאר את המערכת. אל תזין סיסמאות, מפתחות או מידע פרטי."></textarea>
+            <label for="securityConcerns">חששות או בעיה שזיהית (אופציונלי)</label><textarea id="securityConcerns" rows="2" maxlength="1000" placeholder="למשל: טופס יצירת קשר, הרשאות משתמשים, חשד לקישור מזויף"></textarea>
+            <button class="primary" id="runSecurityAI" type="button">צור בדיקת אבטחה עם AI</button><p id="securityStatus" class="auth-message" role="status" aria-live="polite"></p><div class="output hidden" id="securityOutput" aria-live="polite"></div>
+          </div>
+        </section>
+<section class="view" id="view-agents">
           <div class="page-heading"><div class="eyebrow">YOUR AI OPERATIONS TEAM</div><h1>AI Agent Command Center</h1><p class="muted">Give the team a goal. The coordinator will break it into specialist tasks and show a safe execution plan.</p></div>
           <div class="notice"><span>ⓘ</span><div><strong>Prototype agent mode</strong><p>This first version runs a local, rule-based planner in your browser. It does not call an AI model, run background jobs, access accounts, or execute external actions yet.</p></div></div>
 
