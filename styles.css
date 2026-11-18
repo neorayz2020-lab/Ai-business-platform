@@ -214,3 +214,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans','Heebo',Arial,
   .pricing-grid{grid-template-columns:1fr}
   .pricing-card{padding:23px}
 }
+
+
+.account-plan-box{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 15px;margin:0 0 19px;background:#f0f5f7;border:1px solid #dbe6eb;border-radius:11px}
+.account-plan-box small{display:block;color:#708697;font-size:10px;margin-bottom:4px}
+.account-plan-box strong{display:block;color:#2b526c;font-size:13px}
+.forgot-password{margin-top:12px}
