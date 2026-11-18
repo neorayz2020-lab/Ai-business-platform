@@ -157,14 +157,16 @@
             <p id="accountMessage" class="auth-message" role="status" aria-live="polite">Checking backend configuration…</p>
           </div>
           <div class="panel agent-panel">
-            <label for="agentGoal">What should your AI team work on?</label>
-            <textarea id="agentGoal" rows="4" maxlength="1200" placeholder="Example: Build a website for my plumbing business, improve Google visibility, and plan an Instagram lead campaign."></textarea>
+            <label for="agentGoal">מה היעד העסקי שהצוות צריך לקדם?</label>
+            <textarea id="agentGoal" rows="4" maxlength="1200" placeholder="למשל: לבנות אתר יוקרתי, להביא לידים איכותיים ולשפר את השיווק של העסק."></textarea>
+            <label for="agentBusinessContext">מידע על העסק (לא חובה)</label>
+            <textarea id="agentBusinessContext" rows="3" maxlength="1800" placeholder="סוג העסק, השירותים, קהל היעד, אזור פעילות, בידול ופרטים שכדאי שכל הסוכנים יכירו."></textarea>
             <div class="agent-controls">
               <div><label for="agentPriority">Priority</label><select id="agentPriority"><option value="balanced">Balanced</option><option value="speed">Fast launch</option><option value="quality">Quality first</option><option value="budget">Budget first</option></select></div>
               <div><label for="agentAutonomy">Execution policy</label><select id="agentAutonomy"><option value="approval">Ask before external actions</option><option value="drafts">Drafts only — no external actions</option></select></div>
             </div>
-            <button class="primary" id="runAgentPlan" type="button">Create a work plan</button>
-            <p class="fine-print">No external actions are performed by this prototype. Never enter passwords, API keys, or private customer information here.</p>
+            <button class="primary" id="runAgentPlan" type="button">צור תוכנית עבודה עם AI</button>
+            <p class="fine-print">תוכנית העבודה נוצרת על ידי מנהל AI. אין להזין סיסמאות, מפתחות API או פרטי תשלום. פעולות מחוץ למערכת מחייבות אישור מפורש.</p>
           </div>
           <div id="agentResults" class="agent-results hidden" aria-live="polite"></div>
           <div class="panel save-plan-panel"><button class="primary" id="saveAgentPlan" type="button" disabled>Save plan to account</button><p id="saveAgentPlanStatus" class="auth-message" role="status">Sign in to save plans to your account.</p></div>
