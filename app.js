@@ -137,11 +137,10 @@ $('#makeAIWebsite').addEventListener('click', async () => {
   const button = $('#makeAIWebsite');
   const brief = $('#siteBrief').value.trim();
   if (!brief) { status.textContent = 'Describe your business first.'; $('#siteBrief').focus(); return; }
-  if (!window.NovaBuildAuth?.isConfigured?.()) { status.textContent = 'Account service is not configured yet.'; return; }
   button.disabled = true;
   status.textContent = 'Creating your website copy with AI…';
   try {
-    const website = await window.NovaBuildAuth.generateWebsiteWithAI({
+    const website = await generateWebsiteCopyWithAI({
       businessName: $('#siteName').value.trim() || 'Your Business',
       siteType: $('#siteType').value,
       brief,
@@ -233,6 +232,19 @@ $('#clearSite').addEventListener('click', () => {
   $('#downloadSite').disabled = true;
   $('#siteOutput').classList.add('hidden');
 });
+
+async function generateWebsiteCopyWithAI(payload) {
+  const config = window.NOVABUILD_CONFIG || {};
+  const response = await fetch(config.supabaseUrl + '/functions/v1/generate-website', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'apikey': config.supabaseAnonKey, 'Authorization': 'Bearer ' + config.supabaseAnonKey },
+    body: JSON.stringify(payload)
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || 'לא הצלחנו ליצור תוכן לאתר. נסה שוב.');
+  if (!data.website) throw new Error('שירות בניית האתר החזיר תשובה לא תקינה.');
+  return data.website;
+}
 
 async function callBusinessAgent(mode, payload) {
   const config = window.NOVABUILD_CONFIG || {};
