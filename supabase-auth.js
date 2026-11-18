@@ -105,9 +105,27 @@
       if (error) throw new Error(error.message || 'Could not save the website.');
       return data;
     },
+    async runBusinessAgent(mode, payload) {
+      if (!client) throw new Error('שירות החשבון אינו מוגדר.');
+      if (!currentUser) throw new Error('כדי להשתמש בסוכני AI צריך ליצור חשבון חינמי או להתחבר. לחץ על „חשבון / התחברות” למעלה.');
+      const { data, error } = await client.functions.invoke('business-agent', { body: { mode, ...payload } });
+      if (error) {
+        let message = error.message || 'בקשת הסוכן נכשלה.';
+        try {
+          const response = error.context;
+          if (response && typeof response.json === 'function') {
+            const body = await response.json();
+            if (typeof body?.error === 'string' && body.error.trim()) message = body.error;
+          }
+        } catch (_) {}
+        throw new Error(message);
+      }
+      if (!data) throw new Error('הסוכן לא החזיר תשובה תקינה.');
+      return data;
+    },
     async generateWebsiteWithAI(payload) {
       if (!client) throw new Error('Account service is not configured.');
-      if (!currentUser) throw new Error('Sign in to use AI website generation.');
+      if (!currentUser) throw new Error('כדי ליצור אתר באמצעות AI צריך ליצור חשבון חינמי או להתחבר. לחץ על „חשבון / התחברות” למעלה.');
       const { data, error } = await client.functions.invoke('generate-website', { body: payload });
       if (error) {
         // Supabase wraps non-2xx Edge Function responses; surface the server's
