@@ -57,7 +57,12 @@
   window.NovaBuildI18n = {setLanguage, getLanguage:()=>language, translateString};
   document.addEventListener('DOMContentLoaded', () => setLanguage('he'));
   const observer = new MutationObserver(records => {
-    if (records.some(record => record.addedNodes.length)) walk(document.body);
+    for (const record of records) {
+      for (const node of record.addedNodes) {
+        const target = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
+        if (target && document.body.contains(target)) walk(target);
+      }
+    }
   });
   observer.observe(document.body, {childList:true,subtree:true});
   document.getElementById('languageToggle')?.addEventListener('click', () => setLanguage(language === 'he' ? 'en' : 'he'));
