@@ -234,12 +234,75 @@ $('#clearSite').addEventListener('click', () => {
   $('#siteOutput').classList.add('hidden');
 });
 
-$('#makeMarketing').addEventListener('click', () => {
-  const business = $('#marketingBusiness').value.trim() || 'your business';
+async function callBusinessAgent(mode, payload) {
+  const config = window.NOVABUILD_CONFIG || {};
+  if (!config.supabaseUrl || !config.supabaseAnonKey) throw new Error('חיבור השרת לא מוגדר.');
+  const response = await fetch(config.supabaseUrl + '/functions/v1/business-agent', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'apikey': config.supabaseAnonKey, 'Authorization': 'Bearer ' + config.supabaseAnonKey },
+    body: JSON.stringify({ mode, ...payload })
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || 'הבקשה נכשלה. נסה שוב.');
+  if (!data.result) throw new Error('ה-AI החזיר תשובה ריקה. נסה שוב.');
+  return data.result;
+}
+function showAgentResult(id, heading, result) {
+  const output = document.getElementById(id);
+  output.replaceChildren();
+  const title = document.createElement('h3'); title.textContent = heading;
+  const body = document.createElement('div'); body.style.whiteSpace = 'pre-wrap'; body.textContent = result;
+  output.append(title, body); output.classList.remove('hidden');
+}
+$('#makeMarketing').addEventListener('click', async () => {
+  const business = $('#marketingBusiness').value.trim();
   const goal = $('#marketingGoal').value;
   const channel = $('#marketingChannel').value;
-  const copy = 'Meet ' + business + ' — made for people who value quality and care. ✨\n\nLooking for a better way to ' + goal.toLowerCase() + '? We are here to help. Get in touch to learn more.\n\nTell us what you need in the comments or send us a message.\n\n#SmallBusiness #DiscoverLocal #' + business.replace(/[^a-z0-9]/gi, '') + '\n\nChannel: ' + channel + '. Review and customize all claims, offer details, and hashtags before publishing.';
-  renderOutput('marketingOutput', 'Campaign draft', copy);
+  const button = $('#makeMarketing'); button.disabled = true;
+  try {
+    const result = await callBusinessAgent('marketing', { business: business || 'עסק קטן', goal, platforms: [channel], brief: 'צור רעיונות לתוכן וקמפיין התחלתי.' });
+    showAgentResult('marketingOutput', 'תוכנית שיווק שנוצרה בעזרת AI', result);
+  } catch (error) { renderOutput('marketingOutput', 'לא הצלחנו ליצור תוכנית', error.message); }
+  finally { button.disabled = false; }
+});
+$('#runGrowthAI').addEventListener('click', async () => {
+  const button = $('#runGrowthAI'), status = $('#growthStatus');
+  const business = $('#growthBusiness').value.trim(), audience = $('#growthAudience').value.trim(), offer = $('#growthOffer').value.trim();
+  if (!business || !offer) { status.textContent = 'מלא לפחות את שם העסק ואת ההצעה שלו.'; return; }
+  const platforms = $$('.growth-platform:checked').map(el => el.value);
+  button.disabled = true; status.textContent = 'סוכן השיווק מנתח את העסק ובונה תוכנית…';
+  try {
+    const result = await callBusinessAgent('marketing', { business, audience, goal: $('#growthGoal').value, budget: $('#growthBudget').value, offer, platforms });
+    showAgentResult('growthOutput', 'תוכנית השיווק שלך', result); status.textContent = 'התוכנית מוכנה. עדיין לא פורסמו מודעות ולא בוצעה הוצאה.';
+  } catch (error) { status.textContent = error.message; }
+  finally { button.disabled = false; }
+});
+$('#runLeadAI').addEventListener('click', async () => {
+  const button = $('#runLeadAI'), status = $('#leadBotStatus');
+  const message = $('#leadMessage').value.trim(), business = $('#leadBusiness').value.trim();
+  if (!message || !business) { status.textContent = 'מלא את פרטי העסק ואת הודעת הלקוח.'; return; }
+  button.disabled = true; status.textContent = 'מנתח את הפנייה וכותב תשובה…';
+  try {
+    const result = await callBusinessAgent('lead', { business, message, context: $('#leadContext').value.trim(), intent: $('#leadIntent').value });
+    showAgentResult('leadBotOutput', 'ניתוח הליד ותשובה מוצעת', result);
+    const copy = document.createElement('button'); copy.className = 'secondary'; copy.type = 'button'; copy.textContent = 'העתק תשובה';
+    copy.addEventListener('click', async () => { try { await navigator.clipboard.writeText(result); copy.textContent = 'הועתק'; } catch { status.textContent = 'העתקה אוטומטית לא זמינה בדפדפן הזה.'; } });
+    $('#leadBotOutput').append(copy);
+    status.textContent = 'התשובה מוכנה לבדיקה. היא לא נשלחה ללקוח.';
+  } catch (error) { status.textContent = error.message; }
+  finally { button.disabled = false; }
+});
+$('#runSecurityAI').addEventListener('click', async () => {
+  const button = $('#runSecurityAI'), status = $('#securityStatus');
+  const details = $('#securityDetails').value.trim();
+  if (!details) { status.textContent = 'הוסף כתובת אתר או תיאור של המערכת.'; return; }
+  button.disabled = true; status.textContent = 'מכין הערכת סיכונים ורשימת בדיקות…';
+  try {
+    const result = await callBusinessAgent('security', { target: $('#securityTarget').value, details, concerns: $('#securityConcerns').value.trim() });
+    showAgentResult('securityOutput', 'הערכת אבטחה ותוכנית פעולה', result);
+    status.textContent = 'ההערכה מוכנה. לא בוצעה סריקה חיה של האתר.';
+  } catch (error) { status.textContent = error.message; }
+  finally { button.disabled = false; }
 });
 
 $('#planAds').addEventListener('click', () => {
