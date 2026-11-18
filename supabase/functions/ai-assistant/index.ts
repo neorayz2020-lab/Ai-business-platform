@@ -63,7 +63,7 @@ Product context: NovaBuild has a website builder with a starter template, a prev
 
 You must return one JSON object matching the schema. Action rules:
 - Use NONE for normal conversation, explanations, questions, and advice.
-- Use OPEN_BUILDER / OPEN_MARKETING / OPEN_SEO / OPEN_AGENTS only if the user explicitly wants to open that area.
+- Use OPEN_BUILDER / OPEN_MARKETING / OPEN_LEADBOT / OPEN_SECURITY / OPEN_SEO / OPEN_AGENTS only if the user explicitly wants to open that area. OPEN_MARKETING opens the Marketing AI workspace.
 - Use BUILD_SITE when the user clearly asks you to create/build a website or landing page. Write a useful, specific site brief based on the conversation, preserve facts given by the user, and do not invent prices, testimonials, credentials, awards, or guarantees. Fill businessName if known, siteType with one allowed value, headline and buttonText when useful, and choose a valid accent hex color. The UI will create a starter-template draft and must say so honestly.
 - Use EDIT_SITE when the user clearly asks to change their current website draft. Fill only the fields you can infer with confidence: businessName, siteBrief, headline, buttonText, accent. For unchanged values return empty strings. Valid accent examples: #2563eb, #276749, #6d5dfc, #b83280, #087f8c, #c0392b.
 - If the user describes a business but has not asked to create a site yet, ask what they want the site to achieve instead of taking over.
@@ -89,7 +89,7 @@ You must return one JSON object matching the schema. Action rules:
             type: "OBJECT",
             properties: {
               reply: { type: "STRING" },
-              action: { type: "STRING", enum: ["NONE", "OPEN_BUILDER", "BUILD_SITE", "EDIT_SITE", "OPEN_MARKETING", "OPEN_SEO", "OPEN_AGENTS"] },
+              action: { type: "STRING", enum: ["NONE", "OPEN_BUILDER", "BUILD_SITE", "EDIT_SITE", "OPEN_MARKETING", "OPEN_LEADBOT", "OPEN_SECURITY", "OPEN_SEO", "OPEN_AGENTS"] },
               businessName: { type: "STRING" },
               siteType: { type: "STRING", enum: ["Business website", "Online store", "Portfolio", "Landing page", "Web application"] },
               siteBrief: { type: "STRING" },
@@ -128,7 +128,7 @@ You must return one JSON object matching the schema. Action rules:
     if (!output) return json({ error: language === "he" ? "העוזר לא החזיר תשובה. נסה שוב." : "The assistant returned an empty answer. Please try again.", code: "EMPTY_AI_RESPONSE" }, 502);
     const parsed = JSON.parse(output);
     if (typeof parsed.reply !== "string" || !parsed.reply.trim()) throw new Error("Missing assistant reply");
-    const allowedActions = new Set(["NONE", "OPEN_BUILDER", "BUILD_SITE", "EDIT_SITE", "OPEN_MARKETING", "OPEN_SEO", "OPEN_AGENTS"]);
+    const allowedActions = new Set(["NONE", "OPEN_BUILDER", "BUILD_SITE", "EDIT_SITE", "OPEN_MARKETING", "OPEN_LEADBOT", "OPEN_SECURITY", "OPEN_SEO", "OPEN_AGENTS"]);
     if (!allowedActions.has(parsed.action)) parsed.action = "NONE";
     if (!["Business website", "Online store", "Portfolio", "Landing page", "Web application"].includes(parsed.siteType)) parsed.siteType = "Business website";
     if (!/^#[0-9a-f]{6}$/i.test(parsed.accent || "")) parsed.accent = "";
