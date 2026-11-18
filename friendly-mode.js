@@ -11,8 +11,16 @@
     details.append(summary);
     const keepOutside = new Set(['builder-actions','fine-print','output']);
     [...form.children].forEach(node => {
-      if (keepOutside.has(node.className) || node.id === 'aiWebsiteStatus' || node.id === 'siteOutput') return;
-      if (node.matches('label,input,select,textarea,.builder-step,.customize-details')) details.append(node);
+      if (node.id === 'aiWebsiteStatus' || node.id === 'siteOutput' || keepOutside.has(node.className) || node.matches('.builder-actions, .fine-print')) return;
+      if (node.matches('.customize-details')) {
+        const heading = document.createElement('strong');
+        heading.textContent = 'התאמות נוספות לתוכן (לא חובה)';
+        details.append(heading);
+        [...node.children].forEach(child => { if (!child.matches('summary')) details.append(child); });
+        node.remove();
+        return;
+      }
+      details.append(node);
     });
     const quick = document.createElement('section');
     quick.className = 'nb-quickstart';
