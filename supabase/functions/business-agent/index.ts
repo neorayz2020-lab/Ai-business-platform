@@ -89,6 +89,7 @@ Deno.serve(async (req: Request) => {
     fields.goal = bounded(input.goal,1200);
     fields.priority = bounded(input.priority,30) || "balanced";
     fields.executionPolicy = bounded(input.executionPolicy,30) || "approval";
+    fields.businessProfile = bounded(input.businessProfile,2200);
     fields.businessContext = bounded(input.businessContext,1800);
     if (!fields.goal) return json({ error: "תאר מה תרצה שצוות ה-AI יבצע.", code: "MISSING_GOAL" }, 400);
   } else if (mode === "marketing") {
@@ -98,6 +99,7 @@ Deno.serve(async (req: Request) => {
     fields.budget = bounded(input.budget,30);
     fields.offer = bounded(input.offer ?? input.brief,1500);
     fields.platforms = Array.isArray(input.platforms) ? input.platforms.slice(0,10).map(x=>bounded(x,80)).join(", ") : "";
+    fields.businessProfile = bounded(input.businessProfile,2200);
     if (!fields.business || !fields.offer) return json({ error: "נא לציין את שם העסק ואת השירות או ההצעה שלו.", code: "MISSING_MARKETING_FIELDS" }, 400);
   } else if (mode === "lead") {
     fields.business = bounded(input.business,180);
@@ -105,11 +107,13 @@ Deno.serve(async (req: Request) => {
     fields.context = bounded(input.context,1000);
     fields.intent = bounded(input.intent,180);
     fields.channel = bounded(input.channel,80) || "WhatsApp";
+    fields.businessProfile = bounded(input.businessProfile,2200);
     if (!fields.business || !fields.message) return json({ error: "נא לציין את העסק ואת הודעת הלקוח.", code: "MISSING_LEAD_FIELDS" }, 400);
   } else {
     fields.target = bounded(input.target,120);
     fields.details = bounded(input.details,1800);
     fields.concerns = bounded(input.concerns,1000);
+    fields.businessProfile = bounded(input.businessProfile,2200);
     if (!fields.details) return json({ error: "נא לציין כתובת או תיאור של המערכת.", code: "MISSING_SECURITY_DETAILS" }, 400);
   }
 
