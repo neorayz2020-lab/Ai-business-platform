@@ -10,9 +10,11 @@
   const signIn = document.getElementById('signInButton');
   const signUp = document.getElementById('signUpButton');
   const signOut = document.getElementById('signOutButton');
+  const forgotPassword = document.getElementById('forgotPasswordButton');
+  const planName = document.getElementById('accountPlanName');
   const savePlanButton = document.getElementById('saveAgentPlan');
   const savePlanStatus = document.getElementById('saveAgentPlanStatus');
-  let client = null, currentUser = null, latestPlan = null, businessProfile = null;
+  let client = null, currentUser = null, latestPlan = null, businessProfile = null, activeSubscription = null;
   function setMessage(text, isError = false) { message.textContent = text; message.dataset.kind = isError ? 'error' : 'info'; }
   function setStatus(text) { status.textContent = text; }
   function setBusy(busy) { [signIn, signUp, signOut].forEach(button => { if (button) button.disabled = busy; }); }
@@ -21,7 +23,8 @@
     document.getElementById('authConfigWarning').classList.toggle('hidden', configured);
     document.getElementById('authForms').classList.toggle('hidden', !configured || Boolean(currentUser));
     signOut.classList.toggle('hidden', !configured || !currentUser);
-    setStatus(!configured ? 'Not connected' : currentUser ? 'Signed in: ' + currentUser.email : 'Not signed in');
+    setStatus(!configured ? 'לא מחובר' : currentUser ? 'מחובר: ' + currentUser.email : 'לא מחובר');
+    if (planName) planName.textContent = activeSubscription ? (activeSubscription.plan_key === 'business_ai' ? 'Business AI' : 'Pro') : 'Free · חינם';
     if (savePlanButton) savePlanButton.disabled = !currentUser || !latestPlan;
   }
   async function loadBusinessProfile() {
@@ -32,15 +35,34 @@
     window.dispatchEvent(new CustomEvent('novabuild:business-profile', {detail:{profile:businessProfile}}));
     return businessProfile;
   }
+  async function loadSubscription() {
+    activeSubscription = null;
+    if (!client || !currentUser) {
+      window.dispatchEvent(new CustomEvent('novabuild:subscription', {detail:{subscription:null,plan:'free'}}));
+      return null;
+    }
+    const { data, error } = await client.from('billing_subscriptions')
+      .select('plan_key,status,current_period_end')
+      .eq('user_id', currentUser.id)
+      .eq('status','active')
+      .order('current_period_end',{ascending:false})
+      .limit(1)
+      .maybeSingle();
+    if (error) throw new Error(error.message || 'Could not load subscription.');
+    if (data && (!data.current_period_end || new Date(data.current_period_end).getTime() > Date.now())) activeSubscription = data;
+    const plan = activeSubscription?.plan_key === 'business_ai' ? 'business_ai' : activeSubscription ? 'pro' : 'free';
+    window.dispatchEvent(new CustomEvent('novabuild:subscription', {detail:{subscription:activeSubscription,plan}}));
+    return activeSubscription;
+  }
   async function loadSession() {
     if (!client) { refreshControls(); return; }
     const { data, error } = await client.auth.getSession();
     if (error) setMessage(error.message, true);
     currentUser = data?.session?.user || null;
     if (currentUser) {
-      try { await loadBusinessProfile(); }
-      catch (profileError) { setMessage('התחברת, אך לא הצלחתי לטעון את פרטי העסק: ' + (profileError.message || ''), true); }
-    } else businessProfile = null;
+      try { await Promise.all([loadBusinessProfile(), loadSubscription()]); }
+      catch (profileError) { setMessage('התחברת, אך לא הצלחתי לטעון את נתוני החשבון: ' + (profileError.message || ''), true); }
+    } else { businessProfile = null; activeSubscription = null; }
     refreshControls();
   }
   async function authenticate(mode) {
@@ -82,6 +104,18 @@
     } catch (error) { savePlanStatus.textContent = 'Could not save plan: ' + (error?.message || 'unknown error'); }
     finally { savePlanButton.disabled = false; }
   }
+  if (forgotPassword) forgotPassword.addEventListener('click', async () => {
+    if (!client) return;
+    const emailValue = email.value.trim();
+    if (!emailValue) { setMessage('הזן כתובת מייל כדי לשלוח קישור לאיפוס סיסמה.', true); email.focus(); return; }
+    forgotPassword.disabled = true;
+    try {
+      const { error } = await client.auth.resetPasswordForEmail(emailValue, { redirectTo: window.location.origin });
+      if (error) throw error;
+      setMessage('שלחנו קישור לאיפוס סיסמה לכתובת המייל שהזנת. בדוק גם את תיקיית הספאם.');
+    } catch (error) { setMessage(error?.message || 'לא הצלחנו לשלוח קישור לאיפוס סיסמה.', true); }
+    finally { forgotPassword.disabled = false; }
+  });
   signIn.addEventListener('click', () => authenticate('signin'));
   signUp.addEventListener('click', () => authenticate('signup'));
   signOut.addEventListener('click', async () => {
@@ -101,6 +135,10 @@
     },
     isConfigured: () => Boolean(client),
     getCurrentUser: () => currentUser,
+    getSubscription: () => activeSubscription,
+    getPlan: () => activeSubscription?.plan_key || 'free',
+    isPro: () => Boolean(activeSubscription && activeSubscription.status === 'active' && (!activeSubscription.current_period_end || new Date(activeSubscription.current_period_end).getTime() > Date.now())),
+    async refreshSubscription() { return loadSubscription(); },
     async getBusinessProfile() {
       if (!currentUser) return null;
       return businessProfile || await loadBusinessProfile();
@@ -187,8 +225,8 @@
     });
     client.auth.onAuthStateChange((_event, session) => {
       currentUser = session?.user || null;
-      if (!currentUser) businessProfile = null;
-      else loadBusinessProfile().catch(error => setMessage(error.message || 'Could not load business profile.', true));
+      if (!currentUser) { businessProfile = null; activeSubscription = null; }
+      else Promise.all([loadBusinessProfile(), loadSubscription()]).catch(error => setMessage(error.message || 'Could not load account data.', true));
       refreshControls();
     });
   } else setMessage('Supabase is not configured yet. Follow SUPABASE_SETUP.md to create the project and set the public URL/key.');
