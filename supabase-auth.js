@@ -12,7 +12,7 @@
   const signOut = document.getElementById('signOutButton');
   const savePlanButton = document.getElementById('saveAgentPlan');
   const savePlanStatus = document.getElementById('saveAgentPlanStatus');
-  let client = null, currentUser = null, latestPlan = null;
+  let client = null, currentUser = null, latestPlan = null, businessProfile = null;
   function setMessage(text, isError = false) { message.textContent = text; message.dataset.kind = isError ? 'error' : 'info'; }
   function setStatus(text) { status.textContent = text; }
   function setBusy(busy) { [signIn, signUp, signOut].forEach(button => { if (button) button.disabled = busy; }); }
@@ -24,11 +24,23 @@
     setStatus(!configured ? 'Not connected' : currentUser ? 'Signed in: ' + currentUser.email : 'Not signed in');
     if (savePlanButton) savePlanButton.disabled = !currentUser || !latestPlan;
   }
+  async function loadBusinessProfile() {
+    if (!client || !currentUser) { businessProfile = null; return null; }
+    const { data, error } = await client.from('business_profiles').select('*').eq('user_id', currentUser.id).maybeSingle();
+    if (error) throw new Error(error.message || 'Could not load the business profile.');
+    businessProfile = data || null;
+    window.dispatchEvent(new CustomEvent('novabuild:business-profile', {detail:{profile:businessProfile}}));
+    return businessProfile;
+  }
   async function loadSession() {
     if (!client) { refreshControls(); return; }
     const { data, error } = await client.auth.getSession();
     if (error) setMessage(error.message, true);
     currentUser = data?.session?.user || null;
+    if (currentUser) {
+      try { await loadBusinessProfile(); }
+      catch (profileError) { setMessage('התחברת, אך לא הצלחתי לטעון את פרטי העסק: ' + (profileError.message || ''), true); }
+    } else businessProfile = null;
     refreshControls();
   }
   async function authenticate(mode) {
@@ -88,6 +100,25 @@
       if (savePlanStatus) savePlanStatus.textContent = currentUser ? 'You can save this plan to your account.' : 'Sign in to save plans to your account.';
     },
     isConfigured: () => Boolean(client),
+    getCurrentUser: () => currentUser,
+    async getBusinessProfile() {
+      if (!currentUser) return null;
+      return businessProfile || await loadBusinessProfile();
+    },
+    async saveBusinessProfile(payload) {
+      if (!client || !currentUser) throw new Error('כדי לשמור פרטי עסק צריך להתחבר לחשבון.');
+      const fields = ['business_name','industry','description','services','target_audience','service_area','communication_style','preferred_language','website_url','public_phone','whatsapp_phone'];
+      const record = { user_id: currentUser.id };
+      fields.forEach(key => {
+        const value = payload && payload[key] !== undefined ? payload[key] : '';
+        record[key] = String(value).trim().slice(0, key === 'description' || key === 'services' ? 1800 : key === 'target_audience' ? 500 : key === 'service_area' ? 240 : 500);
+      });
+      const { data, error } = await client.from('business_profiles').upsert(record, {onConflict:'user_id'}).select('*').single();
+      if (error) throw new Error(error.message || 'לא הצלחתי לשמור את פרטי העסק.');
+      businessProfile = data;
+      window.dispatchEvent(new CustomEvent('novabuild:business-profile', {detail:{profile:businessProfile}}));
+      return businessProfile;
+    },
     async saveWebsiteProject(payload) {
       if (!client) throw new Error('Account service is not configured.');
       if (!currentUser) throw new Error('Sign in to save this website to your account.');
@@ -108,7 +139,8 @@
     async runBusinessAgent(mode, payload) {
       if (!client) throw new Error('שירות החשבון אינו מוגדר.');
       if (!currentUser) throw new Error('כדי להשתמש בסוכני AI צריך ליצור חשבון חינמי או להתחבר. לחץ על „חשבון / התחברות” למעלה.');
-      const { data, error } = await client.functions.invoke('business-agent', { body: { mode, ...payload } });
+      const profile = businessProfile || await loadBusinessProfile();
+      const { data, error } = await client.functions.invoke('business-agent', { body: { mode, businessProfile: profile ? JSON.stringify(profile) : '', ...payload } });
       if (error) {
         let message = error.message || 'בקשת הסוכן נכשלה.';
         try {
@@ -126,7 +158,8 @@
     async generateWebsiteWithAI(payload) {
       if (!client) throw new Error('Account service is not configured.');
       if (!currentUser) throw new Error('כדי ליצור אתר באמצעות AI צריך ליצור חשבון חינמי או להתחבר. לחץ על „חשבון / התחברות” למעלה.');
-      const { data, error } = await client.functions.invoke('generate-website', { body: payload });
+      const profile = businessProfile || await loadBusinessProfile();
+      const { data, error } = await client.functions.invoke('generate-website', { body: { ...payload, businessContext: profile ? JSON.stringify(profile) : '' } });
       if (error) {
         // Supabase wraps non-2xx Edge Function responses; surface the server's
         // actionable JSON error (for example, a missing Gemini secret) when available.
@@ -152,7 +185,12 @@
     client = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey, {
       auth: {persistSession: true, autoRefreshToken: true, detectSessionInUrl: true}
     });
-    client.auth.onAuthStateChange((_event, session) => { currentUser = session?.user || null; refreshControls(); });
+    client.auth.onAuthStateChange((_event, session) => {
+      currentUser = session?.user || null;
+      if (!currentUser) businessProfile = null;
+      else loadBusinessProfile().catch(error => setMessage(error.message || 'Could not load business profile.', true));
+      refreshControls();
+    });
   } else setMessage('Supabase is not configured yet. Follow SUPABASE_SETUP.md to create the project and set the public URL/key.');
   loadSession();
 })();
