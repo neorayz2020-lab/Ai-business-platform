@@ -28,19 +28,14 @@ document.addEventListener('keydown', event => {
 $('#quickPrompt').addEventListener('submit', event => {
   event.preventDefault();
   const prompt = $('#quickPromptText').value.trim();
-  showView('builder');
   if (!prompt) {
-    ($('#nb-business-idea') || $('#siteBrief'))?.focus();
+    window.NovaBuildAssistant?.open();
+    document.getElementById('nb-help-input')?.focus();
     return;
   }
-  const ideaBox = $('#nb-business-idea');
-  if (ideaBox) ideaBox.value = prompt;
-  $('#siteBrief').value = prompt;
-  $('#siteName').value = window.NovaBuildI18n?.getLanguage() === 'en' ? 'My business' : 'העסק שלי';
-  $('#makeBrief').click();
-  const status = $('#previewStatus');
-  if (status) status.textContent = window.NovaBuildI18n?.getLanguage() === 'en' ? 'Your first draft is ready to review' : 'הטיוטה הראשונה מוכנה לבדיקה';
-  $('#sitePreview')?.scrollIntoView({behavior:'smooth',block:'center'});
+  window.NovaBuildAssistant?.open();
+  window.NovaBuildAssistant?.ask(prompt);
+  $('#quickPromptText').value = '';
 });
 
 function renderOutput(id, heading, body) {
