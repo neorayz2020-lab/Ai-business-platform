@@ -85,7 +85,7 @@
     greeted = true;
     addMessage(currentLanguage === 'en'
       ? 'Hi! I’m your NovaBuild AI assistant. Tell me what you want to create or ask me anything about building your business online. I’ll guide you step by step.'
-      : 'היי! 👋 אני העוזר החכם של NovaBuild. אפשר לדבר איתי בחופשיות — לשאול שאלות, לבנות אתר, לשפר את התוכן או להבין איך להביא לקוחות. אני אסביר הכול צעד־צעד ובשפה פשוטה. במה נתחיל?');
+      : 'היי, אני העוזר החכם של NovaBuild. אפשר לדבר איתי בחופשיות — לשאול שאלות, לבנות אתר, לשפר את התוכן או להבין איך להביא לקוחות. אני אסביר הכול צעד־צעד ובשפה פשוטה. במה נתחיל?');
   }
 
   function open({ focus = true } = {}) {
