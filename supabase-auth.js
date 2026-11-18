@@ -12,17 +12,21 @@
   const signOut = document.getElementById('signOutButton');
   const forgotPassword = document.getElementById('forgotPasswordButton');
   const planName = document.getElementById('accountPlanName');
+  const recoveryForm = document.getElementById('passwordRecoveryForm');
+  const newPassword = document.getElementById('newAccountPassword');
+  const saveNewPassword = document.getElementById('saveNewPasswordButton');
   const savePlanButton = document.getElementById('saveAgentPlan');
   const savePlanStatus = document.getElementById('saveAgentPlanStatus');
-  let client = null, currentUser = null, latestPlan = null, businessProfile = null, activeSubscription = null;
+  let client = null, currentUser = null, latestPlan = null, businessProfile = null, activeSubscription = null, passwordRecoveryMode = false;
   function setMessage(text, isError = false) { message.textContent = text; message.dataset.kind = isError ? 'error' : 'info'; }
   function setStatus(text) { status.textContent = text; }
   function setBusy(busy) { [signIn, signUp, signOut].forEach(button => { if (button) button.disabled = busy; }); }
   function refreshControls() {
     const configured = Boolean(client);
     document.getElementById('authConfigWarning').classList.toggle('hidden', configured);
-    document.getElementById('authForms').classList.toggle('hidden', !configured || Boolean(currentUser));
-    signOut.classList.toggle('hidden', !configured || !currentUser);
+    document.getElementById('authForms').classList.toggle('hidden', !configured || Boolean(currentUser) || passwordRecoveryMode);
+    if (recoveryForm) recoveryForm.classList.toggle('hidden', !configured || !passwordRecoveryMode);
+    signOut.classList.toggle('hidden', !configured || !currentUser || passwordRecoveryMode);
     setStatus(!configured ? 'לא מחובר' : currentUser ? 'מחובר: ' + currentUser.email : 'לא מחובר');
     if (planName) planName.textContent = activeSubscription ? (activeSubscription.plan_key === 'business_ai' ? 'Business AI' : 'Pro') : 'Free · חינם';
     if (savePlanButton) savePlanButton.disabled = !currentUser || !latestPlan;
@@ -39,6 +43,7 @@
     activeSubscription = null;
     if (!client || !currentUser) {
       window.dispatchEvent(new CustomEvent('novabuild:subscription', {detail:{subscription:null,plan:'free'}}));
+      refreshControls();
       return null;
     }
     const { data, error } = await client.from('billing_subscriptions')
@@ -52,6 +57,7 @@
     if (data && (!data.current_period_end || new Date(data.current_period_end).getTime() > Date.now())) activeSubscription = data;
     const plan = activeSubscription?.plan_key === 'business_ai' ? 'business_ai' : activeSubscription ? 'pro' : 'free';
     window.dispatchEvent(new CustomEvent('novabuild:subscription', {detail:{subscription:activeSubscription,plan}}));
+    refreshControls();
     return activeSubscription;
   }
   async function loadSession() {
@@ -104,6 +110,21 @@
     } catch (error) { savePlanStatus.textContent = 'Could not save plan: ' + (error?.message || 'unknown error'); }
     finally { savePlanButton.disabled = false; }
   }
+  if (saveNewPassword) saveNewPassword.addEventListener('click', async () => {
+    if (!client || !currentUser) { setMessage('פתח את קישור איפוס הסיסמה מהמייל כדי להמשיך.', true); return; }
+    const value = newPassword.value;
+    if (value.length < 8) { setMessage('הסיסמה החדשה חייבת להכיל לפחות 8 תווים.', true); newPassword.focus(); return; }
+    saveNewPassword.disabled = true;
+    try {
+      const { error } = await client.auth.updateUser({ password: value });
+      if (error) throw error;
+      newPassword.value = '';
+      passwordRecoveryMode = false;
+      refreshControls();
+      setMessage('הסיסמה עודכנה בהצלחה. אפשר להמשיך להשתמש בחשבון.');
+    } catch (error) { setMessage(error?.message || 'לא הצלחנו לעדכן את הסיסמה.', true); }
+    finally { saveNewPassword.disabled = false; }
+  });
   if (forgotPassword) forgotPassword.addEventListener('click', async () => {
     if (!client) return;
     const emailValue = email.value.trim();
@@ -223,8 +244,10 @@
     client = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey, {
       auth: {persistSession: true, autoRefreshToken: true, detectSessionInUrl: true}
     });
-    client.auth.onAuthStateChange((_event, session) => {
+    client.auth.onAuthStateChange((event, session) => {
       currentUser = session?.user || null;
+      if (event === 'PASSWORD_RECOVERY') passwordRecoveryMode = true;
+      if (event === 'PASSWORD_UPDATED') passwordRecoveryMode = false;
       if (!currentUser) { businessProfile = null; activeSubscription = null; }
       else Promise.all([loadBusinessProfile(), loadSubscription()]).catch(error => setMessage(error.message || 'Could not load account data.', true));
       refreshControls();
