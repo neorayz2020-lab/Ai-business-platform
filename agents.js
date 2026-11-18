@@ -3,6 +3,10 @@
   const goalInput = document.getElementById('agentGoal');
   const runButton = document.getElementById('runAgentPlan');
   const results = document.getElementById('agentResults');
+  const executeButton = document.getElementById('prepareAgentOutputs');
+  const executionStatus = document.getElementById('agentExecutionStatus');
+  const deliverablesBox = document.getElementById('agentDeliverables');
+  let latestPlan = null;
   if (!goalInput || !runButton || !results) return;
 
   const statusLine = document.createElement('p');
@@ -58,6 +62,59 @@
     results.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
   }
 
+  function renderDeliverables(items) {
+    deliverablesBox.replaceChildren();
+    items.forEach((item,index) => {
+      const card = node('article','agent-deliverable');
+      const header = node('div','agent-deliverable-header');
+      header.append(node('span','tag',item.agent));
+      header.append(node('span','agent-deliverable-number','תוצר ' + String(index+1).padStart(2,'0')));
+      card.append(header);
+      card.append(node('h3','',item.title || 'תוצר הסוכן'));
+      card.append(node('div','agent-deliverable-output',item.output || 'לא התקבל תוצר.'));
+      if (item.nextStep) card.append(node('p','agent-deliverable-next','הצעד הבא: ' + item.nextStep));
+      if (item.approvalRequired) card.append(node('p','agent-deliverable-approval','נדרש אישור לפני פעולה חיצונית.'));
+      deliverablesBox.append(card);
+    });
+    deliverablesBox.classList.remove('hidden');
+  }
+
+  if (executeButton) executeButton.addEventListener('click', async () => {
+    if (!latestPlan || !Array.isArray(latestPlan.tasks)) return;
+    executeButton.disabled = true;
+    executeButton.textContent = 'הסוכנים מכינים תוצרים…';
+    executionStatus.textContent = 'מנהל ה־AI שולח לכל מומחה את המשימה שלו ומרכז את הטיוטות.';
+    deliverablesBox.classList.add('hidden');
+    try {
+      if (!window.NovaBuildAuth?.runBusinessAgent) throw new Error('צריך להתחבר לחשבון החינמי כדי להפעיל את הסוכנים.');
+      const response = await window.NovaBuildAuth.runBusinessAgent('execute-plan', {
+        goal: goalInput.value.trim(),
+        tasks: latestPlan.tasks
+      });
+      if (!Array.isArray(response?.deliverables) || response.deliverables.length !== latestPlan.tasks.length) {
+        throw new Error('לא התקבל תוצר לכל משימה. אפשר לנסות שוב.');
+      }
+      latestPlan = {
+        ...latestPlan,
+        deliverables: response.deliverables,
+        tasks: latestPlan.tasks.map((task,index) => ({
+          ...task,
+          output: response.deliverables[index]?.output || '',
+          nextStep: response.deliverables[index]?.nextStep || '',
+          approvalRequired: Boolean(task.approvalRequired || response.deliverables[index]?.approvalRequired)
+        }))
+      };
+      renderDeliverables(response.deliverables);
+      window.NovaBuildAuth.setLatestPlan?.(latestPlan);
+      executionStatus.textContent = 'התוצרים מוכנים לבדיקה. אפשר לשמור את התוכנית והתוצרים בחשבון.';
+    } catch (error) {
+      executionStatus.textContent = error?.message || 'לא הצלחנו להכין את התוצרים. נסה שוב.';
+    } finally {
+      executeButton.disabled = !latestPlan;
+      executeButton.textContent = 'הכן תוצרים לכל המשימות';
+    }
+  });
+
   runButton.addEventListener('click', async () => {
     const goal = goalInput.value.trim();
     const priority = document.getElementById('agentPriority')?.value || 'balanced';
@@ -97,10 +154,18 @@
           risk: task.approvalRequired ? 'Approval required' : 'Draft only'
         }))
       };
+      latestPlan = normalized;
       renderPlan(normalized);
+      if (executeButton) executeButton.disabled = false;
+      executionStatus.textContent = 'התוכנית מוכנה. עכשיו אפשר לבקש מהסוכנים להכין תוצרים לכל המשימות.';
+      deliverablesBox.replaceChildren();
+      deliverablesBox.classList.add('hidden');
       window.NovaBuildAuth.setLatestPlan?.(normalized);
-      statusLine.textContent = 'התוכנית מוכנה. אפשר לשמור אותה לחשבון שלך.';
+      statusLine.textContent = 'התוכנית מוכנה. אפשר להכין תוצרים או לשמור אותה בחשבון שלך.';
     } catch (error) {
+      latestPlan = null;
+      if (executeButton) executeButton.disabled = true;
+      executionStatus.textContent = 'צור תוכנית חדשה כדי להכין תוצרים.';
       statusLine.textContent = error?.message || 'לא הצלחנו להפעיל את מנהל ה-AI. נסה שוב.';
       const message = node('div','agent-error',statusLine.textContent);
       results.replaceChildren(message);
