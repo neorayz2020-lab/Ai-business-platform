@@ -106,7 +106,9 @@
     const action = data.action || 'NONE';
     if (action === 'OPEN_BUILDER' || action === 'BUILD_SITE' || action === 'EDIT_SITE') {
       navigate('builder');
-    } else if (action === 'OPEN_MARKETING') navigate('marketing');
+    } else if (action === 'OPEN_MARKETING') navigate('growth');
+    else if (action === 'OPEN_LEADBOT') navigate('leadbot');
+    else if (action === 'OPEN_SECURITY') navigate('security');
     else if (action === 'OPEN_SEO') navigate('seo');
     else if (action === 'OPEN_AGENTS') navigate('agents');
 
