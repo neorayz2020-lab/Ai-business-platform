@@ -17,7 +17,8 @@ An early, mobile-responsive prototype for an AI business platform that aims to b
 ## What's included
 
 - Responsive SaaS-style dashboard and navigation
-- Website project brief builder (rule-based demo, not a live AI generator)
+- Website project brief builder with a starter template and optional AI-generated copy
+- Conversational NovaBuild AI assistant available on page entry; uses the server-side `ai-assistant` Edge Function and does not require user sign-in
 - Marketing copy draft generator (template-based demo)
 - Ads campaign planning worksheet (does not launch ads or spend money)
 - Demo product catalog and lead pipeline
@@ -33,7 +34,7 @@ This is a static HTML/CSS/JavaScript site. For Cloudflare Pages, connect the Git
 
 ## Important limitations
 
-This is not yet a production AI platform. The planner is rule-based and does not call an LLM. Saving a plan stores proposed plan/task rows; it does not enqueue or execute tasks. Real AI, payment processing, and integrations with Google Ads, Meta Ads, TikTok Ads, Google Search Console, Apple, or Google Play are not connected. Demo product and lead entries remain in page memory and disappear when the page reloads. Website drafts can be saved to the signed-in user's `website_projects` table; a saved-draft browser/library view is not yet implemented. No ad spend or external publishing action can happen from this version.
+This is not yet a production AI platform. The AI Agent Command Center planner is rule-based and does not call an LLM. The separate chat assistant does call Gemini through the server-side `ai-assistant` Edge Function. Saving a plan stores proposed plan/task rows; it does not enqueue or execute tasks. Real AI, payment processing, and integrations with Google Ads, Meta Ads, TikTok Ads, Google Search Console, Apple, or Google Play are not connected. Demo product and lead entries remain in page memory and disappear when the page reloads. Website drafts can be saved to the signed-in user's `website_projects` table; a saved-draft browser/library view is not yet implemented. No ad spend or external publishing action can happen from this version.
 
 Never place private API keys, database passwords, Supabase secret keys, or service_role keys in browser-side JavaScript. Real AI and account integrations must use secure server-side functions, user consent, limited permissions, spend caps, audit logs, and approval gates for consequential actions.
 
@@ -70,7 +71,7 @@ The Website Builder now calls the Supabase Edge Function `generate-website`. The
 
 Do not commit the Gemini key to GitHub or add it to `config.js`. The Edge Function currently uses `gemini-2.5-flash`. Provider quotas and availability depend on Google's current terms and account.
 
-The AI button is wired up, but generation will return a setup message until the `gemini_api_key` secret is configured. The ordinary starter-template button continues to work without an AI key.
+The website AI button and conversational assistant both use the `gemini_api_key` secret stored in Supabase Edge Function secrets. The assistant is public so visitors can chat without signing in; its in-memory IP rate limit is best-effort and should be supplemented with a challenge/rate-limit service before broad public marketing. The ordinary starter-template button continues to work without an AI key.
 
 ## License
 
