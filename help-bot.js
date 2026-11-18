@@ -161,6 +161,8 @@
       if (!config.supabaseUrl || !config.supabaseAnonKey) throw new Error('CONFIG_MISSING');
       const controller = new AbortController();
       requestTimeout = setTimeout(() => controller.abort(), 25000);
+      let businessProfile = null;
+      try { businessProfile = await window.NovaBuildAuth?.getBusinessProfile?.(); } catch (_) {}
       const response = await fetch(config.supabaseUrl.replace(/\/$/, '') + '/functions/v1/ai-assistant', {
         method: 'POST',
         headers: {
@@ -171,7 +173,8 @@
         body: JSON.stringify({
           language: currentLanguage,
           messages: history.slice(-10),
-          currentView: document.querySelector('.view.active')?.id?.replace('view-', '') || 'overview'
+          currentView: document.querySelector('.view.active')?.id?.replace('view-', '') || 'overview',
+          businessProfile: businessProfile ? JSON.stringify(businessProfile) : ''
         })
       });
       const data = await response.json().catch(() => ({}));
