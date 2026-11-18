@@ -23,6 +23,7 @@
       <nav class="nav" aria-label="Main navigation">
         <button class="nav-item active" data-view="overview"><span>◫</span> Overview</button>
         <button class="nav-item" data-view="agents"><span>✦</span> AI Agents <em>BETA</em></button>
+        <button class="nav-item" data-view="profile"><span>▤</span> Business profile</button>
         <button class="nav-item" data-view="builder"><span>✳</span> Website builder <em>AI</em></button>
         <button class="nav-item" data-view="marketing"><span>◉</span> Marketing studio</button>
         <button class="nav-item" data-view="ads"><span>↗</span> Ads Autopilot <em class="soon">BETA</em></button>
@@ -140,6 +141,28 @@
             <label for="securityConcerns">חששות או בעיה שזיהית (אופציונלי)</label><textarea id="securityConcerns" rows="2" maxlength="1000" placeholder="למשל: טופס יצירת קשר, הרשאות משתמשים, חשד לקישור מזויף"></textarea>
             <button class="primary" id="runSecurityAI" type="button">צור בדיקת אבטחה עם AI</button><p id="securityStatus" class="auth-message" role="status" aria-live="polite"></p><div class="output hidden" id="securityOutput" aria-live="polite"></div>
           </div>
+        </section>
+<section class="view" id="view-profile">
+          <div class="page-heading"><div class="eyebrow">YOUR BUSINESS CONTEXT</div><h1>פרופיל העסק</h1><p class="muted">ממלאים פעם אחת. כל סוכני ה-AI משתמשים במידע הזה כדי להבין את העסק, לדבר בטון הנכון ולהציע פעולות רלוונטיות.</p></div>
+          <div class="notice"><span>i</span><div><strong>המידע פרטי לחשבון שלך</strong><p>פרטי העסק נשמרים בחשבון האישי שלך. משתמשים אחרים לא יכולים לקרוא או לערוך אותם. אין להזין סיסמאות, מפתחות API או פרטי תשלום.</p></div></div>
+          <form id="businessProfileForm" class="panel">
+            <div class="section-heading"><div><h3>פרטים בסיסיים</h3><p class="muted">המידע שעליו יתבססו הסוכנים בכל משימה.</p></div></div>
+            <label for="profileBusinessName">שם העסק</label><input id="profileBusinessName" maxlength="160" placeholder="שם המותג או העסק">
+            <label for="profileIndustry">תחום העסק</label><input id="profileIndustry" maxlength="120" placeholder="למשל: שירותים מקצועיים, בנייה, ייעוץ, מסחר">
+            <label for="profileDescription">מה העסק עושה ומה מייחד אותו?</label><textarea id="profileDescription" rows="3" maxlength="1800" placeholder="תאר את העסק, היתרונות האמיתיים והבעיה שהוא פותר ללקוחות."></textarea>
+            <label for="profileServices">שירותים ומוצרים</label><textarea id="profileServices" rows="3" maxlength="1800" placeholder="רשימת השירותים, המוצרים או החבילות שהעסק מציע."></textarea>
+            <label for="profileAudience">קהל יעד</label><input id="profileAudience" maxlength="500" placeholder="מי הלקוחות שהכי מתאימים לעסק?">
+            <label for="profileArea">אזור פעילות</label><input id="profileArea" maxlength="240" placeholder="עיר, אזור או פעילות ארצית / בינלאומית">
+            <div class="section-heading"><div><h3>סגנון תקשורת ושפה</h3><p class="muted">כך הסוכנים יכתבו תוכן ויענו ללקוחות.</p></div></div>
+            <label for="profileTone">איך לדבר בשם העסק?</label><select id="profileTone"><option value="friendly">חברי, טבעי ונגיש</option><option value="premium">יוקרתי, בטוח ומדויק</option><option value="professional">מקצועי ורשמי</option><option value="direct">ישיר ותכליתי</option><option value="casual">קליל ויומיומי</option></select>
+            <label for="profileLanguage">שפת ברירת מחדל</label><select id="profileLanguage"><option value="auto">לפי שפת הלקוח</option><option value="he">עברית</option><option value="en">English</option></select>
+            <div class="section-heading"><div><h3>פרטי קשר ציבוריים</h3><p class="muted">ישמשו את בונה האתרים ואת סוכן הלידים. אין כאן חיבור לחשבונות.</p></div></div>
+            <label for="profileWebsite">אתר העסק (אם קיים)</label><input id="profileWebsite" type="url" maxlength="500" placeholder="https://example.com">
+            <label for="profilePublicPhone">טלפון עסקי</label><input id="profilePublicPhone" type="tel" maxlength="40" placeholder="מספר טלפון לפניות">
+            <label for="profileWhatsapp">WhatsApp Business</label><input id="profileWhatsapp" type="tel" maxlength="40" placeholder="מספר עם קידומת מדינה, אם יש">
+            <button class="primary" id="saveBusinessProfile" type="submit">שמור את פרטי העסק</button>
+            <p id="businessProfileStatus" class="auth-message" role="status" aria-live="polite">התחבר לחשבון כדי לשמור את פרופיל העסק.</p>
+          </form>
         </section>
 <section class="view" id="view-agents">
           <div class="page-heading"><div class="eyebrow">YOUR AI OPERATIONS TEAM</div><h1>AI Agent Command Center</h1><p class="muted">Give the team a goal. The coordinator will break it into specialist tasks and show a safe execution plan.</p></div>
