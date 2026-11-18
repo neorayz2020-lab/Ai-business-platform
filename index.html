@@ -144,7 +144,8 @@
               <div class="pricing-label">PRO</div><h2>Pro</h2><p>יותר יכולות, אוטומציות וחיבורי פלטפורמות — כשהחשבון מוכן לכך.</p>
               <div class="pricing-price">בקרוב <small>מחיר ומסלול תשלום יפורסמו עם הפעלת הסליקה</small></div>
               <ul><li>כל מה שכלול בחבילת Free</li><li>יכולות מתקדמות לבניית אתרים</li><li>ניהול צוות AI ותהליכי עבודה מורחבים</li><li>חיבורי שיווק ופרסום לפלטפורמות מאושרות</li><li>אוטומציות לידים וערוצי שירות</li><li>כלי אבטחה ודוחות מתקדמים</li></ul>
-              <button class="primary" id="proInterestButton" type="button">הצג לי את אפשרויות Pro</button>
+              <button class="primary" id="proInterestButton" type="button">בדיקת זמינות Pro</button>
+              <p id="proInterestStatus" class="auth-message" role="status" aria-live="polite"></p>
               <p class="pricing-disclaimer">חבילת Pro וסליקה עדיין אינן פעילות. לא יבוצע חיוב ולא תתבצע הרשמה בתשלום במסך הזה.</p>
             </article>
           </div>
@@ -266,10 +267,12 @@
             <div class="panel account-panel" id="accountPanel">
             <div class="section-heading"><div><h3>Workspace account</h3><p class="muted">Sign in to save your agent plans securely to your own account.</p></div><span class="tag" id="accountStatus">Not connected</span></div>
             <div id="authConfigWarning" class="notice warning hidden"><span>!</span><div><strong>הגדרות חשבון חסרות</strong><p>שירות החשבונות אינו זמין כרגע. צריך לבדוק את הגדרות Supabase.</p></div></div>
+            <div id="accountPlanBox" class="account-plan-box"><div><small>התוכנית שלך</small><strong id="accountPlanName">Free · חינם</strong></div><button class="text-action" type="button" data-view="pricing">שדרוג ל־Pro</button></div>
             <div id="authForms">
-              <label for="accountEmail">Email</label><input id="accountEmail" type="email" autocomplete="email" placeholder="you@example.com">
-              <label for="accountPassword">Password (at least 8 characters)</label><input id="accountPassword" type="password" autocomplete="current-password" minlength="8" placeholder="Enter a password">
-              <div class="auth-actions"><button class="primary" id="signInButton" type="button">Sign in</button><button class="secondary" id="signUpButton" type="button">Create account</button></div>
+              <label for="accountEmail">כתובת מייל</label><input id="accountEmail" type="email" autocomplete="email" placeholder="you@example.com">
+              <label for="accountPassword">סיסמה (לפחות 8 תווים)</label><input id="accountPassword" type="password" autocomplete="current-password" minlength="8" placeholder="בחר סיסמה">
+              <div class="auth-actions"><button class="primary" id="signInButton" type="button">התחברות</button><button class="secondary" id="signUpButton" type="button">יצירת חשבון</button></div>
+              <button class="text-action forgot-password" id="forgotPasswordButton" type="button">שכחתי סיסמה</button>
             </div>
             <button class="secondary hidden" id="signOutButton" type="button">Sign out</button>
             <p id="accountMessage" class="auth-message" role="status" aria-live="polite">Checking backend configuration…</p>
