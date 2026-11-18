@@ -238,7 +238,23 @@ function generateWebsite(silent = false) {
 }
 
 const liveEditIds = ['siteName','siteType','siteBrief','siteContact','siteHeadline','siteButton','siteAccent','service1Title','service1Text','service2Title','service2Text','service3Title','service3Text','contactHeadline','contactText'];
-liveEditIds.forEach(id => { const field = $('#' + id); field.addEventListener('input', () => { if (generatedSiteHtml && $('#siteBrief').value.trim()) generateWebsite(true); }); field.addEventListener('change', () => { if (generatedSiteHtml && $('#siteBrief').value.trim()) generateWebsite(); }); });
+let previewEditTimer = null;
+liveEditIds.forEach(id => {
+  const field = $('#' + id);
+  field.addEventListener('input', () => {
+    if (!generatedSiteHtml || !$('#siteBrief').value.trim()) return;
+    if (previewEditTimer) clearTimeout(previewEditTimer);
+    previewEditTimer = setTimeout(() => {
+      previewEditTimer = null;
+      generateWebsite(true);
+    }, 260);
+  });
+  field.addEventListener('change', () => {
+    if (previewEditTimer) clearTimeout(previewEditTimer);
+    previewEditTimer = null;
+    if (generatedSiteHtml && $('#siteBrief').value.trim()) generateWebsite(true);
+  });
+});
 
 
 $('#makeAIWebsite').addEventListener('click', async () => {
