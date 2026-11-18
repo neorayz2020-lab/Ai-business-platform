@@ -308,6 +308,13 @@
             <p class="fine-print">תוכנית העבודה נוצרת על ידי מנהל AI. אין להזין סיסמאות, מפתחות API או פרטי תשלום. פעולות מחוץ למערכת מחייבות אישור מפורש.</p>
           </div>
           <div id="agentResults" class="agent-results hidden" aria-live="polite"></div>
+          <div class="panel agent-execution-panel">
+            <div class="section-heading"><div><h3>תן לצוות להכין את התוצרים</h3><p class="muted">אחרי שמנהל ה־AI חילק את העבודה, כל מומחה יכין טיוטה לפי המשימה שלו.</p></div></div>
+            <button class="primary" id="prepareAgentOutputs" type="button" disabled>הכן תוצרים לכל המשימות</button>
+            <p id="agentExecutionStatus" class="auth-message" role="status" aria-live="polite">קודם צור תוכנית עבודה עם מנהל ה־AI.</p>
+            <div id="agentDeliverables" class="agent-deliverables hidden" aria-live="polite"></div>
+            <p class="fine-print">הסוכנים מכינים תוצרים וטיוטות בלבד. פרסום, שליחת הודעות, שינוי תקציבים או פעולות אבטחה חיצוניות דורשים אישור וחיבור מתאים.</p>
+          </div>
           <div class="panel save-plan-panel"><button class="primary" id="saveAgentPlan" type="button" disabled>Save plan to account</button><p id="saveAgentPlanStatus" class="auth-message" role="status">Sign in to save plans to your account.</p></div>
           <div class="panel"><h3>Meet your specialist agents</h3><div class="agent-roster">
             <div class="agent-card"><span class="agent-symbol purple">✦</span><div><strong>Coordinator</strong><p>Turns your goal into ordered tasks and tracks dependencies.</p></div><span class="tag">Planner</span></div>
