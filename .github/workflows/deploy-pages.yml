@@ -1,36 +1,46 @@
-name: Deploy NovaBuild AI to GitHub Pages
+name: Validate NovaBuild AI
 
 on:
   push:
+    branches: ["main"]
+  pull_request:
     branches: ["main"]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: "pages"
+  group: validate-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  validate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          enablement: true
-      - name: Upload site
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: "."
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          node-version: "22"
+      - name: Check required application files
+        run: |
+          test -f index.html
+          test -f styles.css
+          test -f app.js
+          test -f config.js
+          test -f supabase-auth.js
+          test -f agents.js
+          test -f supabase/functions/generate-website/index.ts
+      - name: Check browser JavaScript syntax
+        run: |
+          node --check app.js
+          node --check config.js
+          node --check supabase-auth.js
+          node --check agents.js
+      - name: Check HTML document basics
+        run: |
+          grep -qi '<!doctype html>' index.html
+          grep -q 'id="makeAIWebsite"' index.html
+          grep -q 'id="siteBrief"' index.html
