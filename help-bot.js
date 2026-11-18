@@ -45,8 +45,13 @@
     if(cta){set('siteButton',cta[1].replace(/[״"']+$/,''));changed.push('הכפתור');}
     if(changed.length){
       go('builder');
-      if(generated && !generated.disabled){say('עדכנתי את '+changed.join(', ')+'. תצוגת האתר מתעדכנת אוטומטית. כדאי לבדוק את התוצאה לפני הורדה או פרסום.');}
-      else {say('מילאתי את השינויים בטופס בונה האתרים. עכשיו תאר את העסק אם חסר תיאור, ולחץ על „שימוש בתבנית בסיסית” כדי ליצור תצוגה מקדימה.');button('פתיחת בונה האתרים',()=>go('builder'));}
+      if(generated && !generated.disabled){
+        document.querySelector('#makeBrief')?.click();
+        say('סידרתי את '+changed.join(', ')+', ובניתי מחדש את הטיוטה כדי שתראה את השינוי. 😊 בדוק את התצוגה המקדימה; אפשר להמשיך לבקש ממני שינויים.');
+      } else {
+        say('מילאתי את השינויים בשבילך. עוד רגע ניצור את הטיוטה הראשונה — אפשר גם לבקש ממני לכתוב את תיאור העסק.');
+        button('יצירת טיוטה עכשיו',()=>{document.querySelector('#makeBrief')?.click();go('builder');});
+      }
       return true;
     }
     if(/שנה|לשנות|עדכן|עדכון|צבע|כותרת|שם העסק|תיאור האתר|button|change|edit|update/i.test(t)){
@@ -59,7 +64,23 @@
   function answer(raw){
     const t=raw.toLowerCase();
     if(changeSite(raw)) return;
-    if(/website|site|אתר|חנות|דף נחיתה|בנה|לבנות/.test(t)){say('נתחיל בבונה האתרים. מלא את שם העסק ותאר מה אתה מציע ולמי. לאחר מכן צור טיוטה, ובכל שלב תוכל לבקש ממני לשנות כותרת, צבעים או תוכן.');button('פתיחת בונה האתרים',()=>go('builder'));return;}
+    if(/website|site|אתר|חנות|דף נחיתה|בנה|לבנות/.test(t)){
+      const wantsBuild = /אני רוצה|תבנה|בנה לי|תיצור|צור לי|תכין|בנה אתר|build me|create me|i want a website|make me a site|website for|site for|online store/i.test(raw);
+      const idea = document.querySelector('#nb-business-idea');
+      if(wantsBuild && idea && raw.length > 12){
+        idea.value = raw;
+        const brief = document.querySelector('#siteBrief');
+        if(brief) brief.value = raw;
+        const name = document.querySelector('#siteName');
+        if(name && !name.value.trim()) name.value = 'העסק שלי';
+        go('builder');
+        document.querySelector('#nb-build-first-draft')?.click();
+        say('סבבה, לקחתי את מה שכתבת והכנתי טיוטה ראשונה בלי שתצטרך למלא טופס ארוך. 🙌 היא מבוססת כרגע על תבנית התחלתית, לא על חיבור AI מלא. תסתכל בתצוגה ותגיד לי מה לשנות.');
+        return;
+      }
+      say('בשמחה! 🙂 כתוב לי במשפט אחד איזה עסק יש לך ומה היית רוצה שהאתר יעשה — למשל לקבל פניות, להציג שירותים או למכור מוצרים. אני אכין לך טיוטה ראשונה. לא צריך למלא טופס ארוך.');
+      button('פתיחת בונה האתרים',()=>go('builder'));return;
+    }
     if(/marketing|instagram|facebook|ads|advertis|campaign|שיווק|פרסום|מודעות/.test(t)){say('לשיווק פתח את מרכז השיווק כדי להכין טיוטת תוכן. כלי הפרסום עדיין לא מחובר לחשבונות ולא מפרסם או מוציא כסף אוטומטית.');button('פתיחת מרכז השיווק',()=>go('marketing'));return;}
     if(/google|seo|search|rank|גוגל|קידום/.test(t)){say('בגוגל וקידום אפשר לעבור על כותרות, תיאורים, התאמה לנייד ו-Google Search Console. הכלי מדריך אותך, אך עדיין לא שולח את האתר אוטומטית לגוגל.');button('פתיחת גוגל וקידום',()=>go('seo'));return;}
     if(/account|sign in|login|save|password|חשבון|התחברות|שמירה/.test(t)){say('פתח את אזור סוכני AI כדי לבדוק את הגדרות החשבון. שמירה דורשת שההתחברות תהיה מוגדרת. אל תכתוב כאן סיסמה.');button('פתיחת החשבון',()=>go('agents'));return;}
