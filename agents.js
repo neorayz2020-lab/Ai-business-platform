@@ -147,7 +147,7 @@
         tasks: source.tasks.map(task => ({
           agent: task.agent || 'Coordinator',
           title: task.title || 'משימה חדשה',
-          detail: task.detail || '',
+          detail: task.detail || task.deliverable || task.title || '',
           deliverable: task.deliverable || '',
           priority: task.priority || 'medium',
           approvalRequired: Boolean(task.approvalRequired),
