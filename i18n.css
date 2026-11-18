@@ -1,0 +1,24 @@
+/* Hebrew-first layout and language switch */
+html[dir="rtl"] body{direction:rtl}
+html[dir="rtl"] .sidebar{left:auto;right:0;border-right:0;border-left:1px solid #1d2940}
+html[dir="rtl"] .main{margin-left:0;margin-right:248px}
+html[dir="rtl"] .nav-item{text-align:right}
+html[dir="rtl"] .nav-item.active{box-shadow:inset -2px 0 #9384ff}
+html[dir="rtl"] .nav-item em{margin-left:0;margin-right:auto}
+html[dir="rtl"] .sidebar-bottom .icon-button{margin-left:0;margin-right:auto}
+html[dir="rtl"] .breadcrumb span{unicode-bidi:plaintext}
+html[dir="rtl"] .hero-card,.lang-he .hero-card{direction:rtl}
+html[dir="rtl"] .tool-card{text-align:right}
+html[dir="rtl"] label{text-align:right}
+html[dir="rtl"] .builder-layout{direction:rtl}
+html[dir="rtl"] .check-list label{text-align:right}
+html[dir="rtl"] .agent-card{direction:rtl}
+.language-toggle{white-space:nowrap;padding:8px 12px;min-width:72px}
+@media(max-width:900px){html[dir="rtl"] .sidebar{left:auto;right:0;transform:translateX(105%)}html[dir="rtl"] .sidebar.open{transform:translateX(0)}html[dir="rtl"] .main{margin-right:0;margin-left:0}}
+#nb-help-panel{direction:rtl;text-align:right}
+#nb-help-launcher{direction:rtl}
+.nb-help-form{direction:rtl}
+#nb-help-input{text-align:right}
+.nb-help-message.user{align-self:flex-start}
+.nb-help-message.bot{align-self:flex-end}
+#nb-help-quick{direction:rtl}
