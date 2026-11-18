@@ -1,0 +1,21 @@
+{
+  "$schema": "https://unpkg.com/wrangler@4/config-schema.json",
+  "name": "ai-business-platform",
+  "compatibility_date": "2026-11-18",
+  "workers_dev": true,
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+    "exclude": [
+      ".git",
+      ".github",
+      "node_modules",
+      "supabase",
+      ".env.example",
+      "*.md",
+      "wrangler.jsonc"
+    ]
+  }
+}
