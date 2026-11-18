@@ -1,96 +1,233 @@
-/* Guided site manager. Local rules only; no live LLM or external actions. */
+/* Real conversational assistant for NovaBuild AI. Calls the server-side AI function. */
 (() => {
+  const config = window.NOVABUILD_CONFIG || {};
   const launcher = document.createElement('button');
-  launcher.id = 'nb-help-launcher'; launcher.type = 'button';
-  launcher.textContent = '✦ עזרה ושינוי האתר';
-  launcher.setAttribute('aria-controls', 'nb-help-panel'); launcher.setAttribute('aria-expanded', 'false');
+  launcher.id = 'nb-help-launcher';
+  launcher.type = 'button';
+  launcher.innerHTML = '<span class="nb-launcher-spark">✦</span><span data-launcher-label>שוחח עם NovaBuild AI</span>';
+  launcher.setAttribute('aria-controls', 'nb-help-panel');
+  launcher.setAttribute('aria-expanded', 'false');
+  launcher.setAttribute('aria-label', 'פתיחת העוזר החכם');
+
   const panel = document.createElement('section');
-  panel.id = 'nb-help-panel'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', 'עוזר NovaBuild לניהול האתר'); panel.hidden = true;
+  panel.id = 'nb-help-panel';
+  panel.setAttribute('role', 'dialog');
+  panel.setAttribute('aria-modal', 'false');
+  panel.setAttribute('aria-label', 'העוזר החכם של NovaBuild AI');
+  panel.hidden = true;
   panel.innerHTML = `
-    <header class="nb-help-head"><div class="nb-help-avatar" aria-hidden="true">N</div><div class="nb-help-title">העוזר של NovaBuild<span class="nb-help-subtitle">עזרה בהתחלה ובשינוי האתר</span></div><button id="nb-help-close" type="button" aria-label="סגירה">×</button></header>
-    <div id="nb-help-messages" aria-live="polite" aria-relevant="additions"></div>
+    <header class="nb-help-head">
+      <div class="nb-help-avatar" aria-hidden="true">✦</div>
+      <div class="nb-help-title">NovaBuild AI<span class="nb-help-subtitle"><span class="nb-online-dot"></span> העוזר העסקי שלך · מוכן לעזור</span></div>
+      <button id="nb-help-new" type="button" aria-label="שיחה חדשה" title="שיחה חדשה">↻</button>
+      <button id="nb-help-close" type="button" aria-label="סגירה">×</button>
+    </header>
+    <div id="nb-help-messages" aria-live="polite" aria-relevant="additions" aria-label="הודעות השיחה"></div>
     <div id="nb-help-quick">
-      <button type="button" data-help="website">בניית אתר</button>
-      <button type="button" data-help="edit">שינוי האתר שלי</button>
-      <button type="button" data-help="marketing">שיווק ופרסום</button>
-      <button type="button" data-help="seo">גוגל וקידום</button>
-      <button type="button" data-help="account">חשבון ושמירה</button>
+      <button type="button" data-prompt="אני רוצה לבנות אתר לעסק שלי. עזור לי להתחיל.">בניית אתר</button>
+      <button type="button" data-prompt="תסביר לי בפשטות מה אפשר לעשות ב-NovaBuild AI.">איך זה עובד?</button>
+      <button type="button" data-prompt="עזור לי להביא יותר לקוחות לעסק.">שיווק ולקוחות</button>
     </div>
-    <form class="nb-help-form" id="nb-help-form"><input id="nb-help-input" maxlength="500" autocomplete="off" placeholder="כתוב מה תרצה לבנות או לשנות…" aria-label="ההודעה שלך"><button id="nb-help-send" type="submit">שליחה</button></form>
-    <div class="nb-help-note">עוזר מקומי ראשוני · לא משתף סיסמאות או פרטי תשלום.</div>`;
+    <form class="nb-help-form" id="nb-help-form">
+      <textarea id="nb-help-input" rows="1" maxlength="1600" autocomplete="off" placeholder="כתוב לי מה תרצה לעשות…" aria-label="ההודעה שלך"></textarea>
+      <button id="nb-help-send" type="submit" aria-label="שליחת הודעה">➤</button>
+    </form>
+    <div class="nb-help-note">מבוסס AI · אל תשלח סיסמאות או פרטי תשלום.</div>`;
   document.body.append(launcher, panel);
-  const messages = panel.querySelector('#nb-help-messages'), input = panel.querySelector('#nb-help-input');
+
+  const messagesEl = panel.querySelector('#nb-help-messages');
+  const input = panel.querySelector('#nb-help-input');
+  const send = panel.querySelector('#nb-help-send');
+  const quick = panel.querySelector('#nb-help-quick');
+  let history = [];
+  let busy = false;
   let greeted = false;
-  function say(text, who='bot') { const bubble=document.createElement('div'); bubble.className='nb-help-message '+who; bubble.textContent=text; messages.append(bubble); messages.scrollTop=messages.scrollHeight; }
-  function open(){panel.hidden=false;launcher.setAttribute('aria-expanded','true');if(!greeted){say('שלום! אני העוזר של NovaBuild. אני יכול להדריך אותך בבניית האתר וגם לעזור לשנות את הטיוטה: כותרת, צבעים, שם העסק ותיאור. מה תרצה לעשות?');greeted=true;}input.focus();}
-  function close(){panel.hidden=true;launcher.setAttribute('aria-expanded','false');launcher.focus();}
-  function go(view){document.querySelector('.nav-item[data-view="'+view+'"]')?.click();}
-  function button(label, action){const wrap=document.createElement('div');wrap.className='nb-help-message bot';const b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',action);wrap.append(b);messages.append(wrap);messages.scrollTop=messages.scrollHeight;}
-  function changeSite(raw){
-    const t=raw.trim();
-    const builder=document.querySelector('#view-builder');
-    const brief=document.querySelector('#siteBrief');
-    const generated=document.querySelector('#downloadSite');
-    const set=(id,value)=>{const el=document.getElementById(id);if(el&&value){el.value=value;el.dispatchEvent(new Event('input',{bubbles:true}));return true;}return false;};
-    let changed=[];
-    const colorMatch=t.match(/(?:צבע(?:ים)?(?: האתר)?(?: ל| שיהיה )?|צבע ל|color(?: to)?\s*)(סגול|כחול|ירוק|אדום|שחור|לבן|טורקיז|ורוד|purple|blue|green|red|black|white|teal|pink|#[0-9a-f]{6})/i);
-    if(colorMatch){const colors={'סגול':'#6d5dfc','purple':'#6d5dfc','כחול':'#2563eb','blue':'#2563eb','ירוק':'#276749','green':'#276749','אדום':'#c0392b','red':'#c0392b','שחור':'#172033','black':'#172033','לבן':'#ffffff','white':'#ffffff','טורקיז':'#087f8c','teal':'#087f8c','ורוד':'#b83280','pink':'#b83280'};set('siteAccent',colorMatch[1].startsWith('#')?colorMatch[1]:colors[colorMatch[1].toLowerCase()]||colors[colorMatch[1]]);changed.push('הצבע');}
-    const headline=t.match(/(?:כותרת(?: ראשית)?(?: ל| שתהיה| היא)?|headline(?: to)?)[\s:״"']+(.+)/i);
-    if(headline){set('siteHeadline',headline[1].replace(/[״"']+$/,''));changed.push('הכותרת');}
-    const name=t.match(/(?:שם העסק(?: ל| שיהיה)?|שם האתר(?: ל| שיהיה)?|business name(?: to)?)[\s:״"']+(.+)/i);
-    if(name){set('siteName',name[1].replace(/[״"']+$/,''));changed.push('שם העסק');}
-    const desc=t.match(/(?:תיאור(?: האתר)?(?: ל| שיהיה)?|תוכן האתר(?: ל| שיהיה)?|description(?: to)?)[\s:״"']+(.+)/i);
-    if(desc){set('siteBrief',desc[1].replace(/[״"']+$/,''));changed.push('תיאור האתר');}
-    const cta=t.match(/(?:כפתור(?: ראשי)?(?: ל| שיהיה)?|טקסט הכפתור(?: ל)?|button text(?: to)?)[\s:״"']+(.+)/i);
-    if(cta){set('siteButton',cta[1].replace(/[״"']+$/,''));changed.push('הכפתור');}
-    if(changed.length){
-      go('builder');
-      if(generated && !generated.disabled){
-        document.querySelector('#makeBrief')?.click();
-        say('סידרתי את '+changed.join(', ')+', ובניתי מחדש את הטיוטה כדי שתראה את השינוי. 😊 בדוק את התצוגה המקדימה; אפשר להמשיך לבקש ממני שינויים.');
-      } else {
-        say('מילאתי את השינויים בשבילך. עוד רגע ניצור את הטיוטה הראשונה — אפשר גם לבקש ממני לכתוב את תיאור העסק.');
-        button('יצירת טיוטה עכשיו',()=>{document.querySelector('#makeBrief')?.click();go('builder');});
-      }
-      return true;
-    }
-    if(/שנה|לשנות|עדכן|עדכון|צבע|כותרת|שם העסק|תיאור האתר|button|change|edit|update/i.test(t)){
-      go('builder');
-      say('אני יכול לעדכן ישירות בטיוטה צבע, כותרת, שם עסק, תיאור וטקסט כפתור. כתוב למשל: „שנה צבע לכחול” או „כותרת: שירות מקצועי ואמין”.');
-      return true;
-    }
-    return false;
+  let currentLanguage = window.NovaBuildI18n?.getLanguage?.() || 'he';
+
+  function setLanguage(language) {
+    currentLanguage = language === 'en' ? 'en' : 'he';
+    const en = currentLanguage === 'en';
+    launcher.querySelector('[data-launcher-label]').textContent = en ? 'Chat with NovaBuild AI' : 'שוחח עם NovaBuild AI';
+    launcher.setAttribute('aria-label', en ? 'Open AI assistant' : 'פתיחת העוזר החכם');
+    panel.querySelector('.nb-help-title').childNodes[0].textContent = 'NovaBuild AI';
+    panel.querySelector('.nb-help-subtitle').innerHTML = '<span class="nb-online-dot"></span> ' + (en ? 'Your business assistant · Ready to help' : 'העוזר העסקי שלך · מוכן לעזור');
+    panel.querySelector('#nb-help-new').title = en ? 'New chat' : 'שיחה חדשה';
+    panel.querySelector('#nb-help-new').setAttribute('aria-label', en ? 'New chat' : 'שיחה חדשה');
+    panel.querySelector('#nb-help-close').setAttribute('aria-label', en ? 'Close' : 'סגירה');
+    input.placeholder = en ? 'Tell me what you want to do…' : 'כתוב לי מה תרצה לעשות…';
+    input.setAttribute('aria-label', en ? 'Your message' : 'ההודעה שלך');
+    send.setAttribute('aria-label', en ? 'Send message' : 'שליחת הודעה');
+    panel.querySelector('.nb-help-note').textContent = en ? 'AI-powered · Never share passwords or payment details.' : 'מבוסס AI · אל תשלח סיסמאות או פרטי תשלום.';
+    const prompts = en ? [
+      ['Build a website', 'Help me understand how NovaBuild AI works.', 'Help me get more customers for my business.']
+    ][0] : [
+      'אני רוצה לבנות אתר לעסק שלי. עזור לי להתחיל.',
+      'תסביר לי בפשטות מה אפשר לעשות ב-NovaBuild AI.',
+      'עזור לי להביא יותר לקוחות לעסק.'
+    ];
+    quick.querySelectorAll('[data-prompt]').forEach((button, i) => {
+      button.textContent = en ? ['Build a website', 'How does it work?', 'Marketing & leads'][i] : ['בניית אתר', 'איך זה עובד?', 'שיווק ולקוחות'][i];
+      button.dataset.prompt = prompts[i];
+    });
   }
-  function answer(raw){
-    const t=raw.toLowerCase();
-    if(changeSite(raw)) return;
-    if(/website|site|אתר|חנות|דף נחיתה|בנה|לבנות/.test(t)){
-      const wantsBuild = /אני רוצה|תבנה|בנה לי|תיצור|צור לי|תכין|בנה אתר|build me|create me|i want a website|make me a site|website for|site for|online store/i.test(raw);
-      const idea = document.querySelector('#nb-business-idea');
-      if(wantsBuild && idea && raw.length > 12){
-        idea.value = raw;
-        const brief = document.querySelector('#siteBrief');
-        if(brief) brief.value = raw;
-        const name = document.querySelector('#siteName');
-        if(name && !name.value.trim()) name.value = 'העסק שלי';
-        go('builder');
-        document.querySelector('#nb-build-first-draft')?.click();
-        say('סבבה, לקחתי את מה שכתבת והכנתי טיוטה ראשונה בלי שתצטרך למלא טופס ארוך. 🙌 היא מבוססת כרגע על תבנית התחלתית, לא על חיבור AI מלא. תסתכל בתצוגה ותגיד לי מה לשנות.');
-        return;
-      }
-      say('בשמחה! 🙂 כתוב לי במשפט אחד איזה עסק יש לך ומה היית רוצה שהאתר יעשה — למשל לקבל פניות, להציג שירותים או למכור מוצרים. אני אכין לך טיוטה ראשונה. לא צריך למלא טופס ארוך.');
-      button('פתיחת בונה האתרים',()=>go('builder'));return;
-    }
-    if(/marketing|instagram|facebook|ads|advertis|campaign|שיווק|פרסום|מודעות/.test(t)){say('לשיווק פתח את מרכז השיווק כדי להכין טיוטת תוכן. כלי הפרסום עדיין לא מחובר לחשבונות ולא מפרסם או מוציא כסף אוטומטית.');button('פתיחת מרכז השיווק',()=>go('marketing'));return;}
-    if(/google|seo|search|rank|גוגל|קידום/.test(t)){say('בגוגל וקידום אפשר לעבור על כותרות, תיאורים, התאמה לנייד ו-Google Search Console. הכלי מדריך אותך, אך עדיין לא שולח את האתר אוטומטית לגוגל.');button('פתיחת גוגל וקידום',()=>go('seo'));return;}
-    if(/account|sign in|login|save|password|חשבון|התחברות|שמירה/.test(t)){say('פתח את אזור סוכני AI כדי לבדוק את הגדרות החשבון. שמירה דורשת שההתחברות תהיה מוגדרת. אל תכתוב כאן סיסמה.');button('פתיחת החשבון',()=>go('agents'));return;}
-    say('אני כאן כדי לעזור בבנייה ובניהול האתר. אפשר לבחור נושא או לכתוב שינוי ספציפי כמו „שנה צבע לכחול” או „כותרת: העסק שלך, בדרך הנכונה”.');
+
+  function addMessage(content, role = 'assistant', extraClass = '') {
+    const bubble = document.createElement('div');
+    bubble.className = 'nb-help-message ' + (role === 'user' ? 'user' : 'bot') + (extraClass ? ' ' + extraClass : '');
+    bubble.textContent = content;
+    messagesEl.append(bubble);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    return bubble;
   }
-  function respond(raw){const value=raw.trim();if(!value)return;say(value,'user');answer(value);}
-  launcher.addEventListener('click',()=>panel.hidden?open():close());
-  panel.querySelector('#nb-help-close').addEventListener('click',close);
-  panel.querySelector('#nb-help-form').addEventListener('submit',e=>{e.preventDefault();respond(input.value);input.value='';input.focus();});
-  panel.querySelectorAll('[data-help]').forEach(b=>b.addEventListener('click',()=>respond(b.dataset.help==='edit'?'אני רוצה לשנות את האתר שלי':b.textContent)));
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden)close();});
-  window.addEventListener('novabuild:language',e=>{if(e.detail.language==='en'){launcher.textContent='✦ Site help & edits';panel.querySelector('.nb-help-title').firstChild.textContent='NovaBuild assistant';panel.querySelector('.nb-help-subtitle').textContent='Getting started and site editing';input.placeholder='Tell me what to build or change…';panel.querySelector('#nb-help-send').textContent='Send';panel.querySelector('.nb-help-note').textContent='Guided prototype · Do not share passwords or payment details.';panel.querySelectorAll('[data-help]').forEach((b,i)=>b.textContent=['Build a website','Edit my website','Marketing & ads','Google & SEO','Account & saving'][i]);}else{launcher.textContent='✦ עזרה ושינוי האתר';panel.querySelector('.nb-help-title').firstChild.textContent='העוזר של NovaBuild';panel.querySelector('.nb-help-subtitle').textContent='עזרה בהתחלה ובשינוי האתר';input.placeholder='כתוב מה תרצה לבנות או לשנות…';panel.querySelector('#nb-help-send').textContent='שליחה';panel.querySelector('.nb-help-note').textContent='עוזר מקומי ראשוני · לא משתף סיסמאות או פרטי תשלום.';panel.querySelectorAll('[data-help]').forEach((b,i)=>b.textContent=['בניית אתר','שינוי האתר שלי','שיווק ופרסום','גוגל וקידום','חשבון ושמירה'][i]);}});
+
+  function welcome() {
+    if (greeted) return;
+    greeted = true;
+    addMessage(currentLanguage === 'en'
+      ? 'Hi! I’m your NovaBuild AI assistant. Tell me what you want to create or ask me anything about building your business online. I’ll guide you step by step.'
+      : 'היי! 👋 אני העוזר החכם של NovaBuild. אפשר לדבר איתי בחופשיות — לשאול שאלות, לבנות אתר, לשפר את התוכן או להבין איך להביא לקוחות. אני אסביר הכול צעד־צעד ובשפה פשוטה. במה נתחיל?');
+  }
+
+  function open({ focus = true } = {}) {
+    panel.hidden = false;
+    launcher.setAttribute('aria-expanded', 'true');
+    welcome();
+    if (focus) input.focus();
+  }
+  function close() {
+    panel.hidden = true;
+    launcher.setAttribute('aria-expanded', 'false');
+  }
+  function navigate(view) {
+    document.querySelector('.nav-item[data-view="' + view + '"]')?.click();
+  }
+
+  function applyAction(data) {
+    const action = data.action || 'NONE';
+    if (action === 'OPEN_BUILDER' || action === 'BUILD_SITE' || action === 'EDIT_SITE') {
+      navigate('builder');
+    } else if (action === 'OPEN_MARKETING') navigate('marketing');
+    else if (action === 'OPEN_SEO') navigate('seo');
+    else if (action === 'OPEN_AGENTS') navigate('agents');
+
+    if (action === 'BUILD_SITE') {
+      const brief = document.getElementById('siteBrief');
+      const name = document.getElementById('siteName');
+      const type = document.getElementById('siteType');
+      const headline = document.getElementById('siteHeadline');
+      const button = document.getElementById('siteButton');
+      const accent = document.getElementById('siteAccent');
+      if (brief && data.siteBrief) brief.value = data.siteBrief;
+      if (name && data.businessName) name.value = data.businessName;
+      if (type && data.siteType) type.value = data.siteType;
+      if (headline && data.headline) headline.value = data.headline;
+      if (button && data.buttonText) button.value = data.buttonText;
+      if (accent && data.accent) accent.value = data.accent;
+      if (brief?.value.trim()) {
+        document.getElementById('makeBrief')?.click();
+        document.getElementById('sitePreview')?.scrollIntoView({behavior: 'smooth', block: 'center'});
+      }
+    }
+    if (action === 'EDIT_SITE') {
+      const fields = [
+        ['siteName', data.businessName], ['siteBrief', data.siteBrief],
+        ['siteHeadline', data.headline], ['siteButton', data.buttonText], ['siteAccent', data.accent]
+      ];
+      let changed = false;
+      for (const [id, value] of fields) {
+        const el = document.getElementById(id);
+        if (el && value) { el.value = value; changed = true; }
+      }
+      if (changed) document.getElementById('makeBrief')?.click();
+    }
+  }
+
+  async function sendMessage(raw) {
+    const content = String(raw || '').trim();
+    if (!content || busy) return;
+    addMessage(content, 'user');
+    history.push({role: 'user', content});
+    input.value = '';
+    input.style.height = 'auto';
+    quick.hidden = true;
+    busy = true;
+    send.disabled = true;
+    input.disabled = true;
+    const typing = addMessage(currentLanguage === 'en' ? 'Thinking…' : 'חושב…', 'assistant', 'typing');
+    try {
+      if (!config.supabaseUrl || !config.supabaseAnonKey) throw new Error('CONFIG_MISSING');
+      const response = await fetch(config.supabaseUrl.replace(/\/$/, '') + '/functions/v1/ai-assistant', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': config.supabaseAnonKey
+        },
+        body: JSON.stringify({
+          language: currentLanguage,
+          messages: history.slice(-10),
+          currentView: document.querySelector('.view.active')?.id?.replace('view-', '') || 'overview'
+        })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        if (data.code === 'AI_NOT_CONFIGURED') throw new Error('AI_NOT_CONFIGURED');
+        throw new Error(data.error || 'REQUEST_FAILED');
+      }
+      typing.remove();
+      addMessage(data.reply, 'assistant');
+      history.push({role: 'assistant', content: data.reply});
+      applyAction(data);
+    } catch (error) {
+      typing.remove();
+      const message = error.message === 'AI_NOT_CONFIGURED'
+        ? (currentLanguage === 'en' ? 'The AI assistant is not connected yet. The site owner needs to add the server AI key in Supabase. No login is required for the chat.' : 'העוזר עדיין לא מחובר למנוע AI. צריך להגדיר את מפתח ה-AI בשרת Supabase. לא צריך להתחבר לחשבון כדי לשוחח.')
+        : (error.message === 'CONFIG_MISSING'
+          ? (currentLanguage === 'en' ? 'The assistant connection settings are missing. Please tell the site owner.' : 'חסרות הגדרות החיבור של העוזר. צריך לעדכן את בעל האתר.')
+          : (currentLanguage === 'en' ? 'I couldn’t get a reply just now. Please try again in a moment.' : 'לא הצלחתי לקבל תשובה כרגע. נסה שוב בעוד רגע.'));
+      addMessage(message, 'assistant', 'error');
+      console.error('NovaBuild AI assistant error:', error);
+    } finally {
+      busy = false;
+      send.disabled = false;
+      input.disabled = false;
+      input.focus();
+    }
+  }
+
+  launcher.addEventListener('click', () => panel.hidden ? open() : close());
+  panel.querySelector('#nb-help-close').addEventListener('click', close);
+  panel.querySelector('#nb-help-new').addEventListener('click', () => {
+    history = [];
+    greeted = false;
+    messagesEl.replaceChildren();
+    quick.hidden = false;
+    welcome();
+    input.focus();
+  });
+  panel.querySelector('#nb-help-form').addEventListener('submit', event => {
+    event.preventDefault();
+    sendMessage(input.value);
+  });
+  input.addEventListener('keydown', event => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      panel.querySelector('#nb-help-form').requestSubmit();
+    }
+  });
+  input.addEventListener('input', () => {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+  });
+  quick.querySelectorAll('[data-prompt]').forEach(button => button.addEventListener('click', () => sendMessage(button.dataset.prompt)));
+  document.addEventListener('keydown', event => { if (event.key === 'Escape' && !panel.hidden) close(); });
+  window.addEventListener('novabuild:language', event => setLanguage(event.detail.language));
+
+  window.NovaBuildAssistant = {
+    open,
+    close,
+    ask: sendMessage,
+    newChat: () => panel.querySelector('#nb-help-new').click()
+  };
+  setLanguage(currentLanguage);
+  open({focus: false});
 })();
