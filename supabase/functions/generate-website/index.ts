@@ -103,7 +103,7 @@ Deno.serve(async (req: Request) => {
     required: ["designStyle","palette","layout","eyebrow","headline","subheadline","buttonText","servicesTitle","sections","benefitsTitle","benefits","processTitle","processSteps","aboutTitle","aboutText","contactHeading","contactText","visualLabel","visualNote"]
   };
 
-  const models = ["gemini-4-hydrogen","gemini-3.8-flash","gemini-3.5-flash-lite"];
+  const models = ["gemini-3.8-flash","gemini-3.5-flash-lite","gemini-3.1-flash-lite"];
   let lastStatus = 503;
   try {
     for (const modelName of models) {
