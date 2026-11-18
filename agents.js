@@ -171,6 +171,7 @@
       results.replaceChildren(message);
       results.classList.remove('hidden');
       if (/חשבון חינמי|להתחבר|התחבר/.test(statusLine.textContent)) {
+        document.querySelector('.nav-item[data-view="account"]')?.click();
         const email = document.getElementById('accountEmail');
         email?.focus();
       }
