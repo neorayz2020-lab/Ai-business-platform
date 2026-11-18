@@ -1,0 +1,11 @@
+# Keep repository metadata, server-side code, secrets examples and documentation out of public assets.
+.git/
+.github/
+node_modules/
+supabase/
+.env
+.env.*
+*.md
+wrangler.jsonc
+.gitignore
+.assetsignore
