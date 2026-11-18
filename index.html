@@ -37,7 +37,7 @@
       <div class="sidebar-bottom"><div class="help-icon">?</div><div><strong>Need a hand?</strong><small>Your AI business guide</small></div><button class="icon-button" aria-label="Help" data-view="builder">↗</button></div>
     </aside>
     <main class="main">
-      <header class="topbar"><button class="mobile-menu" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="sidebar">☰</button><div class="breadcrumb">Workspace <span>/</span> <strong id="crumb">Overview</strong></div><div class="top-actions"><button id="languageToggle" class="secondary language-toggle" type="button" aria-label="Switch language">English</button><span class="status-dot"></span><span class="status-text">Prototype mode</span><button class="avatar" title="Account">N</button></div></header>
+      <header class="topbar"><button class="mobile-menu" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="sidebar">☰</button><div class="breadcrumb">Workspace <span>/</span> <strong id="crumb">Overview</strong></div><div class="top-actions"><button id="languageToggle" class="secondary language-toggle" type="button" aria-label="Switch language">English</button><button class="secondary account-quick" type="button" data-view="agents">חשבון / התחברות</button><span class="status-dot"></span><span class="status-text">AI workspace</span></div></header>
       <div class="content" id="content">
         <section class="view active" id="view-overview">
           <div class="welcome-row"><div><div class="eyebrow">YOUR BUSINESS, ONE WORKSPACE</div><h1>Build something <span>remarkable.</span></h1><p class="muted">A business workspace prototype for website drafts, marketing planning, SEO guidance, and launch checklists.</p></div><button class="primary" data-view="builder">＋ Create a website</button></div>
@@ -143,11 +143,11 @@
         </section>
 <section class="view" id="view-agents">
           <div class="page-heading"><div class="eyebrow">YOUR AI OPERATIONS TEAM</div><h1>AI Agent Command Center</h1><p class="muted">Give the team a goal. The coordinator will break it into specialist tasks and show a safe execution plan.</p></div>
-          <div class="notice"><span>ⓘ</span><div><strong>Prototype agent mode</strong><p>This first version runs a local, rule-based planner in your browser. It does not call an AI model, run background jobs, access accounts, or execute external actions yet.</p></div></div>
+          <div class="notice"><span>i</span><div><strong>צוות AI עם אישור לפני פעולה</strong><p>המערכת מנתחת יעדים ומכינה תוכניות עבודה. פעולות חיצוניות, פרסום, שליחת הודעות ושינוי תקציבים נשארים חסומים עד לחיבור חשבונות ואישור מפורש. נדרש חשבון חינמי כדי להפעיל סוכנים ולשמור מידע עסקי.</p></div></div>
 
           <div class="panel account-panel" id="accountPanel">
             <div class="section-heading"><div><h3>Workspace account</h3><p class="muted">Sign in to save your agent plans securely to your own account.</p></div><span class="tag" id="accountStatus">Not connected</span></div>
-            <div id="authConfigWarning" class="notice warning"><span>⚠</span><div><strong>Backend setup required</strong><p>Authentication is not active until Supabase is configured. Follow the setup guide in the repository.</p><a class="text-link" href="SUPABASE_SETUP.md">Open setup guide ↗</a></div></div>
+            <div id="authConfigWarning" class="notice warning hidden"><span>!</span><div><strong>הגדרות חשבון חסרות</strong><p>שירות החשבונות אינו זמין כרגע. צריך לבדוק את הגדרות Supabase.</p></div></div>
             <div id="authForms">
               <label for="accountEmail">Email</label><input id="accountEmail" type="email" autocomplete="email" placeholder="you@example.com">
               <label for="accountPassword">Password (at least 8 characters)</label><input id="accountPassword" type="password" autocomplete="current-password" minlength="8" placeholder="Enter a password">
