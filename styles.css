@@ -220,3 +220,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans','Heebo',Arial,
 .account-plan-box small{display:block;color:#708697;font-size:10px;margin-bottom:4px}
 .account-plan-box strong{display:block;color:#2b526c;font-size:13px}
 .forgot-password{margin-top:12px}
+
+.sales-prompt{display:flex;gap:9px;align-items:stretch;max-width:600px;margin-top:17px;padding:7px;border:1px solid #dbe5eb;border-radius:12px;background:#fff}
+.sales-prompt textarea{flex:1;min-width:0;resize:vertical;border:0;outline:none;padding:9px;background:transparent;color:#20384d;font:12px/1.6 'DM Sans','Heebo',sans-serif}
+.sales-prompt .primary{white-space:nowrap;padding-inline:15px}
+@media(max-width:600px){.sales-prompt{flex-direction:column}.sales-prompt .primary{width:100%}}
