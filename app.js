@@ -249,7 +249,7 @@ async function generateWebsiteCopyWithAI(payload) {
 async function callBusinessAgent(mode, payload) {
   const config = window.NOVABUILD_CONFIG || {};
   if (!config.supabaseUrl || !config.supabaseAnonKey) throw new Error('חיבור השרת לא מוגדר. בדוק את config.js.');
-  const response = await fetch(config.supabaseUrl.replace(/\\/$/, '') + '/functions/v1/business-agent', {
+  const response = await fetch(config.supabaseUrl.replace(/\/$/, '') + '/functions/v1/business-agent', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -344,9 +344,9 @@ $('#runLeadAI').addEventListener('click', async () => {
       whatsapp.type = 'button';
       whatsapp.textContent = 'פתח WhatsApp עם תשובה מוכנה';
       whatsapp.addEventListener('click', () => {
-        let digits = phone.replace(/\\D/g, '');
+        let digits = phone.replace(/\D/g, '');
         if (digits.startsWith('0')) digits = '972' + digits.slice(1);
-        if (!/^[1-9]\\d{7,14}$/.test(digits)) {
+        if (!/^[1-9]\d{7,14}$/.test(digits)) {
           status.textContent = 'מספר הטלפון אינו תקין. הזן מספר עם קידומת מדינה או מספר ישראלי שמתחיל ב־0.';
           return;
         }
