@@ -49,6 +49,43 @@ function renderOutput(id, heading, body) {
   output.classList.remove('hidden');
 }
 
+
+const businessProfileFields = {
+  business_name: 'profileBusinessName', industry: 'profileIndustry', description: 'profileDescription',
+  services: 'profileServices', target_audience: 'profileAudience', service_area: 'profileArea',
+  communication_style: 'profileTone', preferred_language: 'profileLanguage', website_url: 'profileWebsite',
+  public_phone: 'profilePublicPhone', whatsapp_phone: 'profileWhatsapp'
+};
+function fillBusinessProfile(profile) {
+  if (!profile) return;
+  Object.entries(businessProfileFields).forEach(([key,id]) => {
+    const field = document.getElementById(id);
+    if (field && profile[key] !== undefined && document.activeElement !== field) field.value = profile[key] || '';
+  });
+  if (profile.business_name) ['growthBusiness','leadBusiness','marketingBusiness'].forEach(id => {
+    const field = document.getElementById(id);
+    if (field && !field.value.trim()) field.value = profile.business_name;
+  });
+  const phone = document.getElementById('leadPhone');
+  if (phone && profile.whatsapp_phone && !phone.value.trim()) phone.value = profile.whatsapp_phone;
+}
+window.addEventListener('novabuild:business-profile', event => fillBusinessProfile(event.detail?.profile));
+$('#businessProfileForm')?.addEventListener('submit', async event => {
+  event.preventDefault();
+  const button = $('#saveBusinessProfile'), status = $('#businessProfileStatus');
+  const payload = {};
+  Object.entries(businessProfileFields).forEach(([key,id]) => { payload[key] = $('#' + id)?.value.trim() || ''; });
+  if (!window.NovaBuildAuth?.saveBusinessProfile) { status.textContent = 'שירות החשבון עדיין נטען. רענן את העמוד ונסה שוב.'; return; }
+  button.disabled = true; status.textContent = 'שומר את פרופיל העסק…';
+  try {
+    const profile = await window.NovaBuildAuth.saveBusinessProfile(payload);
+    fillBusinessProfile(profile);
+    status.textContent = 'פרטי העסק נשמרו. הסוכנים ישתמשו בהם במשימות הבאות.';
+  } catch (error) {
+    status.textContent = error?.message || 'לא הצלחתי לשמור את פרטי העסק.';
+  } finally { button.disabled = false; }
+});
+
 let generatedSiteHtml = '';
 let generatedSiteDesign = null;
 
