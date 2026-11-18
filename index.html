@@ -21,9 +21,11 @@
       <a class="brand" href="#" aria-label="NovaBuild home"><span class="brand-mark">N</span><span>NovaBuild <small>AI WORKSPACE</small></span></a>
       <div class="workspace-label">WORKSPACE</div>
       <nav class="nav" aria-label="Main navigation">
-        <button class="nav-item active" data-view="overview"><span>◫</span> Overview</button>
-        <button class="nav-item" data-view="agents"><span>✦</span> AI Agents <em>BETA</em></button>
-        <button class="nav-item" data-view="profile"><span>▤</span> Business profile</button>
+        <button class="nav-item active" data-view="overview"><span>◫</span> דף הבית</button>
+        <button class="nav-item" data-view="agents"><span>✦</span> צוות AI <em>AI</em></button>
+        <button class="nav-item" data-view="profile"><span>▤</span> פרופיל העסק</button>
+        <button class="nav-item" data-view="pricing"><span>₪</span> חבילות ומנוי</button>
+        <button class="nav-item" data-view="account"><span>○</span> חשבון והתחברות</button>
         <button class="nav-item" data-view="builder"><span>✳</span> Website builder <em>AI</em></button>
         <button class="nav-item" data-view="marketing"><span>◉</span> Marketing studio</button>
         <button class="nav-item" data-view="ads"><span>↗</span> Ads Autopilot <em class="soon">BETA</em></button>
@@ -38,24 +40,118 @@
       <div class="sidebar-bottom"><div class="help-icon">?</div><div><strong>Need a hand?</strong><small>Your AI business guide</small></div><button class="icon-button" aria-label="Help" data-view="builder">↗</button></div>
     </aside>
     <main class="main">
-      <header class="topbar"><button class="mobile-menu" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="sidebar">☰</button><div class="breadcrumb">Workspace <span>/</span> <strong id="crumb">Overview</strong></div><div class="top-actions"><button id="languageToggle" class="secondary language-toggle" type="button" aria-label="Switch language">English</button><button class="secondary account-quick" type="button" data-view="agents">חשבון / התחברות</button><span class="status-dot"></span><span class="status-text">AI workspace</span></div></header>
+      <header class="topbar"><button class="mobile-menu" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="sidebar">☰</button><div class="breadcrumb">Workspace <span>/</span> <strong id="crumb">Overview</strong></div><div class="top-actions"><button id="languageToggle" class="secondary language-toggle" type="button" aria-label="Switch language">English</button><button class="secondary account-quick" type="button" data-view="account">חשבון / התחברות</button><span class="status-dot"></span><span class="status-text">AI workspace</span></div></header>
       <div class="content" id="content">
         <section class="view active" id="view-overview">
-          <div class="welcome-row"><div><div class="eyebrow">YOUR BUSINESS, ONE WORKSPACE</div><h1>Build something <span>remarkable.</span></h1><p class="muted">A business workspace prototype for website drafts, marketing planning, SEO guidance, and launch checklists.</p></div><button class="primary" data-view="builder">＋ Create a website</button></div>
-          <div class="hero-card"><div class="hero-copy"><div class="pill"><span class="sparkle">✦</span> YOUR AI BUSINESS PARTNER</div><h2>What do you want to<br>build today?</h2><p>Tell me what your business needs. Ask questions and build step by step together.</p><form id="quickPrompt" class="prompt-box"><textarea id="quickPromptText" rows="2" placeholder="e.g. I want a website for my business. Where do I start?" aria-label="Describe what you want to build"></textarea><button class="primary" type="submit">Chat with the assistant <span>→</span></button></form><small class="fine-print">Chat with the assistant without signing in. Publishing and account connections require additional setup.</small></div><div class="hero-art"><div class="orb orb-one"></div><div class="orb orb-two"></div><div class="mini-window"><div class="window-top"><i></i><i></i><i></i><span>your-business.com</span></div><div class="mock-layout"><div class="mock-nav"></div><div class="mock-title"></div><div class="mock-line"></div><div class="mock-button"></div><div class="mock-image"></div><div class="mock-line short"></div></div></div><div class="float-chip chip-one">✦ AI builder</div><div class="float-chip chip-two">↗ Growth tools</div></div></div>
-          <div class="section-heading"><div><h2>Your business toolkit</h2><p class="muted">Everything you need, connected in one place.</p></div><span class="muted tiny">8 WORKSPACES</span></div>
-          <div class="tool-grid">
-            <button class="tool-card" data-view="builder"><span class="tool-icon purple">✳</span><strong>Website builder</strong><p>Turn your idea into a responsive website.</p><span class="card-link">Start creating ↗</span></button>
-            <button class="tool-card" data-view="marketing"><span class="tool-icon pink">◉</span><strong>Marketing studio</strong><p>Draft social posts, campaigns, and content.</p><span class="card-link">Create content ↗</span></button>
-            <button class="tool-card" data-view="ads"><span class="tool-icon blue">↗</span><strong>Ads Autopilot</strong><p>Plan campaigns and review optimization ideas.</p><span class="card-link">Explore ads ↗</span></button>
-            <button class="tool-card" data-view="seo"><span class="tool-icon green">⌕</span><strong>Google & SEO</strong><p>Follow a practical search-readiness checklist.</p><span class="card-link">Improve SEO ↗</span></button>
-            <button class="tool-card" data-view="store"><span class="tool-icon orange">▣</span><strong>Online store</strong><p>Plan products, pricing, and your storefront.</p><span class="card-link">Manage store ↗</span></button>
-            <button class="tool-card" data-view="crm"><span class="tool-icon teal">♙</span><strong>Leads & CRM</strong><p>Keep track of inquiries and next steps.</p><span class="card-link">View leads ↗</span></button>
+          <div class="marketing-home">
+            <section class="sales-hero">
+              <div class="sales-hero-copy">
+                <div class="sales-eyebrow">NOVABUILD AI · BUSINESS GROWTH PLATFORM</div>
+                <h1>העסק שלך. צוות AI אחד. <span>יותר שליטה בכל צעד.</span></h1>
+                <p>בונים אתר עסקי שנראה מעולה, מתכננים שיווק חכם, מטפלים בלידים ומנהלים את הפעולות החשובות — מסביבת עבודה אחת שמכירה את העסק שלך.</p>
+                <div class="sales-actions">
+                  <button class="primary" data-view="builder">בוא נבנה את האתר שלך</button>
+                  <button class="secondary" data-view="agents">הכירו את צוות ה־AI</button>
+                </div>
+                <div class="sales-proofline">
+                  <span>אתרים עסקיים</span><i></i><span>שיווק וצמיחה</span><i></i><span>לידים ושירות</span><i></i><span>אבטחה</span>
+                </div>
+              </div>
+              <div class="sales-visual" aria-label="תצוגה של סביבת העבודה">
+                <div class="sales-window">
+                  <div class="sales-window-top"><span>NovaBuild workspace</span><span class="sales-window-status">AI workspace</span></div>
+                  <div class="sales-window-body">
+                    <div class="sales-mini-sidebar"><b>N</b><span></span><span></span><span></span><span></span></div>
+                    <div class="sales-mini-main">
+                      <div class="sales-mini-label">BUSINESS OVERVIEW</div>
+                      <div class="sales-mini-title">העסק שלך, בצמיחה</div>
+                      <div class="sales-mini-stats"><div><small>אתר</small><strong>מוכן לעריכה</strong></div><div><small>שיווק</small><strong>תוכנית AI</strong></div></div>
+                      <div class="sales-mini-card"><div><small>AI OPERATIONS TEAM</small><b>המשימות הבאות שלך</b></div><span>01</span></div>
+                      <div class="sales-mini-bars"><i></i><i></i><i></i></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="sales-float sales-float-top"><span class="sales-float-dot"></span> מנהל AI מתאם את המשימות</div>
+                <div class="sales-float sales-float-bottom">בנייה · שיווק · לקוחות · אבטחה</div>
+              </div>
+            </section>
+
+            <section class="sales-intro">
+              <div class="sales-section-kicker">פלטפורמה אחת. צוות מומחים דיגיטלי.</div>
+              <h2>לא עוד עשרה כלים שלא מדברים אחד עם השני.</h2>
+              <p>NovaBuild מרכזת את העבודה העסקית החשובה סביב פרופיל עסקי אחד, כדי שכל כלי יבין מה העסק מציע, למי הוא פונה ואיך נכון לדבר עם הלקוחות שלו.</p>
+            </section>
+
+            <section class="sales-feature-grid">
+              <article class="sales-feature sales-feature-large">
+                <span class="sales-feature-index">01 / BUILD</span>
+                <h3>בונה אתרים שמתחיל באסטרטגיה, לא בתבנית</h3>
+                <p>ה־AI מנתח את תחום העסק, קהל היעד, השירותים והפעולה שהאתר צריך להוביל אליה. אחר כך הוא מציע מבנה, שפה עיצובית, תוכן ומסלול ברור ליצירת קשר.</p>
+                <button class="text-action" data-view="builder">לפתיחת בונה האתרים <span>←</span></button>
+              </article>
+              <article class="sales-feature">
+                <span class="sales-feature-index">02 / GROW</span>
+                <h3>מנהל שיווק שחושב בכמה ערוצים</h3>
+                <p>תכנון קמפיינים, רעיונות לתוכן וחלוקת תקציב מוצעת לפי מטרת העסק. פרסום חי דורש חיבור ואישור של חשבונות הפלטפורמות.</p>
+                <button class="text-action" data-view="growth">למרכז השיווק <span>←</span></button>
+              </article>
+              <article class="sales-feature">
+                <span class="sales-feature-index">03 / CONVERT</span>
+                <h3>סוכן לידים שמבין את השיחה</h3>
+                <p>ניתוח פנייה, זיהוי כוונה, ניסוח תשובה מתאימה והכנה להמשך טיפול ב־WhatsApp, באתר ובערוצים נוספים.</p>
+                <button class="text-action" data-view="leadbot">לסוכן הלידים <span>←</span></button>
+              </article>
+              <article class="sales-feature">
+                <span class="sales-feature-index">04 / PROTECT</span>
+                <h3>סוכן אבטחה ששומר על התהליך</h3>
+                <p>הערכת סיכונים, בדיקות מומלצות, סדרי עדיפויות ותוכנית תיקון. בדיקות חיות יופעלו רק בסביבה מורשית ובחיבור מאובטח.</p>
+                <button class="text-action" data-view="security">לסוכן האבטחה <span>←</span></button>
+              </article>
+              <article class="sales-feature sales-feature-dark">
+                <span class="sales-feature-index">05 / ORCHESTRATE</span>
+                <h3>מנהל AI שמחלק את העבודה לצוות</h3>
+                <p>מגדירים יעד אחד. המנהל מנתח אותו, בוחר את הסוכנים המתאימים, מחלק משימות ומציג מה דורש אישור לפני ביצוע.</p>
+                <button class="text-action" data-view="agents">למרכז ניהול הסוכנים <span>←</span></button>
+              </article>
+            </section>
+
+            <section class="sales-process">
+              <div><div class="sales-section-kicker">מתחילים פשוט</div><h2>מהרעיון ועד מערכת עסקית שעובדת איתך.</h2></div>
+              <div class="sales-process-steps">
+                <div><b>01</b><strong>מגדירים את העסק</strong><p>מוסיפים שירותים, לקוחות, אזור פעילות וסגנון תקשורת.</p></div>
+                <div><b>02</b><strong>בונים ומכינים</strong><p>יוצרים אתר, מסרים שיווקיים ותהליכי טיפול בלידים.</p></div>
+                <div><b>03</b><strong>מחברים ומפעילים</strong><p>מחברים חשבונות חיצוניים ומאשרים פעולות כשמוכנים.</p></div>
+              </div>
+            </section>
+
+            <section class="sales-bottom-cta">
+              <div><div class="sales-section-kicker">YOUR BUSINESS, BETTER CONNECTED</div><h2>בוא נבנה סביב העסק שלך מערכת שעובדת נכון.</h2><p>התחלה חינמית, בלי התחייבות. אפשר להתקדם בקצב שלך.</p></div>
+              <div class="sales-actions"><button class="primary" data-view="account">פתיחת חשבון חינמי</button><button class="secondary" data-view="pricing">לצפייה בחבילות</button></div>
+            </section>
           </div>
-          <div class="notice"><span>ⓘ</span><div><strong>Early prototype</strong><p>NovaBuild AI is an early-access workspace. Website drafts and planning tools are available; live ad-account integrations, native app-store publishing, and some account features still require setup.</p></div></div>
+        </section>
+        <section class="view" id="view-pricing">
+          <div class="page-heading"><div class="eyebrow">PLANS THAT GROW WITH YOUR BUSINESS</div><h1>בחר את הדרך שלך לצמוח</h1><p class="muted">מתחילים בחינם. משדרגים כשצריכים יותר יכולות, חיבורים ואוטומציות.</p></div>
+          <div class="pricing-grid">
+            <article class="pricing-card">
+              <div class="pricing-label">STARTER</div><h2>Free</h2><p>לפתוח סביבת עבודה, להכיר את הכלים ולהתחיל לבנות.</p>
+              <div class="pricing-price">חינם <small>ללא הגבלת זמן</small></div>
+              <ul><li>פרופיל עסק אישי</li><li>יצירת טיוטת אתר בסיסית</li><li>עוזר AI ושאלות עסקיות</li><li>תכנון שיווק והכנת תשובות ללידים</li><li>שמירת תוכניות עבודה בחשבון</li></ul>
+              <button class="secondary" data-view="account">פתיחת חשבון חינמי</button>
+            </article>
+            <article class="pricing-card pricing-card-featured">
+              <div class="pricing-featured-badge">למי שרוצה לגדול</div>
+              <div class="pricing-label">PRO</div><h2>Pro</h2><p>יותר יכולות, אוטומציות וחיבורי פלטפורמות — כשהחשבון מוכן לכך.</p>
+              <div class="pricing-price">בקרוב <small>מחיר ומסלול תשלום יפורסמו עם הפעלת הסליקה</small></div>
+              <ul><li>כל מה שכלול בחבילת Free</li><li>יכולות מתקדמות לבניית אתרים</li><li>ניהול צוות AI ותהליכי עבודה מורחבים</li><li>חיבורי שיווק ופרסום לפלטפורמות מאושרות</li><li>אוטומציות לידים וערוצי שירות</li><li>כלי אבטחה ודוחות מתקדמים</li></ul>
+              <button class="primary" id="proInterestButton" type="button">הצג לי את אפשרויות Pro</button>
+              <p class="pricing-disclaimer">חבילת Pro וסליקה עדיין אינן פעילות. לא יבוצע חיוב ולא תתבצע הרשמה בתשלום במסך הזה.</p>
+            </article>
+          </div>
+          <div class="notice"><span>i</span><div><strong>שקיפות לגבי החיבורים</strong><p>פרסום אוטומטי, שליחה אוטומטית ב־WhatsApp ושינוי תקציבי פרסום יופעלו רק לאחר חיבור OAuth רשמי לכל פלטפורמה, אישור המשתמש והשלמת בדיקות אבטחה.</p></div></div>
         </section>
         <section class="view" id="view-builder">
-          <div class="page-heading"><div class="eyebrow">CREATE YOUR FIRST VERSION</div><h1>Website builder</h1><p class="muted">תאר את העסק במשפט או שניים, וקבל טיוטה ראשונה. את כל השאר אפשר לשנות בהמשך.</p></div>
+          <div class="page-heading"><div class="eyebrow">CREATE YOUR FIRST VERSION</div><h1>בונה אתרים עסקי עם AI</h1><p class="muted">ה־AI מנתח את העסק ואת הלקוחות שלו, מתכנן מבנה ותוכן, ובוחר שפה עיצובית לפני יצירת האתר. ככל שתיתן לו מידע מדויק יותר — התוצאה תהיה מותאמת יותר.</p></div>
           <div class="builder-layout">
             <div class="panel builder-form">
               <div class="builder-step"><span>01</span><div><strong>Tell us about your business</strong><p class="muted">A few details help shape the first draft.</p></div></div>
@@ -163,12 +259,11 @@
             <button class="primary" id="saveBusinessProfile" type="submit">שמור את פרטי העסק</button>
             <p id="businessProfileStatus" class="auth-message" role="status" aria-live="polite">התחבר לחשבון כדי לשמור את פרופיל העסק.</p>
           </form>
-        </section>
-<section class="view" id="view-agents">
-          <div class="page-heading"><div class="eyebrow">YOUR AI OPERATIONS TEAM</div><h1>AI Agent Command Center</h1><p class="muted">Give the team a goal. The coordinator will break it into specialist tasks and show a safe execution plan.</p></div>
-          <div class="notice"><span>i</span><div><strong>צוות AI עם אישור לפני פעולה</strong><p>המערכת מנתחת יעדים ומכינה תוכניות עבודה. פעולות חיצוניות, פרסום, שליחת הודעות ושינוי תקציבים נשארים חסומים עד לחיבור חשבונות ואישור מפורש. נדרש חשבון חינמי כדי להפעיל סוכנים ולשמור מידע עסקי.</p></div></div>
-
-          <div class="panel account-panel" id="accountPanel">
+        </section><section class="view" id="view-account">
+          <div class="page-heading"><div class="eyebrow">YOUR NOVABUILD ACCOUNT</div><h1>החשבון העסקי שלך</h1><p class="muted">שומרים את הפרויקטים, פרופיל העסק ותוכניות העבודה במקום אחד. פותחים חשבון עם כתובת מייל וסיסמה.</p></div>
+          <div class="account-layout">
+            <div class="account-benefits"><div class="sales-section-kicker">WORKSPACE ACCESS</div><h2>העבודה שלך נשארת שלך.</h2><p>התחברות מאפשרת לשמור פרויקטים ותוכניות AI בחשבון האישי. המידע העסקי שלך מופרד ממשתמשים אחרים.</p><ul><li>שמירת פרטי העסק והעדפות התקשורת</li><li>שמירת תוכניות עבודה ופרויקטים</li><li>גישה לכלי AI לפי התוכנית והחיבורים הפעילים</li></ul></div>
+            <div class="panel account-panel" id="accountPanel">
             <div class="section-heading"><div><h3>Workspace account</h3><p class="muted">Sign in to save your agent plans securely to your own account.</p></div><span class="tag" id="accountStatus">Not connected</span></div>
             <div id="authConfigWarning" class="notice warning hidden"><span>!</span><div><strong>הגדרות חשבון חסרות</strong><p>שירות החשבונות אינו זמין כרגע. צריך לבדוק את הגדרות Supabase.</p></div></div>
             <div id="authForms">
@@ -179,7 +274,15 @@
             <button class="secondary hidden" id="signOutButton" type="button">Sign out</button>
             <p id="accountMessage" class="auth-message" role="status" aria-live="polite">Checking backend configuration…</p>
           </div>
-          <div class="panel agent-panel">
+
+          </div>
+        </section>
+        
+<section class="view" id="view-agents">
+          <div class="page-heading"><div class="eyebrow">YOUR AI OPERATIONS TEAM</div><h1>AI Agent Command Center</h1><p class="muted">Give the team a goal. The coordinator will break it into specialist tasks and show a safe execution plan.</p></div>
+          <div class="notice"><span>i</span><div><strong>צוות AI עם אישור לפני פעולה</strong><p>המערכת מנתחת יעדים ומכינה תוכניות עבודה. פעולות חיצוניות, פרסום, שליחת הודעות ושינוי תקציבים נשארים חסומים עד לחיבור חשבונות ואישור מפורש. נדרש חשבון חינמי כדי להפעיל סוכנים ולשמור מידע עסקי.</p></div></div>
+
+                    <div class="panel agent-panel">
             <label for="agentGoal">מה היעד העסקי שהצוות צריך לקדם?</label>
             <textarea id="agentGoal" rows="4" maxlength="1200" placeholder="למשל: לבנות אתר יוקרתי, להביא לידים איכותיים ולשפר את השיווק של העסק."></textarea>
             <label for="agentBusinessContext">מידע על העסק (לא חובה)</label>
@@ -202,7 +305,7 @@
           </div></div>
         </section>
       </div>
-      <footer class="footer">NovaBuild AI <span>·</span> Early prototype <span>·</span> Built to grow with your business</footer>
+      <footer class="footer">NovaBuild AI <span>·</span> סביבת עבודה לצמיחה עסקית <span>·</span> Built for business</footer>
     </main>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
