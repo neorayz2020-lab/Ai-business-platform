@@ -121,7 +121,7 @@ Deno.serve(async (req: Request) => {
   if (!apiKey) return json({ error: "מנוע ה-AI אינו מוגדר בשרת. יש להגדיר gemini_api_key ב-Supabase Edge Function Secrets.", code: "AI_NOT_CONFIGURED" }, 503);
 
   const prompt = promptFor(mode,fields);
-  const models = ["gemini-3.5-flash-lite","gemini-3.8-flash","gemini-3.1-flash-lite"];
+  const models = ["gemini-3.8-flash","gemini-3.5-flash-lite","gemini-3.1-flash-lite"];
   let lastStatus = 503;
   try {
     for (const modelName of models) {
