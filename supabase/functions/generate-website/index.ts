@@ -17,9 +17,9 @@ Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "Method not allowed." }, 405);
 
-  const apiKey = Deno.env.get("GEMINI_API_KEY");
+  const apiKey = Deno.env.get("gemini_api_key");
   if (!apiKey) return json({
-    error: "AI provider is not configured yet. Add GEMINI_API_KEY to Supabase Edge Function secrets.",
+    error: "AI provider is not configured yet. Add gemini_api_key to Supabase Edge Function secrets.",
   }, 503);
 
   let input: Record<string, unknown>;
@@ -32,7 +32,7 @@ Deno.serve(async (req: Request) => {
 
   const prompt = `You are a professional website copywriter. Return only JSON matching the requested schema. Write concise, persuasive, truthful website copy in English. Do not invent awards, guarantees, prices, testimonials, credentials, or facts not present in the brief. Business name: ${businessName}. Site type: ${siteType}. Business brief: ${brief}. Contact URL provided: ${contactUrl || "none"}. Create one headline, a short CTA button label, exactly three service/value cards, and a contact heading and sentence. Do not generate HTML, CSS, or JavaScript.`;
   try {
-    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
+    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent", {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
       body: JSON.stringify({
