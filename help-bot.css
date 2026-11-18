@@ -1,21 +1,29 @@
-/* NovaBuild AI welcome assistant */
-#nb-help-launcher{position:fixed;right:22px;bottom:22px;z-index:1000;border:0;border-radius:999px;padding:13px 18px;background:linear-gradient(110deg,#9583ff,#6b85ff);color:#fff;font-weight:800;box-shadow:0 10px 32px #0005;cursor:pointer}
-#nb-help-launcher:focus-visible,#nb-help-send:focus-visible,#nb-help-close:focus-visible,#nb-help-quick button:focus-visible{outline:2px solid #fff;outline-offset:3px}
-#nb-help-panel{position:fixed;right:22px;bottom:82px;z-index:1000;width:min(370px,calc(100vw - 28px));height:min(530px,calc(100vh - 115px));display:flex;flex-direction:column;border:1px solid #3a4161;border-radius:18px;overflow:hidden;background:#10172a;color:#f3f5ff;box-shadow:0 20px 70px #0009;font:14px/1.5 'DM Sans',system-ui,sans-serif}
+/* NovaBuild AI conversational assistant */
+#nb-help-launcher{position:fixed;right:22px;bottom:22px;z-index:1000;display:flex;align-items:center;gap:9px;border:1px solid #a69bff;border-radius:999px;padding:13px 19px;background:linear-gradient(115deg,#8977ff,#5d78ee);color:#fff;font-size:14px;font-weight:800;box-shadow:0 12px 36px #0006;cursor:pointer;transition:transform .18s,box-shadow .18s}
+#nb-help-launcher:hover{transform:translateY(-2px);box-shadow:0 16px 42px #0008}
+.nb-launcher-spark{display:grid;place-items:center;width:25px;height:25px;border-radius:9px;background:#ffffff24;font-size:17px}
+#nb-help-launcher:focus-visible,#nb-help-send:focus-visible,#nb-help-close:focus-visible,#nb-help-new:focus-visible,#nb-help-quick button:focus-visible{outline:2px solid #fff;outline-offset:3px}
+#nb-help-panel{position:fixed;right:22px;bottom:84px;z-index:1000;width:min(410px,calc(100vw - 28px));height:min(650px,calc(100dvh - 112px));display:flex;flex-direction:column;border:1px solid #3a4161;border-radius:21px;overflow:hidden;background:#10172a;color:#f3f5ff;box-shadow:0 24px 85px #000a;font:14px/1.55 'DM Sans',system-ui,sans-serif}
 #nb-help-panel[hidden]{display:none}
-.nb-help-head{display:flex;align-items:center;gap:10px;padding:15px 16px;background:#1b2040;border-bottom:1px solid #343858}
-.nb-help-avatar{display:grid;place-items:center;width:35px;height:35px;border-radius:12px;background:#7467e9;font-weight:900}
-.nb-help-title{flex:1;font-weight:800}.nb-help-subtitle{display:block;color:#aeb8d2;font-size:11px;font-weight:500}
-#nb-help-close{border:0;background:transparent;color:#e8eaff;font-size:22px;cursor:pointer}
-#nb-help-messages{flex:1;overflow:auto;padding:15px;display:flex;flex-direction:column;gap:10px}
-.nb-help-message{max-width:90%;padding:10px 12px;border-radius:13px;white-space:pre-wrap;overflow-wrap:anywhere}
-.nb-help-message.bot{align-self:flex-start;background:#202943;border:1px solid #303b59}
-.nb-help-message.user{align-self:flex-end;background:#655be0;color:#fff}
-#nb-help-quick{display:flex;flex-wrap:wrap;gap:7px;padding:0 14px 12px}
-#nb-help-quick button{border:1px solid #4b4a78;border-radius:999px;background:#242644;color:#dcd9ff;padding:7px 10px;font-size:11px;cursor:pointer}
-.nb-help-form{display:flex;gap:8px;padding:12px;border-top:1px solid #303951;background:#11182b}
-#nb-help-input{flex:1;min-width:0;border:1px solid #394562;border-radius:10px;background:#0b1120;color:#fff;padding:11px;outline:none}
-#nb-help-input:focus{border-color:#9c91ff}
-#nb-help-send{border:0;border-radius:10px;background:#8174f4;color:white;padding:0 14px;font-weight:800;cursor:pointer}
-.nb-help-note{padding:0 14px 10px;color:#8592ad;font-size:10px;background:#11182b}
-@media(max-width:480px){#nb-help-launcher{right:14px;bottom:14px}#nb-help-panel{right:14px;bottom:72px;width:calc(100vw - 28px);height:min(560px,calc(100vh - 90px))}}
+.nb-help-head{display:flex;align-items:center;gap:10px;padding:15px 16px;background:linear-gradient(110deg,#1c2141,#171d32);border-bottom:1px solid #343858;flex-shrink:0}
+.nb-help-avatar{display:grid;place-items:center;width:39px;height:39px;border-radius:14px;background:linear-gradient(140deg,#a99bff,#5d65e8);font-size:20px;font-weight:900;box-shadow:0 6px 20px #7167ff40}
+.nb-help-title{flex:1;font-weight:850;font-size:14px}.nb-help-subtitle{display:block;color:#aeb8d2;font-size:11px;font-weight:500;margin-top:3px}.nb-online-dot{display:inline-block;width:7px;height:7px;background:#62d9b0;border-radius:50%;margin-inline-end:5px}
+#nb-help-close,#nb-help-new{border:0;background:#ffffff0c;color:#e8eaff;width:32px;height:32px;border-radius:10px;font-size:20px;cursor:pointer}
+#nb-help-messages{flex:1;min-height:0;overflow:auto;padding:17px 14px;display:flex;flex-direction:column;gap:11px;overscroll-behavior:contain}
+.nb-help-message{max-width:91%;padding:11px 13px;border-radius:15px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65}
+.nb-help-message.bot{align-self:flex-start;background:#202943;border:1px solid #303b59;border-bottom-left-radius:5px}
+.nb-help-message.user{align-self:flex-end;background:linear-gradient(135deg,#7163e8,#5b72db);color:#fff;border-bottom-right-radius:5px}
+.nb-help-message.typing{color:#aeb8d2;font-style:italic}.nb-help-message.error{border-color:#7f4854;color:#ffd7dd;background:#321f2a}
+#nb-help-quick{display:flex;flex-wrap:wrap;gap:7px;padding:0 14px 12px;flex-shrink:0}
+#nb-help-quick[hidden]{display:none}
+#nb-help-quick button{border:1px solid #4b4a78;border-radius:999px;background:#242644;color:#e1deff;padding:8px 11px;font-size:11px;cursor:pointer}
+#nb-help-quick button:hover{background:#323157}
+.nb-help-form{display:flex;align-items:flex-end;gap:9px;padding:12px;border-top:1px solid #303951;background:#11182b;flex-shrink:0}
+#nb-help-input{flex:1;min-width:0;max-height:120px;resize:none;border:1px solid #394562;border-radius:15px;background:#0b1120;color:#fff;padding:12px 13px;outline:none;line-height:1.5}
+#nb-help-input:focus{border-color:#9c91ff;box-shadow:0 0 0 3px #9c91ff18}
+#nb-help-input:disabled{opacity:.65}
+#nb-help-send{flex-shrink:0;width:44px;height:44px;border:0;border-radius:14px;background:linear-gradient(135deg,#9283ff,#6c80f2);color:white;font-size:20px;font-weight:900;cursor:pointer}
+#nb-help-send:disabled{opacity:.55;cursor:wait}
+.nb-help-note{padding:0 14px 10px;color:#8592ad;font-size:10px;background:#11182b;flex-shrink:0}
+@media(max-width:480px){#nb-help-launcher{right:14px;bottom:14px;padding:11px 15px;font-size:13px}#nb-help-panel{right:10px;bottom:70px;width:calc(100vw - 20px);height:min(640px,calc(100dvh - 82px));border-radius:18px}}
+@media(prefers-reduced-motion:reduce){#nb-help-launcher{transition:none}}
