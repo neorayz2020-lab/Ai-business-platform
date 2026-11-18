@@ -30,17 +30,16 @@ $('#quickPrompt').addEventListener('submit', event => {
   const prompt = $('#quickPromptText').value.trim();
   showView('builder');
   if (!prompt) {
-    $('#nb-business-idea')?.focus();
-    $('#siteBrief').focus();
+    ($('#nb-business-idea') || $('#siteBrief'))?.focus();
     return;
   }
   const ideaBox = $('#nb-business-idea');
   if (ideaBox) ideaBox.value = prompt;
   $('#siteBrief').value = prompt;
-  $('#siteName').value = 'העסק שלי';
+  $('#siteName').value = window.NovaBuildI18n?.getLanguage() === 'en' ? 'My business' : 'העסק שלי';
   $('#makeBrief').click();
   const status = $('#previewStatus');
-  if (status) status.textContent = 'הטיוטה הראשונה מוכנה לבדיקה';
+  if (status) status.textContent = window.NovaBuildI18n?.getLanguage() === 'en' ? 'Your first draft is ready to review' : 'הטיוטה הראשונה מוכנה לבדיקה';
   $('#sitePreview')?.scrollIntoView({behavior:'smooth',block:'center'});
 });
 
@@ -234,7 +233,7 @@ $('#clearSite').addEventListener('click', () => {
   $('#siteAccent').value = '#6d5dfc';
   ['service1Title','service1Text','service2Title','service2Text','service3Title','service3Text','contactHeadline','contactText'].forEach(id => { $('#' + id).value = ''; });
   generatedSiteHtml = '';
-  $('#sitePreview').srcdoc = '<html><body style="font-family:system-ui;padding:32px;color:#526079;background:#f7f8fc"><h2>Your preview is waiting</h2><p>Fill in the form and choose Generate website.</p></body></html>';
+  $('#sitePreview').srcdoc = '<html lang="he" dir="rtl"><body style="font-family:Arial,system-ui;padding:32px;color:#526079;background:#f7f8fc;text-align:right"><h2>האתר שלך יופיע כאן</h2><p>ספר לי על העסק ולחץ על „תכין לי טיוטה”.</p></body></html>';
   $('#previewStatus').textContent = 'Your website will appear here';
   $('#downloadSite').disabled = true;
   $('#siteOutput').classList.add('hidden');
