@@ -8,7 +8,8 @@
   <title>NovaBuild AI — Business workspace</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="help-bot.css">
-  <link rel="stylesheet" href="i18n.css">\n  <link rel="stylesheet" href="friendly-mode.css">
+  <link rel="stylesheet" href="i18n.css">
+  <link rel="stylesheet" href="friendly-mode.css">
 </head>
 <body>
   <a class="skip-link" href="#content">Skip to main content</a>
@@ -47,7 +48,7 @@
           <div class="notice"><span>ⓘ</span><div><strong>Early prototype</strong><p>NovaBuild AI is an early-access workspace. Website drafts and planning tools are available; live ad-account integrations, native app-store publishing, and some account features still require setup.</p></div></div>
         </section>
         <section class="view" id="view-builder">
-          <div class="page-heading"><div class="eyebrow">CREATE YOUR FIRST VERSION</div><h1>Website builder</h1><p class="muted">Describe your business, generate a website draft, preview it, and download the file. Use the AI button for model-generated copy or the starter template.</p></div>
+          <div class="page-heading"><div class="eyebrow">CREATE YOUR FIRST VERSION</div><h1>Website builder</h1><p class="muted">תאר את העסק במשפט או שניים, וקבל טיוטה ראשונה. את כל השאר אפשר לשנות בהמשך.</p></div>
           <div class="builder-layout">
             <div class="panel builder-form">
               <div class="builder-step"><span>01</span><div><strong>Tell us about your business</strong><p class="muted">A few details help shape the first draft.</p></div></div>
@@ -68,8 +69,7 @@
                 <label for="contactHeadline">Contact section heading</label><input id="contactHeadline" maxlength="100" placeholder="Let’s make it happen.">
                 <label for="contactText">Contact section text</label><textarea id="contactText" rows="2" maxlength="220" placeholder="Have a question or an idea? We’d love to hear from you."></textarea>
               </details>
-              <div class="builder-actions"><button class="primary" id="makeAIWebsite" type="button">Generate with AI ✦</button><button class="secondary" id="makeBrief" type="button">Use starter template</button><button class="secondary" id="clearSite" type="button">Clear</button></div><p class="fine-print" id="aiWebsiteStatus" aria-live="polite">AI generation requires a signed-in account and a server-side AI key.</p>
-              <p class="fine-print">The starter option uses a built-in template. The AI option generates website copy when you are signed in and the server-side Gemini key is configured; both options create a downloadable HTML draft. Online publishing is a separate step.</p>
+              <div class="builder-actions"><button class="primary" id="makeAIWebsite" type="button">Generate with AI ✦</button><button class="secondary" id="makeBrief" type="button">Use starter template</button><button class="secondary" id="clearSite" type="button">Clear</button></div><p class="fine-print" id="aiWebsiteStatus" aria-live="polite">טיוטה בסיסית זמינה מיד. יצירה באמצעות AI דורשת התחברות והגדרה.</p>
               <div class="output hidden" id="siteOutput" aria-live="polite"></div>
             </div>
             <div class="panel builder-preview-panel">
@@ -131,6 +131,7 @@
   <script src="supabase-auth.js"></script>
   <script src="agents.js"></script>
   <script src="i18n.js"></script>
-  <script src="help-bot.js"></script>\n  <script src="friendly-mode.js"></script>
+  <script src="help-bot.js"></script>
+  <script src="friendly-mode.js"></script>
 </body>
 </html>
