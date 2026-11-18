@@ -101,7 +101,8 @@
       if (runError) throw runError;
       const rows = latestPlan.tasks.map((task, index) => ({
         run_id: run.id, user_id: currentUser.id, position: index + 1,
-        agent_name: task.agent, title: task.title, detail: task.detail,
+        agent_name: task.agent, title: task.title,
+        detail: String(task.detail || '') + (task.output ? '\n\nתוצר AI:\n' + String(task.output) + (task.nextStep ? '\nהצעד הבא: ' + String(task.nextStep) : '') : '').slice(0,4000),
         risk_label: task.risk, status: 'proposed'
       }));
       const { error: taskError } = await client.from('agent_tasks').insert(rows);
