@@ -73,7 +73,8 @@ You must return one JSON object matching the schema. Action rules:
 `;
 
   try {
-    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent", {
+    let modelName = "gemini-3.8-flash";
+    const requestAi = () => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
       signal: AbortSignal.timeout(22000),
@@ -101,6 +102,19 @@ You must return one JSON object matching the schema. Action rules:
         }
       }),
     });
+    let response = await requestAi();
+    for (let attempt = 1; attempt <= 2 && (response.status === 503 || response.status === 429); attempt++) {
+      console.warn("NovaBuild assistant retrying temporary provider response", response.status, "attempt", attempt);
+      await new Promise((resolve) => setTimeout(resolve, attempt * 450));
+      response = await requestAi();
+    }
+    const fallbackModels = ["gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"];
+    for (const fallbackModel of fallbackModels) {
+      if (response.ok || ![404, 429, 503].includes(response.status)) break;
+      console.warn("NovaBuild assistant switching fallback model", fallbackModel, "after", response.status);
+      modelName = fallbackModel;
+      response = await requestAi();
+    }
     if (!response.ok) {
       const detail = await response.text();
       console.error("NovaBuild assistant provider error", response.status, detail.slice(0, 300));
