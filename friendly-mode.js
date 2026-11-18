@@ -39,6 +39,8 @@
     `;
     form.prepend(quick);
     form.insertBefore(details, form.querySelector('.builder-actions'));
+    const extraActions = form.querySelector('.builder-actions');
+    if (extraActions) details.append(extraActions);
     const tip = document.createElement('div');
     tip.className = 'nb-friendly-tip';
     tip.innerHTML = '<span aria-hidden="true">💡</span><div><strong>טיפ קטן ממני</strong><span>אל תנסה לכתוב מושלם. מספיק להסביר למי העסק עוזר ומה תרצה שהמבקרים יעשו.</span></div>';
