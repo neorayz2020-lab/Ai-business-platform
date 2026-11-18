@@ -234,38 +234,20 @@ $('#clearSite').addEventListener('click', () => {
 });
 
 async function generateWebsiteCopyWithAI(payload) {
-  const config = window.NOVABUILD_CONFIG || {};
-  const response = await fetch(config.supabaseUrl + '/functions/v1/generate-website', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'apikey': config.supabaseAnonKey, 'Authorization': 'Bearer ' + config.supabaseAnonKey },
-    body: JSON.stringify(payload)
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.error || 'לא הצלחנו ליצור תוכן לאתר. נסה שוב.');
-  if (!data.website) throw new Error('שירות בניית האתר החזיר תשובה לא תקינה.');
-  return data.website;
+  if (!window.NovaBuildAuth?.generateWebsiteWithAI) {
+    throw new Error('שירות החשבון עדיין נטען. רענן את העמוד ונסה שוב.');
+  }
+  return window.NovaBuildAuth.generateWebsiteWithAI(payload);
 }
 
 async function callBusinessAgent(mode, payload) {
-  const config = window.NOVABUILD_CONFIG || {};
-  if (!config.supabaseUrl || !config.supabaseAnonKey) throw new Error('חיבור השרת לא מוגדר. בדוק את config.js.');
-  const response = await fetch(config.supabaseUrl.replace(/\/$/, '') + '/functions/v1/business-agent', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'apikey': config.supabaseAnonKey,
-      'Authorization': 'Bearer ' + config.supabaseAnonKey
-    },
-    body: JSON.stringify({ mode, ...payload })
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    const message = data.error || 'הבקשה נכשלה (HTTP ' + response.status + ').';
-    if (data.code === 'AI_NOT_CONFIGURED') throw new Error('מנוע ה-AI לא מוגדר. יש להגדיר gemini_api_key ב-Supabase Edge Function Secrets.');
-    if (data.code === 'AI_RATE_LIMIT') throw new Error(message + ' נסה שוב מאוחר יותר.');
-    throw new Error(message);
+  if (!window.NovaBuildAuth?.runBusinessAgent) {
+    throw new Error('שירות החשבון עדיין נטען. רענן את העמוד ונסה שוב.');
   }
-  if (!data.result || typeof data.result !== 'string') throw new Error('ה-AI החזיר תשובה ריקה או לא תקינה. נסה שוב.');
+  const data = await window.NovaBuildAuth.runBusinessAgent(mode, payload);
+  if (!data.result || typeof data.result !== 'string') {
+    throw new Error(data.error || 'ה-AI החזיר תשובה ריקה או לא תקינה. נסה שוב.');
+  }
   return data.result;
 }
 function showAgentResult(id, heading, result) {
