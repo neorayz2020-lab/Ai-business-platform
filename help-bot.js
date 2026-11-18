@@ -154,14 +154,18 @@
     send.disabled = true;
     input.disabled = true;
     const typing = addMessage(currentLanguage === 'en' ? 'Thinking…' : 'חושב…', 'assistant', 'typing');
+    let requestTimeout;
     try {
       if (!config.supabaseUrl || !config.supabaseAnonKey) throw new Error('CONFIG_MISSING');
+      const controller = new AbortController();
+      requestTimeout = setTimeout(() => controller.abort(), 25000);
       const response = await fetch(config.supabaseUrl.replace(/\/$/, '') + '/functions/v1/ai-assistant', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'apikey': config.supabaseAnonKey
         },
+        signal: controller.signal,
         body: JSON.stringify({
           language: currentLanguage,
           messages: history.slice(-10),
@@ -179,7 +183,9 @@
       applyAction(data);
     } catch (error) {
       typing.remove();
-      const message = error.message === 'AI_NOT_CONFIGURED'
+      const message = error.name === 'AbortError'
+        ? (currentLanguage === 'en' ? 'The AI reply took too long. Please try a shorter message or try again shortly.' : 'התגובה מתעכבת יותר מדי. נסה הודעה קצרה יותר או נסה שוב בעוד רגע.')
+        : error.message === 'AI_NOT_CONFIGURED'
         ? (currentLanguage === 'en' ? 'The AI assistant is not connected yet. The site owner needs to add the server AI key in Supabase. No login is required for the chat.' : 'העוזר עדיין לא מחובר למנוע AI. צריך להגדיר את מפתח ה-AI בשרת Supabase. לא צריך להתחבר לחשבון כדי לשוחח.')
         : (error.message === 'CONFIG_MISSING'
           ? (currentLanguage === 'en' ? 'The assistant connection settings are missing. Please tell the site owner.' : 'חסרות הגדרות החיבור של העוזר. צריך לעדכן את בעל האתר.')
@@ -187,6 +193,7 @@
       addMessage(message, 'assistant', 'error');
       console.error('NovaBuild AI assistant error:', error);
     } finally {
+      if (requestTimeout) clearTimeout(requestTimeout);
       busy = false;
       send.disabled = false;
       input.disabled = false;
