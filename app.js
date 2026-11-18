@@ -511,7 +511,7 @@ $('#planAds').addEventListener('click', async () => {
   button.disabled = true;
   button.textContent = 'מנתח ערוצים ותקציב…';
   try {
-    const result = await callBusinessAgent('marketing', {
+    const result = await callBusinessAgent('ads', {
       business,
       audience: profile?.target_audience || '',
       goal: $('#adGoal').value,
