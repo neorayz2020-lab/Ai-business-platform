@@ -41,6 +41,7 @@ jobs:
           node --check agents.js
           node --check friendly-mode.js
           node --check help-bot.js
+          node --check supabase/functions/generate-website/index.ts
           node --check i18n.js
       - name: Check HTML document basics
         run: |
