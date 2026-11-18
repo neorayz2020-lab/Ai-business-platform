@@ -23,3 +23,194 @@
 .platform-card input{align-self:flex-start}.platform-card span{font-weight:750}.platform-card small{color:var(--muted,#667085);font-size:12px;line-height:1.5}
 #growthOutput,#leadBotOutput,#securityOutput{white-space:normal;line-height:1.8;overflow-wrap:anywhere}
 #growthOutput>div,#leadBotOutput>div,#securityOutput>div{white-space:pre-wrap;overflow-wrap:anywhere}
+
+
+/* NovaBuild premium business workspace theme */
+:root{
+  color-scheme:light;
+  --bg:#f4f6f8;
+  --panel:#ffffff;
+  --panel2:#f8fafc;
+  --line:#e3e8ee;
+  --text:#17283b;
+  --muted:#657487;
+  --purple:#315f82;
+  --blue:#397a9d;
+  --green:#258477;
+  --radius:16px;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans','Heebo',Arial,sans-serif}
+.sidebar{background:#12263a;border-right-color:#243d55}
+.brand{color:#fff}
+.brand-mark{background:linear-gradient(145deg,#83a9bd,#3d6c87);box-shadow:none}
+.workspace-label,.eyebrow{color:#a6bac8}
+.nav-item{color:#bac8d3}
+.nav-item:hover{background:#1b344b;color:#fff}
+.nav-item.active{background:#25445d;box-shadow:inset 2px 0 #9bb7c8}
+.nav-item.active>span{color:#fff}
+.sidebar-bottom{border-color:#2b4359}
+.help-icon{background:#27445a;color:#eaf2f7}
+.main{background:var(--bg)}
+.topbar{background:#fff;border-color:var(--line);color:var(--text)}
+.breadcrumb{color:#718196}
+.breadcrumb strong{color:#24384c}
+.top-actions{color:#68798c}
+.status-dot{background:#2c9a83;box-shadow:none}
+.avatar{background:#e9f0f4;color:#284c64;border-color:#d7e2e9}
+.primary{background:linear-gradient(115deg,#255d80,#397f9d);color:#fff;box-shadow:0 7px 18px #255d801b}
+.primary:hover,.secondary:hover{filter:brightness(1.04)}
+.secondary{background:#fff;border-color:#d9e2e9;color:#29465b}
+.panel,.metric,.tool-card{background:#fff;border-color:var(--line);color:var(--text);box-shadow:0 5px 20px #1c334508}
+.panel label{color:#40556a}
+.panel input:not([type=checkbox]),.panel select,.panel textarea{background:#fbfcfd;border-color:#dce4eb;color:#20354a}
+.panel input::placeholder,.panel textarea::placeholder{color:#9aa8b6}
+.muted,.metric span,.metric small{color:#66788b}
+.output{background:#f7fafc;border-color:#dce6ed;color:#263c50}
+.notice{background:#eef5f8;border-color:#d8e7ee;color:#47718a}
+.notice strong{color:#294c64}
+.notice p{color:#607688}
+.notice.warning{background:#fff8ec;border-color:#f0dfc0;color:#a77434}
+.notice.warning strong{color:#805b24}
+.notice.warning p{color:#856f4b}
+.tool-card p{color:#6d7e8e}
+.footer{color:#8491a0;border-color:var(--line)}
+.agent-summary{background:linear-gradient(120deg,#eef4f7,#fff);border-color:#d8e4eb}
+.agent-task{background:#fff;border-color:var(--line)}
+.agent-task-number{background:#eaf2f6;color:#315d77}
+.agent-safety{background:#f9f5eb;border-color:#eadfc5;color:#755e36}
+.tag{background:#edf2f5;color:#526b7e}
+.green-tag{background:#e7f4ef;color:#28765f}
+.auth-message{color:#61758a;font-size:12px;line-height:1.65}
+.auth-message[data-kind="error"]{color:#a23d48}
+:focus-visible{outline-color:#397f9d}
+
+/* Premium sales homepage */
+.marketing-home{display:grid;gap:36px}
+.sales-hero{position:relative;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);gap:36px;align-items:center;min-height:430px;padding:52px 48px;border:1px solid #dce5eb;border-radius:24px;background:linear-gradient(115deg,#ffffff 0%,#f4f8fa 55%,#e8f0f4 100%);overflow:hidden;box-shadow:0 16px 44px #1d354709}
+.sales-hero-copy{position:relative;z-index:2;max-width:680px}
+.sales-eyebrow,.sales-section-kicker{font-size:10px;letter-spacing:1.8px;font-weight:800;color:#47718c}
+.sales-hero h1{font:800 clamp(34px,4vw,54px)/1.12 Manrope,'Heebo',sans-serif;letter-spacing:-1.8px;margin:20px 0 17px;color:#172d41}
+.sales-hero h1 span{color:#3d7898;background:none}
+.sales-hero-copy>p{font-size:15px;line-height:1.9;color:#65788a;max-width:620px;margin-bottom:24px}
+.sales-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.sales-proofline{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-top:28px;color:#738698;font-size:10px;font-weight:650}
+.sales-proofline i{width:4px;height:4px;border-radius:50%;background:#90a7b7}
+.sales-visual{position:relative;min-height:300px;display:grid;place-items:center}
+.sales-window{width:min(100%,440px);background:#fff;border:1px solid #d8e2e9;border-radius:15px;overflow:hidden;box-shadow:0 28px 65px #17344b20;transform:rotate(-1.2deg)}
+.sales-window-top{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 15px;background:#fbfcfd;border-bottom:1px solid #e7edf1;font-size:10px;font-weight:700;color:#3c566b}
+.sales-window-status{background:#e5f2ee;color:#2a806a;border-radius:20px;padding:5px 9px;font-size:9px}
+.sales-window-body{display:grid;grid-template-columns:58px 1fr;min-height:260px}
+.sales-mini-sidebar{padding:14px 10px;background:#172d41;display:grid;align-content:start;justify-items:center;gap:17px}
+.sales-mini-sidebar b{width:29px;height:29px;display:grid;place-items:center;border-radius:9px;background:#3b7593;color:#fff;font-size:14px}
+.sales-mini-sidebar span{height:6px;width:24px;border-radius:10px;background:#496176}
+.sales-mini-main{padding:19px}
+.sales-mini-label{font-size:8px;letter-spacing:1.4px;color:#8ba0af;font-weight:800}
+.sales-mini-title{font:800 21px Manrope,'Heebo',sans-serif;color:#20384d;margin:7px 0 16px}
+.sales-mini-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sales-mini-stats>div{padding:12px;border:1px solid #e5edf1;border-radius:9px;background:#fbfcfd}
+.sales-mini-stats small,.sales-mini-card small{display:block;color:#8a9ba9;font-size:8px;margin-bottom:5px}
+.sales-mini-stats strong{font-size:10px;color:#315e79}
+.sales-mini-card{margin-top:11px;padding:13px;display:flex;justify-content:space-between;align-items:center;background:#edf4f7;border-radius:9px}
+.sales-mini-card b{display:block;font-size:10px;color:#2b465b}
+.sales-mini-card>span{color:#3e7897;font:800 16px Manrope}
+.sales-mini-bars{display:flex;gap:7px;margin-top:14px}
+.sales-mini-bars i{height:5px;flex:1;border-radius:10px;background:#e1eaf0}
+.sales-mini-bars i:first-child{background:#4a88a5}
+.sales-float{position:absolute;padding:11px 14px;border:1px solid #dce6eb;border-radius:10px;background:#fff;box-shadow:0 8px 26px #17344b12;color:#3a566b;font-size:10px;font-weight:700}
+.sales-float-top{top:12px;right:-5px}
+.sales-float-bottom{bottom:7px;left:-7px}
+.sales-float-dot{display:inline-block;width:7px;height:7px;background:#2d9a80;border-radius:50%;margin-left:6px}
+.sales-intro{text-align:center;max-width:770px;margin:12px auto 0}
+.sales-intro h2,.sales-process h2,.sales-bottom-cta h2{font:800 clamp(25px,3vw,38px)/1.2 Manrope,'Heebo',sans-serif;letter-spacing:-1.1px;color:#1d3449;margin:13px 0}
+.sales-intro p{font-size:14px;line-height:1.9;color:#6a7b8b;margin:0}
+.sales-feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.sales-feature{min-height:215px;padding:25px 26px;border:1px solid var(--line);border-radius:17px;background:#fff;display:flex;flex-direction:column;align-items:flex-start}
+.sales-feature-large{grid-column:span 2;min-height:230px;background:linear-gradient(115deg,#fff,#f0f5f7)}
+.sales-feature-dark{background:#172d41;border-color:#172d41;color:#fff}
+.sales-feature-index{font-size:9px;letter-spacing:1.5px;color:#7d99aa;font-weight:800}
+.sales-feature-dark .sales-feature-index{color:#a9c0ce}
+.sales-feature h3{font:750 19px/1.3 Manrope,'Heebo',sans-serif;margin:14px 0 9px;color:#20384d}
+.sales-feature-dark h3{color:#fff}
+.sales-feature p{font-size:12px;line-height:1.8;color:#718292;max-width:730px;margin:0 0 17px}
+.sales-feature-dark p{color:#c1d0da}
+.text-action{border:0;background:transparent;color:#367492;font-size:11px;font-weight:800;padding:7px 0;margin-top:auto}
+.sales-feature-dark .text-action{color:#c1dce9}
+.text-action span{display:inline-block;margin-inline-start:5px;transition:transform .15s}
+.text-action:hover span{transform:translateX(-3px)}
+.sales-process{display:grid;grid-template-columns:.75fr 1.25fr;gap:35px;padding:32px 4px}
+.sales-process h2{font-size:27px}
+.sales-process-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.sales-process-steps>div{padding:5px 13px;border-inline-start:1px solid #d5e0e7}
+.sales-process-steps b{display:block;color:#4c819d;font:800 11px Manrope;margin-bottom:17px}
+.sales-process-steps strong{font-size:12px;color:#29445a}
+.sales-process-steps p{font-size:10px;line-height:1.7;color:#7b8b98;margin:7px 0 0}
+.sales-bottom-cta{display:flex;justify-content:space-between;align-items:center;gap:25px;padding:29px 31px;background:#eaf1f4;border:1px solid #d9e5eb;border-radius:18px}
+.sales-bottom-cta h2{font-size:25px;margin:9px 0}
+.sales-bottom-cta p{font-size:11px;color:#6b7e8c;margin:0}
+.sales-bottom-cta .sales-actions{flex-shrink:0}
+
+/* Account and plans */
+.account-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.85fr);gap:20px;align-items:start}
+.account-benefits{padding:26px 10px}
+.account-benefits h2{font:800 28px Manrope,'Heebo',sans-serif;color:#20384d;margin:12px 0}
+.account-benefits p,.account-benefits li{font-size:13px;line-height:1.9;color:#6a7b8b}
+.account-benefits ul{padding-inline-start:20px}
+.account-panel{margin-bottom:0;box-shadow:0 12px 34px #1e3a4e0b}
+.account-panel .section-heading{text-align:initial}
+.account-panel .section-heading h3{color:#223c51}
+.auth-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.auth-actions button{min-width:120px}
+.pricing-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;max-width:900px;margin:0 auto 25px}
+.pricing-card{position:relative;padding:28px;border:1px solid #dce5eb;background:#fff;border-radius:18px;box-shadow:0 12px 34px #19364b0a;display:flex;flex-direction:column;align-items:flex-start}
+.pricing-card-featured{border:1.5px solid #6f96ad;background:linear-gradient(145deg,#fff,#f1f6f8)}
+.pricing-label{font-size:9px;letter-spacing:2px;font-weight:800;color:#678397}
+.pricing-card h2{font:800 31px Manrope,'Heebo',sans-serif;color:#20394f;margin:10px 0}
+.pricing-card>p{color:#718292;font-size:12px;line-height:1.75;min-height:42px}
+.pricing-price{font:800 25px Manrope,'Heebo',sans-serif;color:#2c607e;margin:18px 0}
+.pricing-price small{display:block;font:500 10px 'DM Sans','Heebo',sans-serif;color:#81909d;margin-top:4px}
+.pricing-card ul{list-style:none;padding:0;margin:4px 0 22px;display:grid;gap:10px;width:100%}
+.pricing-card li{font-size:11px;color:#4f6578;line-height:1.5;padding-inline-start:19px;position:relative}
+.pricing-card li:before{content:'✓';position:absolute;inset-inline-start:0;color:#3d8c7b;font-weight:800}
+.pricing-card>button{width:100%;margin-top:auto}
+.pricing-featured-badge{position:absolute;top:17px;right:20px;font-size:9px;font-weight:800;color:#3a708d;background:#e5f0f4;border-radius:30px;padding:6px 10px}
+.pricing-disclaimer{font-size:9px;line-height:1.6;color:#8a949d;margin:12px 0 0;text-align:center}
+.account-quick{white-space:nowrap}
+
+/* Reduce emoji-like decorative elements in the live assistant */
+#nb-help-launcher{background:#1f5577;border-color:#1f5577;box-shadow:0 10px 30px #163a511a}
+.nb-launcher-spark{background:#ffffff1f}
+#nb-help-panel{background:#13283b;border-color:#d4e0e7;color:#f4f7f9}
+.nb-help-head{background:#173249;border-color:#29475d}
+.nb-help-avatar{background:#346f8c;box-shadow:none}
+.nb-help-message.bot{background:#203d52;border-color:#33566e;color:#f4f7fa}
+.nb-help-message.user{background:#367b99}
+#nb-help-quick button{background:#26465d;border-color:#52758b;color:#edf4f7}
+.nb-help-form{background:#173249;border-color:#33556b}
+#nb-help-input{background:#102335;border-color:#456278}
+#nb-help-send{background:#3d7f9c}
+.nb-help-note{background:#173249;color:#afc2cf}
+
+@media(max-width:900px){
+  .sales-hero{grid-template-columns:1fr;padding:34px 28px}
+  .sales-visual{min-height:260px}
+  .sales-process{grid-template-columns:1fr;gap:15px}
+  .account-layout{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  .sales-hero{padding:29px 20px;border-radius:18px;gap:18px}
+  .sales-hero h1{font-size:35px;letter-spacing:-1.2px}
+  .sales-hero-copy>p{font-size:13px}
+  .sales-visual{min-height:235px}
+  .sales-window{width:100%}
+  .sales-float-top{right:0;top:0}
+  .sales-float-bottom{left:0;bottom:0}
+  .sales-feature-grid{grid-template-columns:1fr}
+  .sales-feature-large{grid-column:auto}
+  .sales-process-steps{grid-template-columns:1fr}
+  .sales-process-steps>div{padding:8px 13px}
+  .sales-bottom-cta{align-items:flex-start;flex-direction:column;padding:23px 20px}
+  .sales-bottom-cta .sales-actions{width:100%}
+  .sales-bottom-cta .sales-actions button{flex:1}
+  .pricing-grid{grid-template-columns:1fr}
+  .pricing-card{padding:23px}
+}
