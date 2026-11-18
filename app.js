@@ -10,7 +10,16 @@ function showView(name) {
   $('#sidebar').classList.remove('open');
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
-$$('[data-view]').forEach(button => button.addEventListener('click', () => showView(button.dataset.view)));
+$('[data-view]').forEach(button => button.addEventListener('click', () => showView(button.dataset.view)));
+document.addEventListener('click', event => {
+  const trigger = event.target.closest('[data-pro-feature]');
+  if (!trigger || window.NovaBuildAuth?.isPro?.()) return;
+  event.preventDefault();
+  event.stopPropagation();
+  showView('pricing');
+  const status = $('#proInterestStatus');
+  if (status) status.textContent = 'הפעולה הזו מיועדת ל־Pro. חבילת Pro והחיוב עדיין בהכנה; לא יתבצע חיוב עד שהסליקה תחובר ותופעל.';
+}, true);
 $('#menuToggle').addEventListener('click', () => {
   const isOpen = $('#sidebar').classList.toggle('open');
   $('#menuToggle').setAttribute('aria-expanded', String(isOpen));
@@ -352,25 +361,30 @@ function showAgentResult(id, heading, result) {
   output.append(title, body); output.classList.remove('hidden');
 }
 $('#makeMarketing').addEventListener('click', async () => {
-  const business = $('#marketingBusiness').value.trim();
+  const button = $('#makeMarketing');
+  const profile = await window.NovaBuildAuth?.getBusinessProfile?.().catch(() => null);
+  const business = $('#marketingBusiness').value.trim() || profile?.business_name || '';
+  const audience = $('#marketingAudience').value.trim() || profile?.target_audience || '';
+  const offer = $('#marketingOffer').value.trim() || profile?.services || profile?.description || '';
   const goal = $('#marketingGoal').value;
   const channel = $('#marketingChannel').value;
-  const button = $('#makeMarketing');
+  const budget = $('#marketingBudget').value;
+  if (!business || !offer) {
+    renderOutput('marketingOutput', 'צריך עוד פרטים כדי לתכנן נכון', 'השלם את שם העסק ואת ההצעה שלו, או שמור אותם בפרופיל העסק. כך ה־AI יוכל לבנות תוכנית שיווק אמיתית ולא לנחש.');
+    return;
+  }
   button.disabled = true;
-  button.textContent = 'מכין תוכנית…';
+  button.textContent = 'מנהל השיווק מנתח…';
   try {
     const result = await callBusinessAgent('marketing', {
-      business: business || 'עסק קטן',
-      goal,
-      platforms: [channel],
-      brief: 'צור הצעת שיווק התחלתית לעסק. אם חסרים פרטים, ציין מה צריך לברר ואל תמציא נתונים.'
+      business, audience, goal, budget: '₪' + budget, offer, platforms: [channel]
     });
-    showAgentResult('marketingOutput', 'תוכנית שיווק שנוצרה בעזרת AI', result);
+    showAgentResult('marketingOutput', 'תוכנית שיווק שנבנתה עבור ' + business, result);
   } catch (error) {
     renderOutput('marketingOutput', 'לא הצלחנו ליצור תוכנית', error.message);
   } finally {
     button.disabled = false;
-    button.textContent = 'Draft campaign';
+    button.textContent = 'בנה תוכנית שיווק עם AI';
   }
 });
 $('#runGrowthAI').addEventListener('click', async () => {
@@ -454,29 +468,44 @@ $('#runSecurityAI').addEventListener('click', async () => {
   finally { button.disabled = false; }
 });
 
-$('#planAds').addEventListener('click', () => {
+$('#planAds').addEventListener('click', async () => {
+  const button = $('#planAds');
   const budget = Number($('#adBudget').value);
   if (!Number.isFinite(budget) || budget < 0) { $('#adBudget').focus(); return; }
-  const channels = $$('.check-list input:checked').map(input => input.parentElement.textContent.trim());
-  const goal = $('#adGoal').value;
-  const output = $('#adsOutput');
-  output.replaceChildren();
-  const title = document.createElement('h3');
-  title.textContent = 'Illustrative campaign plan';
-  const list = document.createElement('ul');
-  [
-    'Goal: ' + goal,
-    'Monthly spending ceiling: $' + budget.toLocaleString('en-US'),
-    'Selected channels: ' + (channels.length ? channels.join(', ') : 'Select at least one channel before using this plan.'),
-    'Start with a small test and define a conversion event before optimizing.',
-    'Review lead quality and cost per qualified lead, not clicks alone.',
-    'Require explicit approval before launching campaigns or changing budgets.'
-  ].forEach(line => { const li = document.createElement('li'); li.textContent = line; list.append(li); });
-  const note = document.createElement('p');
-  note.className = 'fine-print';
-  note.textContent = 'Planning example only. No ad account is connected and no money is spent.';
-  output.append(title, list, note);
-  output.classList.remove('hidden');
+  const channels = $('.check-list input:checked').map(input => input.value || input.parentElement.textContent.trim());
+  if (!channels.length) {
+    renderOutput('adsOutput', 'בחר לפחות ערוץ פרסום אחד', 'סמן את הפלטפורמות שתרצה שמנהל השיווק ישקול בתוכנית.');
+    return;
+  }
+  const profile = await window.NovaBuildAuth?.getBusinessProfile?.().catch(() => null);
+  const business = profile?.business_name || 'העסק שלי';
+  const offer = profile?.services || profile?.description || 'הצע תוכנית ראשונית ובקש פרטים שחסרים לפני המלצה על תקציב.';
+  button.disabled = true;
+  button.textContent = 'מנתח ערוצים ותקציב…';
+  try {
+    const result = await callBusinessAgent('marketing', {
+      business,
+      audience: profile?.target_audience || '',
+      goal: $('#adGoal').value,
+      budget: '₪' + budget,
+      offer,
+      platforms: channels
+    });
+    showAgentResult('adsOutput', 'תוכנית פרסום רב־ערוצית · ' + business, result);
+  } catch (error) {
+    renderOutput('adsOutput', 'לא הצלחנו לבנות את התוכנית', error.message);
+  } finally {
+    button.disabled = false;
+    button.textContent = 'בנה תוכנית פרסום עם AI';
+  }
+});
+$('#proInterestButton')?.addEventListener('click', () => {
+  const status = $('#proInterestStatus');
+  if (window.NovaBuildAuth?.isPro?.()) {
+    status.textContent = 'חשבון Pro פעיל. אפשר להמשיך לכלי Pro.';
+  } else {
+    status.textContent = 'חבילת Pro נמצאת בהכנה. כרגע אין סליקה פעילה ולא ניתן לבצע רכישה. החשבון החינמי נשאר פתוח לשימוש.';
+  }
 });
 
 $('#addProduct').addEventListener('click', () => {
