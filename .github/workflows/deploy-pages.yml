@@ -39,8 +39,13 @@ jobs:
           node --check config.js
           node --check supabase-auth.js
           node --check agents.js
+          node --check friendly-mode.js
+          node --check help-bot.js
+          node --check i18n.js
       - name: Check HTML document basics
         run: |
           grep -qi '<!doctype html>' index.html
           grep -q 'id="makeAIWebsite"' index.html
           grep -q 'id="siteBrief"' index.html
+          grep -q 'src="friendly-mode.js"' index.html
+          grep -q 'href="friendly-mode.css"' index.html
