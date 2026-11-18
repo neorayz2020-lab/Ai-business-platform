@@ -233,8 +233,8 @@ $('#clearSite').addEventListener('click', () => {
   $('#siteAccent').value = '#6d5dfc';
   ['service1Title','service1Text','service2Title','service2Text','service3Title','service3Text','contactHeadline','contactText'].forEach(id => { $('#' + id).value = ''; });
   generatedSiteHtml = '';
-  $('#sitePreview').srcdoc = '<html lang="he" dir="rtl"><body style="font-family:Arial,system-ui;padding:32px;color:#526079;background:#f7f8fc;text-align:right"><h2>האתר שלך יופיע כאן</h2><p>ספר לי על העסק ולחץ על „תכין לי טיוטה”.</p></body></html>';
-  $('#previewStatus').textContent = 'Your website will appear here';
+  $('#sitePreview').srcdoc = window.NovaBuildI18n?.getLanguage() === 'en' ? '<html lang="en" dir="ltr"><body style="font-family:Arial,system-ui;padding:32px;color:#526079;background:#f7f8fc"><h2>Your website will appear here</h2><p>Describe your business and create a first draft.</p></body></html>' : '<html lang="he" dir="rtl"><body style="font-family:Arial,system-ui;padding:32px;color:#526079;background:#f7f8fc;text-align:right"><h2>האתר שלך יופיע כאן</h2><p>ספר לי על העסק ולחץ על „תכין לי טיוטה”.</p></body></html>';
+  $('#previewStatus').textContent = window.NovaBuildI18n?.getLanguage() === 'en' ? 'Your website will appear here' : 'האתר שלך יופיע כאן';
   $('#downloadSite').disabled = true;
   $('#siteOutput').classList.add('hidden');
 });
