@@ -25,3 +25,14 @@
 .nb-friendly-tip strong{display:block;color:#f3f5ff;margin-bottom:2px}
 @media(max-width:900px){#view-builder .builder-preview-panel{position:static}#view-builder .builder-layout{grid-template-columns:1fr}}
 @media(max-width:560px){.nb-quickstart{padding:17px!important}.nb-quickstart h2{font-size:21px}#view-builder .preview-toolbar .builder-actions{width:100%}#view-builder .preview-toolbar .builder-actions button{flex:1}}
+
+/* Keep the first screen focused on one simple action */
+#view-builder>.page-heading h1{font-size:clamp(23px,3vw,30px)}
+#view-builder>.page-heading p{max-width:620px;line-height:1.65}
+#view-builder .nb-advanced-note{display:none}
+#view-builder #nb-advanced-settings>strong{display:block;margin:18px 4px 8px;color:#d8dcf3}
+#view-builder #nb-advanced-settings .builder-step{margin-top:8px}
+#view-builder .builder-form>.fine-print{font-size:11px;line-height:1.6}
+#view-builder .builder-form>.builder-actions{margin-top:16px}
+#view-builder #makeAIWebsite{opacity:.88}
+#view-builder .preview-toolbar span{display:block;margin-top:5px}
