@@ -6,6 +6,14 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
+const requestCounts = new Map<string, { count: number; resetAt: number }>();
+function overLimit(key: string) {
+  const now = Date.now(), current = requestCounts.get(key);
+  if (!current || current.resetAt <= now) { requestCounts.set(key, { count: 1, resetAt: now + 10 * 60 * 1000 }); return false; }
+  current.count++;
+  return current.count > 10;
+}
+
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -16,7 +24,10 @@ function json(body: unknown, status = 200) {
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "Method not allowed." }, 405);
+  const clientKey = (req.headers.get("cf-connecting-ip") || req.headers.get("x-forwarded-for") || "anonymous").split(",")[0].trim().slice(0, 80);
+  if (overLimit(clientKey)) return json({ error: "נשלחו יותר מדי בקשות. נסה שוב בעוד כמה דקות." }, 429);
 
+  // Supabase secret name entered by the user (lowercase).
   const apiKey = Deno.env.get("gemini_api_key");
   if (!apiKey) return json({
     error: "AI provider is not configured yet. Add gemini_api_key to Supabase Edge Function secrets.",
@@ -32,7 +43,7 @@ Deno.serve(async (req: Request) => {
 
   const prompt = `You are a professional website copywriter. Return only JSON matching the requested schema. Write concise, persuasive, truthful website copy in English. Do not invent awards, guarantees, prices, testimonials, credentials, or facts not present in the brief. Business name: ${businessName}. Site type: ${siteType}. Business brief: ${brief}. Contact URL provided: ${contactUrl || "none"}. Create one headline, a short CTA button label, exactly three service/value cards, and a contact heading and sentence. Do not generate HTML, CSS, or JavaScript.`;
   try {
-    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent", {
+    const requestAi = (modelName: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
       signal: AbortSignal.timeout(25000),
@@ -59,6 +70,12 @@ Deno.serve(async (req: Request) => {
         }
       }),
     });
+    let response = await requestAi("gemini-3.8-flash");
+    for (const modelName of ["gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"]) {
+      if (response.ok || ![404, 429, 503].includes(response.status)) break;
+      console.warn("Website generation switching fallback model", modelName, "after", response.status);
+      response = await requestAi(modelName);
+    }
     if (!response.ok) {
       const detail = await response.text();
       console.error("Gemini request failed", response.status, detail.slice(0, 500));
