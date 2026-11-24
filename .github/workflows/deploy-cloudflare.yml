@@ -19,6 +19,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Prepare public website assets
+        run: |
+          set -eu
+          mkdir -p public
+          cp index.html styles.css config.js app.js supabase-auth.js agents.js i18n.js help-bot.js friendly-mode.js creative-studio.js public/
+          cp help-bot.css i18n.css friendly-mode.css creative-studio.css public/
+          test -s public/index.html
+          test -s public/creative-studio.js
+          test -s public/creative-studio.css
+
       - name: Check Cloudflare deployment credentials
         id: credentials
         env:
