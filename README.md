@@ -1,77 +1,60 @@
 # NovaBuild AI — Business workspace
 
-An early, mobile-responsive prototype for an AI business platform that aims to bring website creation, marketing, ads planning, SEO guidance, ecommerce, lead tracking, and app-publishing guidance into one workspace.
+NovaBuild AI is a mobile-responsive prototype for a business platform combining AI-assisted website creation, creative assets, marketing planning, lead workflows, SEO guidance, and app-publishing guidance.
 
-## Current project status
+## Current status
 
-- Latest code review: JavaScript syntax checks passed for `app.js`, `supabase-auth.js`, `agents.js`, and `config.js`; no missing DOM IDs or duplicate IDs were found in the reviewed page.
-- These static checks do not verify deployed browser flows, AI provider availability, or public hosting.
+- GitHub repository: `neorayz2020-lab/Ai-business-platform`, branch `main`.
+- Supabase project: `cpluijlgsuaamaycwojm`.
+- Browser configuration uses the public Supabase URL and publishable key in `config.js`; never put server secrets in browser files.
+- Active Edge Functions: `ai-assistant`, `business-agent`, `generate-website`, and `generate-creative`.
+- Cloudflare Workers deployment is configured in `wrangler.toml` and `.github/workflows/deploy-cloudflare.yml`. The workflow validates JavaScript, copies only the browser assets into `public/`, and deploys when GitHub Actions secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are configured.
+- Deployment, browser sign-in, and successful Gemini image/site generation must still be verified end to end. A successful Edge Function deployment does not by itself prove that the provider key, model access, quotas, or browser flow work.
 
-- GitHub repository: `neorayz2020-lab/Ai-business-platform`
-- Supabase project: configured in `config.js` using the public project URL and publishable key.
-- Database: `profiles`, `agent_runs`, and `agent_tasks` have been created in Supabase. Row Level Security (RLS) is enabled on all three tables.
-- Hosting: Cloudflare Pages deployment has not yet been verified.
-- Supabase Edge Function `generate-website`: deployed and active; it reads the server-side secret `gemini_api_key`. Successful authenticated generation still needs an end-to-end test.
-- Authentication and saving plans: implemented in the browser code, but still need an end-to-end test on the deployed site.
+## Features in the current prototype
 
-## What's included
+- Responsive Hebrew-first workspace with English language switching.
+- Website brief builder, starter website preview/export, and server-side AI-generated website copy.
+- Conversational NovaBuild AI assistant through the `ai-assistant` Edge Function.
+- AI Creative Studio for logo concepts and advertising images. The browser composes editable brand/post text over the generated image and can download a PNG.
+- Marketing plan and copy drafts; planning is not the same as publishing.
+- Ads planning worksheet; it does not launch ads or spend money.
+- Demo product catalog and lead pipeline; those sample entries are not persistent.
+- Leads/WhatsApp reply drafting, SEO readiness checklist, and app-store publishing guidance.
+- Supabase email/password auth, business profile, and saved website drafts.
 
-- Responsive SaaS-style dashboard and navigation
-- Website project brief builder with a starter template and optional AI-generated copy
-- Conversational NovaBuild AI assistant available on page entry; uses the server-side `ai-assistant` Edge Function and does not require user sign-in
-- Marketing copy draft generator (template-based demo)
-- Ads campaign planning worksheet (does not launch ads or spend money)
-- Demo product catalog and lead pipeline
-- Save generated website drafts to the signed-in user's Supabase account with row-level access controls
-- Google/SEO readiness checklist with progress tracking
-- Apple App Store and Google Play publishing guidance
-- Rule-based AI Agent Command Center scaffold
-- Supabase email/password auth scaffold and explicit Save plan action
+## AI provider setup
 
-## Deploy
+The Edge Functions use the server-side Supabase secret `gemini_api_key`.
 
-This is a static HTML/CSS/JavaScript site. For Cloudflare Pages, connect the GitHub repository, use `main` as the production branch, set the build command to `exit 0`, and set the build output directory to `/` (the repository root containing `index.html`). Follow `SUPABASE_SETUP.md` to configure authentication URLs and run the post-deployment tests.
+1. Create or select a Gemini API key in Google AI Studio.
+2. In Supabase Dashboard → Edge Functions → Secrets, set `gemini_api_key`.
+3. Sign in to NovaBuild AI and test the website builder, assistant, and AI Creative Studio.
+4. Confirm the selected Gemini image model is available to the key and check quotas/billing if image generation returns a provider error.
+
+Never commit the key to GitHub or put it in `config.js`. The Creative Studio requires a signed-in user. Generated images are composed in the browser and downloaded locally; they are not automatically published or saved to a cloud media library.
+
+## Cloudflare deployment
+
+The GitHub Actions workflow prepares a clean `public/` directory from the site files and deploys it using Wrangler configuration in `wrangler.toml`. Required GitHub repository Actions secrets:
+
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+
+If either secret is absent, the workflow deliberately skips deployment and emits a warning. Check the latest GitHub Actions run before assuming a commit is live. The known Worker URL is https://ai-business-platform.neorayz2020.workers.dev/.
 
 ## Important limitations
 
-This is not yet a production AI platform. The AI Agent Command Center planner is rule-based and does not call an LLM. The separate chat assistant does call Gemini through the server-side `ai-assistant` Edge Function. Saving a plan stores proposed plan/task rows; it does not enqueue or execute tasks. Real AI, payment processing, and integrations with Google Ads, Meta Ads, TikTok Ads, Google Search Console, Apple, or Google Play are not connected. Demo product and lead entries remain in page memory and disappear when the page reloads. Website drafts can be saved to the signed-in user's `website_projects` table; a saved-draft browser/library view is not yet implemented. No ad spend or external publishing action can happen from this version.
+This remains a prototype, not a fully autonomous production platform. Official OAuth/API connections for Meta, Google Ads, TikTok, WhatsApp Business, Google Search Console, Apple App Store, and Google Play are not configured. The Ads Autopilot does not adjust budgets, launch campaigns, or access live performance. Billing is not active. The agent command center still has limited planning/scaffolding rather than a persistent autonomous task queue. Demo store and lead entries disappear on page reload. Saved website drafts do not yet have a full browser library view. Generated creative assets are not yet saved to a persistent media library.
 
-Never place private API keys, database passwords, Supabase secret keys, or service_role keys in browser-side JavaScript. Real AI and account integrations must use secure server-side functions, user consent, limited permissions, spend caps, audit logs, and approval gates for consequential actions.
+Before public launch, verify signup/sign-in, reset password, website generation, creative generation, download behavior, mobile layouts, RLS policies, error handling, model quotas, privacy disclosures, and Cloudflare deployment. Production integrations need least-privilege credentials, user consent, audit logs, spend limits, and approval gates for consequential actions.
 
-## Roadmap
+## Security
 
-1. Deploy the static site and verify signup/sign-in and plan saving end to end.
-2. Add a secure server-side AI provider integration and real website preview/export.
-3. Add SEO checks and guided publishing workflows.
-4. Add official marketing-platform connections, conversion tracking, and guarded optimization.
-5. Add persistent store/CRM data, billing, and team features.
-
-## AI Agent Command Center
-
-The AI Agent Command Center is a transparent, local rule-based planner. It maps a user's goal to proposed specialist tasks and flags actions that must stay approval-gated. It is not an autonomous AI agent system: there is no model connection, server, scheduler, persistent task queue, or background execution. It does not publish websites, run campaigns, or spend money.
-
-## Supabase auth and task-plan storage
-
-- `supabase/schema.sql` defines `profiles`, `agent_runs`, and `agent_tasks` with per-user row-level security.
-- `supabase-auth.js` provides email/password signup, sign-in, sign-out, and explicit Save plan.
-- `config.js` contains the public Supabase URL and publishable key only. Never place secrets there.
-- `SUPABASE_SETUP.md` documents deployment and testing.
-
-## Real AI website generation
-
-The Website Builder now calls the Supabase Edge Function `generate-website`. The function requires an authenticated Supabase user and calls Gemini server-side; the browser never receives the provider key.
-
-### Configure the AI provider
-
-1. Create an API key in Google AI Studio for Gemini.
-2. Open Supabase Dashboard → Edge Functions → Secrets for this project.
-3. Add a secret named `gemini_api_key` with the API key value.
-4. Sign in to NovaBuild AI, open Website builder, enter a business brief, and select **Generate with AI**.
-5. If you use email/password sign-in, configure the deployed site's URL and redirect URLs in Supabase Auth settings.
-
-Do not commit the Gemini key to GitHub or add it to `config.js`. The Edge Function currently uses `gemini-2.5-flash`. Provider quotas and availability depend on Google's current terms and account.
-
-The website AI button and conversational assistant both use the `gemini_api_key` secret stored in Supabase Edge Function secrets. The assistant is public so visitors can chat without signing in; its in-memory IP rate limit is best-effort and should be supplemented with a challenge/rate-limit service before broad public marketing. The ordinary starter-template button continues to work without an AI key.
+- Never put private API keys, database passwords, Supabase secret keys, or service-role keys in browser-side JavaScript.
+- AI generation runs server-side and should remain behind authenticated functions where appropriate.
+- Public AI chat has a best-effort in-memory rate limit; add a durable rate-limit/challenge layer before broad public marketing.
+- Do not claim an external action has happened until its official connection is configured and the result is verified.
 
 ## License
 
