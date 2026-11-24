@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="help-bot.css">
   <link rel="stylesheet" href="i18n.css">
   <link rel="stylesheet" href="friendly-mode.css">
+  <link rel="stylesheet" href="creative-studio.css">
 </head>
 <body>
   <a class="skip-link" href="#content">Skip to main content</a>
@@ -28,6 +29,7 @@
         <button class="nav-item" data-view="account"><span>○</span> חשבון והתחברות</button>
         <button class="nav-item" data-view="builder"><span>✳</span> Website builder <em>AI</em></button>
         <button class="nav-item" data-view="marketing"><span>◉</span> Marketing studio</button>
+        <button class="nav-item" data-view="creative"><span>✦</span> AI Design Studio <em>AI</em></button>
         <button class="nav-item" data-view="ads" data-pro-feature="ads"><span>↗</span> Ads Autopilot <em class="soon">PRO</em></button>
         <button class="nav-item" data-view="store"><span>▣</span> Online store</button>
         <button class="nav-item" data-view="crm"><span>♙</span> Leads & CRM</button>
@@ -189,6 +191,36 @@
             </div>
           </div>
         </section>
+
+        <section class="view" id="view-creative">
+          <div class="page-heading"><div class="eyebrow">AI CREATIVE STUDIO</div><h1>סטודיו עיצוב AI</h1><p class="muted">יוצרים לוגו ותמונות פרסום לעסק שלך. ה-AI מייצר את התמונה, ואת הטקסט אפשר לערוך לפני שמורידים.</p></div>
+          <div class="creative-layout">
+            <form class="panel creative-form" id="creativeForm">
+              <div class="creative-mode-switch" role="group" aria-label="סוג עיצוב">
+                <button type="button" class="creative-mode active" data-creative-mode="post" aria-pressed="true">פוסט פרסומי</button>
+                <button type="button" class="creative-mode" data-creative-mode="logo" aria-pressed="false">לוגו לעסק</button>
+              </div>
+              <input type="hidden" id="creativeMode" value="post">
+              <label for="creativeBusiness">שם העסק או המותג</label><input id="creativeBusiness" maxlength="90" required placeholder="לדוגמה: Nova Studio">
+              <label for="creativeDescription">מה העסק עושה?</label><textarea id="creativeDescription" rows="3" maxlength="900" required placeholder="תאר את העסק, השירות או המוצר. אל תכלול מידע סודי."></textarea>
+              <div id="creativePostFields">
+                <label for="creativeHeadline">כותרת שיופיע על העיצוב</label><input id="creativeHeadline" maxlength="90" placeholder="הופכים את הרעיון למציאות">
+                <label for="creativeSubline">שורת הסבר (לא חובה)</label><input id="creativeSubline" maxlength="120" placeholder="שירות מקצועי בהתאמה אישית">
+                <label for="creativeCta">הנעה לפעולה (לא חובה)</label><input id="creativeCta" maxlength="45" placeholder="דברו איתנו היום">
+                <label for="creativeFormat">פורמט</label><select id="creativeFormat"><option value="4:5">פוסט Instagram / Facebook (4:5)</option><option value="1:1">ריבוע (1:1)</option><option value="9:16">סטורי / Reels cover (9:16)</option><option value="16:9">באנר רחב (16:9)</option></select>
+              </div>
+              <label for="creativeStyle">סגנון עיצוב</label><select id="creativeStyle"><option value="premium">יוקרתי ונקי</option><option value="bold">נועז ובולט</option><option value="minimal">מינימליסטי</option><option value="playful">צעיר ויצירתי</option><option value="editorial">מגזיני ומקצועי</option><option value="futuristic">טכנולוגי עתידני</option></select>
+              <label for="creativePalette">אווירת צבעים</label><select id="creativePalette"><option value="dark blue and violet">כחול כהה וסגול</option><option value="black and gold">שחור וזהב</option><option value="white and charcoal">לבן ופחם</option><option value="emerald and cream">ירוק עמוק וקרם</option><option value="warm earth tones">גווני אדמה חמים</option><option value="vivid colorful">צבעוני ובולט</option></select>
+              <button class="primary creative-generate" id="generateCreative" type="submit">צור עיצוב עם AI ✦</button>
+              <p class="fine-print" id="creativeStatus" role="status" aria-live="polite">ליצירה נדרשת התחברות לחשבון חינמי. התמונה נוצרת בשרת ולא נשלחת לרשתות חברתיות.</p>
+            </form>
+            <div class="panel creative-preview-panel">
+              <div class="creative-preview-heading"><div><h3>התצוגה שלך</h3><p class="muted">אפשר לערוך את הטקסט ולהפיק קובץ PNG.</p></div><button class="secondary" id="downloadCreative" type="button" disabled>הורדת PNG</button></div>
+              <div class="creative-canvas-wrap"><canvas id="creativeCanvas" width="1080" height="1350" aria-label="תצוגה מקדימה של העיצוב שנוצר"></canvas><div class="creative-empty" id="creativeEmpty"><span>✦</span><strong>העיצוב שלך יופיע כאן</strong><p>בחר לוגו או פוסט והתחל ליצור.</p></div></div>
+              <p class="fine-print">לפני פרסום, בדוק את שם העסק, האיות, זכויות השימוש בתמונה והאם כל הטענות במודעה נכונות. היצירה אינה מתפרסמת אוטומטית.</p>
+            </div>
+          </div>
+        </section>
         <section class="view" id="view-marketing"><div class="page-heading"><div class="eyebrow">GROW YOUR AUDIENCE</div><h1>Marketing studio</h1><p class="muted">Create an AI-powered campaign draft for your next campaign.</p></div><div class="panel"><label for="marketingBusiness">שם העסק</label><input id="marketingBusiness" placeholder="שם העסק או המותג"><label for="marketingAudience">למי רוצים להגיע?</label><input id="marketingAudience" placeholder="קהל יעד, אזור פעילות ולקוחות אידיאליים"><label for="marketingGoal">מה המטרה המרכזית?</label><select id="marketingGoal"><option>יצירת לידים איכותיים</option><option>הגדלת מכירות</option><option>חשיפה ומודעות למותג</option><option>קידום שירות או מוצר חדש</option><option>הגדלת פניות ב־WhatsApp</option></select><label for="marketingChannel">ערוץ מרכזי</label><select id="marketingChannel"><option>Instagram</option><option>Facebook / Meta</option><option>Google Ads</option><option>TikTok</option><option>WhatsApp Business</option><option>Email</option><option>LinkedIn</option></select><label for="marketingOffer">מה העסק מציע ולמה לבחור בו?</label><textarea id="marketingOffer" rows="3" maxlength="1200" placeholder="פרט את השירות, היתרון, הצעה או מחיר אמיתי אם קיים."></textarea><label for="marketingBudget">תקציב חודשי לתכנון (₪)</label><input id="marketingBudget" type="number" min="0" max="1000000" value="1500"><button class="primary" id="makeMarketing">בנה תוכנית שיווק עם AI</button><div class="output hidden" id="marketingOutput" aria-live="polite"></div><p class="fine-print">טיוטת הקמפיין נוצרת באמצעות AI ומיועדת לבדיקה ועריכה. לא מתבצע פרסום אוטומטי ולא נעשה שימוש בתקציב.</p></div></section>
         <section class="view" id="view-ads"><div class="page-heading"><div class="eyebrow">CAMPAIGN CONTROL CENTER</div><h1>Ads Autopilot <span class="beta-tag">BETA CONCEPT</span></h1><p class="muted">Plan advertising across channels and keep budget decisions under your control.</p></div><div class="notice warning"><span>⚠</span><div><strong>No ad accounts connected</strong><p>This prototype cannot publish ads, spend money, change bids, or access campaign performance. Official platform integrations and your authorization are required.</p></div></div><div class="metric-grid"><div class="metric"><span>Monthly budget limit</span><strong>$500</strong><small>Illustrative only</small></div><div class="metric"><span>Connected platforms</span><strong>0</strong><small>Connectors not configured</small></div><div class="metric"><span>Pending recommendations</span><strong>3</strong><small>Example recommendations</small></div></div><div class="panel"><h3>Campaign planner</h3><label for="adGoal">Primary goal</label><select id="adGoal"><option>Generate leads</option><option>Online sales</option><option>Website traffic</option><option>Brand awareness</option></select><label for="adBudget">תקציב חודשי לתכנון (₪)</label><input id="adBudget" type="number" min="0" max="100000" value="1500"><label>Channels to consider</label><div class="check-list"><label><input type="checkbox" checked value="Google Ads"> Google Ads</label><label><input type="checkbox" checked value="Meta Ads (Facebook & Instagram)"> Facebook & Instagram</label><label><input type="checkbox" value="TikTok Ads"> TikTok Ads</label><label><input type="checkbox" value="WhatsApp Business"> WhatsApp Business</label><label><input type="checkbox" value="LinkedIn Ads"> LinkedIn</label></div><button class="primary" id="planAds" data-pro-feature="ads">בנה תוכנית פרסום עם AI</button><div class="output hidden" id="adsOutput" aria-live="polite"></div></div></section>
         <section class="view" id="view-store"><div class="page-heading"><div class="eyebrow">SELL ONLINE</div><h1>Online store</h1><p class="muted">A starter space for your product catalog.</p></div><div class="panel"><div class="section-heading"><div><h3>Product catalog</h3><p class="muted">Sample products — not saved to a database.</p></div><button class="secondary" id="addProduct">＋ Add product</button></div><form id="productForm" class="inline-form hidden"><input id="productName" placeholder="Product name" required><input id="productPrice" type="number" min="0" step="0.01" placeholder="Price" required><button class="primary" type="submit">Add</button></form><div class="table-wrap"><table><thead><tr><th>Product</th><th>Price</th><th>Status</th></tr></thead><tbody id="productRows"><tr><td>Starter product</td><td>$29.00</td><td><span class="tag">Draft</span></td></tr><tr><td>Premium package</td><td>$79.00</td><td><span class="tag">Draft</span></td></tr></tbody></table></div></div></section>
@@ -342,5 +374,6 @@
   <script src="i18n.js"></script>
   <script src="help-bot.js"></script>
   <script src="friendly-mode.js"></script>
+  <script src="creative-studio.js"></script>
 </body>
 </html>
