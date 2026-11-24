@@ -19,6 +19,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate JavaScript syntax and required files
+        run: |
+          set -eu
+          node --check app.js
+          node --check supabase-auth.js
+          node --check agents.js
+          node --check i18n.js
+          node --check help-bot.js
+          node --check friendly-mode.js
+          node --check creative-studio.js
+          test -s index.html
+          test -s creative-studio.css
+          test -s supabase/functions/generate-creative/index.ts
+
       - name: Prepare public website assets
         run: |
           set -eu
