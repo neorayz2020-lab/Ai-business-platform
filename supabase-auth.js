@@ -237,6 +237,18 @@
       }
       if (!data || !data.website) throw new Error(data?.error || 'The AI service returned an invalid response.');
       return data.website;
+    },
+    async generateCreativeWithAI(payload) {
+      if (!client) throw new Error('שירות החשבון אינו מוגדר.');
+      if (!currentUser) throw new Error('כדי ליצור עיצוב צריך להתחבר לחשבון חינמי או ליצור חשבון.');
+      const { data, error } = await client.functions.invoke('generate-creative', { body: payload });
+      if (error) {
+        let message = error.message || 'לא הצלחנו ליצור את העיצוב.';
+        try { const response = error.context; if (response && typeof response.json === 'function') { const body = await response.json(); if (typeof body?.error === 'string' && body.error.trim()) message = body.error; } } catch (_) {}
+        throw new Error(message);
+      }
+      if (!data || typeof data.imageBase64 !== 'string' || !data.imageBase64) throw new Error(data?.error || 'מנוע יצירת התמונות לא החזיר תמונה.');
+      return data;
     }
   };
   if (window.supabase?.createClient && config.supabaseUrl && config.supabaseAnonKey &&
